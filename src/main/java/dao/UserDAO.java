@@ -182,6 +182,87 @@ public class UserDAO {
         }
     }
 
+//    public List<Product> searchProducts(String name, String category, String brand, Double minPrice, Double maxPrice, int page, int pageSize) {
+//        List<Product> list = new ArrayList<>();
+//        StringBuilder sql = new StringBuilder("SELECT * FROM products WHERE 1=1");
+//        List<Object> params = new ArrayList<>();
+//
+//        if (name != null && !name.isEmpty()) {
+//            sql.append(" AND name LIKE ?");
+//            params.add("%" + name + "%");
+//        }
+//        if (category != null && !category.isEmpty()) {
+//            sql.append(" AND category = ?");
+//            params.add(category);
+//        }
+//        if (brand != null && !brand.isEmpty()) {
+//            sql.append(" AND brand = ?");
+//            params.add(brand);
+//        }
+//        if (minPrice != null) {
+//            sql.append(" AND price >= ?");
+//            params.add(minPrice);
+//        }
+//        if (maxPrice != null) {
+//            sql.append(" AND price <= ?");
+//            params.add(maxPrice);
+//        }
+//
+//        sql.append(" LIMIT ?, ?");
+//        params.add((page - 1) * pageSize);
+//        params.add(pageSize);
+//
+//        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+//            for (int i = 0; i < params.size(); i++) {
+//                ps.setObject(i + 1, params.get(i));
+//            }
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                list.add(new Product(rs.getInt("id"), rs.getString("name"), rs.getString("category"), rs.getString("brand"), rs.getDouble("price")));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return list;
+//    }
+//
+//    public int countProducts(String name, String category, String brand, Double minPrice, Double maxPrice) {
+//        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM tracks WHERE 1=1");
+//        List<Object> params = new ArrayList<>();
+//
+//        if (name != null && !name.isEmpty()) {
+//            sql.append(" AND name LIKE ?");
+//            params.add("%" + name + "%");
+//        }
+//        if (category != null && !category.isEmpty()) {
+//            sql.append(" AND category = ?");
+//            params.add(category);
+//        }
+//        if (brand != null && !brand.isEmpty()) {
+//            sql.append(" AND brand = params.add(brand)");
+//        }
+//        if (minPrice != null) {
+//            sql.append(" AND price >= ?");
+//            params.add(minPrice);
+//        }
+//        if (maxPrice != null) {
+//            sql.append(" AND price <= ?");
+//            params.add(maxPrice);
+//        }
+//
+//        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+//            for (int i = 0; i < params.size(); i++) {
+//                ps.setObject(i + 1, params.get(i));
+//            }
+//            ResultSet rs = ps.executeQuery();
+//            if (rs.next()) return rs.getInt(1);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+
     private static List<String> getUserLikedGenres(int userId) throws SQLException {
         List<String> genres = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection()) {

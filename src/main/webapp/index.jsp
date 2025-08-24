@@ -23,56 +23,9 @@
 
 </head>
 <body>
-<!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <i class="fas fa-music me-2"></i>RhythmWave
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Genres</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">New Releases</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Top Charts</a>
-                </li>
-            </ul>
 
-            <c:choose>
-                <c:when test="${empty sessionScope.USER}">
-                    <div class="d-flex">
-                        <a href="login.jsp" class="btn btn-outline-primary me-2">Login</a>
-                        <a href="signup.jsp" class="btn btn-primary me-3">Sign Up</a>
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    <div class="d-flex">
-                        <a href="${pageContext.request.contextPath}/LogoutServlet" class="btn btn-primary me-3">Logout</a>
-<%--                        <a href="#" class="btn btn-outline-light position-relative">--%>
-<%--                            <i class="fas fa-shopping-cart"></i>--%>
-<%--                            <span class="cart-count">3</span>--%>
-<%--                        </a>--%>
-
-                        <button type="button" class="btn btn-outline-light position-relative" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
-                            <i class="fas fa-shopping-cart me-2"></i> <c:out value="${fn:length(sessionScope.cartItems)}" />
-                        </button>
-
-                    </div>
-                </c:otherwise>
-            </c:choose>
-        </div>
-    </div>
-</nav>
+<!-- navigation bar -->
+<jsp:include page="/includes/navbar.jsp"/>
 
 <!-- Banner Section -->
 <div class="container">
@@ -194,8 +147,6 @@
                                         <i class="fas fa-cart-plus"></i>
                                     </div>
                                 </a>
-
-
                             </div>
                         </div>
                     </div>
@@ -234,108 +185,10 @@
 </div>
 
 <!-- Footer -->
-<footer class="footer mt-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h5>RhythmWave</h5>
-                <p>Your destination for premium music downloads and streaming. Discover new artists and enjoy your favorite tracks.</p>
-            </div>
-            <div class="col-md-2">
-                <h5>Links</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="text-decoration-none text-secondary">Home</a></li>
-                    <li><a href="#" class="text-decoration-none text-secondary">About</a></li>
-                    <li><a href="#" class="text-decoration-none text-secondary">Music</a></li>
-                    <li><a href="#" class="text-decoration-none text-secondary">Artists</a></li>
-                </ul>
-            </div>
-            <div class="col-md-2">
-                <h5>Support</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="text-decoration-none text-secondary">Help Center</a></li>
-                    <li><a href="#" class="text-decoration-none text-secondary">Contact Us</a></li>
-                    <li><a href="#" class="text-decoration-none text-secondary">Privacy Policy</a></li>
-                    <li><a href="#" class="text-decoration-none text-secondary">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5>Subscribe to Our Newsletter</h5>
-                <p>Get the latest updates on new music releases and exclusive offers.</p>
-                <div class="input-group">
-                    <input type="email" class="form-control" placeholder="Your email address">
-                    <button class="btn btn-primary">Subscribe</button>
-                </div>
-            </div>
-        </div>
-        <hr class="my-4">
-        <div class="row">
-            <div class="col-md-6">
-                <p class="text-secondary">© 2023 RhythmWave. All rights reserved.</p>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <a href="#" class="text-secondary me-3"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="text-secondary me-3"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-secondary me-3"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="text-secondary"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-    </div>
-</footer>
+<jsp:include page="includes/footer.jsp" />
 
 <!-- Shopping Cart Modal -->
-<div class="modal fade cart-modal" id="shoppingCartModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Your Shopping Cart <span class="cart-badge"> <c:out value="${fn:length(sessionScope.cartItems)}" /></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Cart Item 1 -->
-                <c:choose>
-                    <c:when test="${empty sessionScope.cartItems}">
-                        <div class="modal-body">
-                            <div class="cart-empty">
-                                <i class="fas fa-shopping-cart"></i>
-                                <p>Your cart is empty</p>
-                            </div>
-                        </div>
-                    </c:when>
-                    <c:otherwise>
-                        <c:forEach var="track" items="${sessionScope.cartItems}">
-                            <div class="cart-item">
-                                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
-                                     alt="Album Cover" class="cart-item-img">
-                                <div class="cart-item-details">
-                                    <div class="cart-item-title">${track.title}</div>
-                                    <div class="cart-item-artist">by ${track.artist}</div>
-                                    <div class="cart-item-price">Rs. ${track.price}</div>
-                                </div>
-                                <a href="${pageContext.request.contextPath}/CartServlet?action=remove&trackId=${track.trackId}">
-                                    <button class="cart-item-remove">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </a>
-
-                            </div>
-                        </c:forEach>
-                    </c:otherwise>
-                </c:choose>
-
-            </div>
-            <div class="modal-footer">
-                <div class="cart-summary">
-                    <span>Total: </span>
-                    <span class="cart-total">Rs. ${sessionScope.cartTotal}</span>
-                </div>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
-                <button type="button" class="btn btn-primary">Proceed to Checkout</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+<jsp:include page="includes/modals/shoppingCartModal.jsp" />
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
