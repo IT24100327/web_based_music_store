@@ -22,8 +22,6 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         String likedGenre = request.getParameter("signup-genre");
 
-        System.out.println(firstName + lastName + email + password + likedGenre);
-
         // Hashing the Password using Bcrypt
         String passwordHash = PasswordUtil.hashPassword(password);
 

@@ -1,6 +1,8 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<c:set var="activePage" value="${param.page}" />
+
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
   <div class="container">
@@ -13,26 +15,31 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Home</a>
+          <a class="nav-link ${activePage eq 'index' ? 'active' : ''}" href="${pageContext.request.contextPath}/index.jsp">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Genres</a>
+          <a class="nav-link ${activePage eq 'search' ? 'active' : ''}" href="${pageContext.request.contextPath}/search">Search</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">New Releases</a>
+          <a class="nav-link ${activePage eq '' ? 'active' : ''}" href="#">Genres</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Top Charts</a>
+          <a class="nav-link ${activePage eq '' ? 'active' : ''}" href="#">New Releases</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link ${activePage eq '' ? 'active' : ''}" href="#">Top Charts</a>
         </li>
       </ul>
 
       <!-- Search Bar -->
-      <div class="input-group me-3" style="max-width: 300px;">
-        <input type="text" class="form-control" placeholder="Search artists, albums, or songs...">
-        <button class="btn btn-primary" type="button">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
+      <c:if test="${!(param.searchBox eq 'noShow')}">
+        <form action="${pageContext.request.contextPath}/search" method="get" class="input-group me-3" style="max-width: 300px;">
+          <input type="text" class="form-control" name="query" placeholder="Search artists, albums, or songs..." value="${param.query}">
+          <button class="btn btn-primary" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </form>
+      </c:if>
 
       <c:choose>
         <c:when test="${empty sessionScope.USER}">

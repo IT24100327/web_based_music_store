@@ -25,7 +25,9 @@
 <body>
 
 <!-- navigation bar -->
-<jsp:include page="/includes/navbar.jsp"/>
+<jsp:include page="/includes/navbar.jsp">
+    <jsp:param name="page" value="index"/>
+</jsp:include>
 
 <!-- Banner Section -->
 <div class="container">
@@ -47,78 +49,6 @@
             </c:otherwise>
         </c:choose>
 
-    </div>
-</div>
-
-<!-- Search and Filters Section -->
-<div class="container">
-    <div class="search-section">
-        <h2 class="mb-4">Find Your Music</h2>
-        <div class="row">
-            <div class="col-md-8">
-                <div class="filter-label">Search Music Library</div>
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Search artists, albums, or songs...">
-                    <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="filter-label">Sort by</div>
-                <select class="form-select">
-                    <option>Newest First</option>
-                    <option>Price: Low to High</option>
-                    <option>Price: High to Low</option>
-                    <option>Most Popular</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-md-3">
-                <div class="filter-label">Genre</div>
-                <select class="form-select">
-                    <option>All Genres</option>
-                    <option>Rock</option>
-                    <option>Pop</option>
-                    <option>Hip Hop</option>
-                    <option>Electronic</option>
-                    <option>Jazz</option>
-                    <option>Classical</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <div class="filter-label">Price Range</div>
-                <select class="form-select">
-                    <option>Any Price</option>
-                    <option>Under $5</option>
-                    <option>$5 - $10</option>
-                    <option>$10 - $20</option>
-                    <option>Over $20</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <div class="filter-label">Release Year</div>
-                <select class="form-select">
-                    <option>Any Year</option>
-                    <option>2023</option>
-                    <option>2022</option>
-                    <option>2020-2021</option>
-                    <option>2010-2019</option>
-                    <option>Before 2010</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <div class="filter-label">Rating</div>
-                <select class="form-select">
-                    <option>Any Rating</option>
-                    <option>5 Stars</option>
-                    <option>4+ Stars</option>
-                    <option>3+ Stars</option>
-                </select>
-            </div>
-        </div>
     </div>
 </div>
 

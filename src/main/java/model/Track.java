@@ -5,6 +5,45 @@ public class Track {
     private String title;
     private String artist;
     private double price;
+    private String genre;
+    private double rating;
+
+    public Track(
+            int trackId,
+            String title,
+            String artist,
+            double price,
+            String genre,
+            double rating) {
+
+        this.trackId = trackId;
+        this.title = title;
+        this.artist = artist;
+        this.price = price;
+        this.genre = genre;
+        this.rating = rating;
+    }
+
+    public Track(String title, String artist) {
+        this.title = title;
+        this.artist = artist;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 
     public double getPrice() {
         return price;
@@ -12,11 +51,6 @@ public class Track {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public Track(String title, String artist) {
-        this.title = title;
-        this.artist = artist;
     }
 
     public String getArtist() {
