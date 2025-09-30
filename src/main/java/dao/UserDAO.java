@@ -3,6 +3,7 @@ package dao;
 import model.Admin;
 import model.User;
 import utils.DatabaseConnection;
+import utils.PasswordUtil;
 
 import java.io.IOException;
 import java.sql.*;
@@ -129,8 +130,8 @@ public class UserDAO {
         return null;
     }
 
-    public static void updateUser(int userId, String firstName, String lastName, String email, String phoneNumber, String password) throws IOException, SQLException {
-        String sql = "UPDATE users SET firstName = ?, lastName = ?, email = ?, phoneNumber = ?, password = ? WHERE userId = ?";
+    public static void updateUser(int userId, String firstName, String lastName, String email, String role) throws IOException, SQLException {
+        String sql = "UPDATE users SET firstName = ?, lastName = ?, email = ?, role = ? WHERE userId = ?";
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -138,9 +139,29 @@ public class UserDAO {
             pstmt.setString(1, firstName);
             pstmt.setString(2, lastName);
             pstmt.setString(3, email);
-            pstmt.setString(4, phoneNumber);
-            pstmt.setString(5, password);
-            pstmt.setInt(6, userId);
+            pstmt.setString(4, (role.equals("admin")) ? "adminUser" : "standardUser");
+            pstmt.setInt(5, userId);
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Updating user failed, no rows affected.");
+            }
+
+            System.out.println("User updated successfully. Rows affected: " + affectedRows);
+        }
+    }
+
+    public static void updateUserPassword(int userId, String newPassword) throws IOException, SQLException {
+        String sql = "UPDATE users SET password = ? WHERE userId = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            String hashPassword = PasswordUtil.hashPassword(newPassword);
+
+            pstmt.setString(1, hashPassword);
+            pstmt.setInt(5, userId);
 
             int affectedRows = pstmt.executeUpdate();
 
