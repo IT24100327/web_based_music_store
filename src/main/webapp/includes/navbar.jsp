@@ -50,10 +50,28 @@
         </c:when>
         <c:otherwise>
           <div class="d-flex">
-            <a href="${pageContext.request.contextPath}/LogoutServlet" class="btn btn-primary me-3">Logout</a>
-            <button type="button" class="btn btn-outline-light position-relative" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
-              <i class="fas fa-shopping-cart me-2"></i> <c:out value="${fn:length(sessionScope.cartItems)}" />
+            <a href="${pageContext.request.contextPath}/LogoutServlet" class="btn btn-primary me-2">Logout</a>
+            <button type="button" class="btn btn-outline-light position-relative me-2" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
+              <i class="fas fa-shopping-cart me-2"></i>
+              <span class="badge badge-light cart-badge"></span>
             </button>
+
+            <c:choose>
+              <c:when test="${sessionScope.USER.isAdmin() eq true}">
+                <a href="${pageContext.request.contextPath}/admin/">
+                  <button type="button" class="btn btn-outline-light position-relative me-2">
+                    <i class="fa-solid fa-user me-2" ></i> Admin Panel
+                  </button>
+                </a>
+              </c:when>
+              <c:otherwise>
+                <a href="${pageContext.request.contextPath}/profile">
+                  <button type="button" class="btn btn-outline-light position-relative me-2">
+                    <i class="fa-solid fa-user me-2" ></i> Profile
+                  </button>
+                </a>
+              </c:otherwise>
+            </c:choose>
           </div>
         </c:otherwise>
       </c:choose>

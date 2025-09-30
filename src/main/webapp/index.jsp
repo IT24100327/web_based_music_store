@@ -17,16 +17,13 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/index.css">
-    <style>
-
-    </style>
-
 </head>
 <body>
 
-<!-- navigation bar -->
+<!-- Navigation Bar -->
 <jsp:include page="/includes/navbar.jsp">
     <jsp:param name="page" value="index"/>
+    <jsp:param name="user" value="${sessionScope.USER}"/>
 </jsp:include>
 
 <!-- Banner Section -->
@@ -48,7 +45,6 @@
                 </div>
             </c:otherwise>
         </c:choose>
-
     </div>
 </div>
 
@@ -56,7 +52,6 @@
 <div class="container">
     <h2 class="mb-4">Featured Music</h2>
     <div class="row">
-
         <!-- Music Card -->
         <c:forEach var="track" items="${requestScope.trackList}">
             <div class="col-md-4 col-lg-3 mb-3">
@@ -71,12 +66,9 @@
                                 <div class="play-btn me-2">
                                     <i class="fas fa-play"></i>
                                 </div>
-
-                                <a href="${pageContext.request.contextPath}/CartServlet?action=add&trackId=${track.trackId}">
-                                    <div class="cart-btn">
-                                        <i class="fas fa-cart-plus"></i>
-                                    </div>
-                                </a>
+                                <button class="cart-btn" data-track-id="${track.trackId}">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -111,7 +103,6 @@
             </nav>
         </c:if>
     </div>
-
 </div>
 
 <!-- Footer -->
@@ -122,37 +113,6 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Simple interactivity for the music cards
-    document.addEventListener('DOMContentLoaded', function() {
-        // Play button functionality
-        const playButtons = document.querySelectorAll('.play-btn');
-        playButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                this.classList.toggle('playing');
-                const icon = this.querySelector('i');
-                if (icon.classList.contains('fa-play')) {
-                    icon.classList.replace('fa-play', 'fa-pause');
-                } else {
-                    icon.classList.replace('fa-pause', 'fa-play');
-                }
-            });
-        });
-
-        // Add to cart functionality
-        const cartButtons = document.querySelectorAll('.cart-btn');
-        cartButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                this.classList.toggle('added');
-                const icon = this.querySelector('i');
-                if (this.classList.contains('added')) {
-                    icon.classList.replace('fa-cart-plus', 'fa-check');
-                } else {
-                    icon.classList.replace('fa-check', 'fa-cart-plus');
-                }
-            });
-        });
-    });
-</script>
+<script src="${pageContext.request.contextPath}/js/cart.js"></script>
 </body>
 </html>
