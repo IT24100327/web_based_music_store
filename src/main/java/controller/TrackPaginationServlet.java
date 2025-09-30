@@ -1,6 +1,5 @@
 package controller;
 
-import dao.TrackDAO;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -16,13 +15,7 @@ public class TrackPaginationServlet extends HttpServlet {
     private final int RECORDS_PER_PAGE = 8;
 
     @Override
-    public void init() throws ServletException {
-        TrackDAO.ensureTableExists();
-    }
-
-    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         int page = 1;
         if (request.getParameter("page") != null) {
             page = Integer.parseInt(request.getParameter("page"));
@@ -76,5 +69,4 @@ public class TrackPaginationServlet extends HttpServlet {
         RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
         rd.forward(request, response);
     }
-
 }

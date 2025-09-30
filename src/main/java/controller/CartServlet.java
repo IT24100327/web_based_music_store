@@ -7,57 +7,120 @@ import jakarta.servlet.annotation.*;
 import model.Track;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.gson.Gson;
 
 @WebServlet(name = "CartServlet", value = "/CartServlet")
 public class CartServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        String trackId = request.getParameter("trackId");
-        Double cartTotal = 0.0;
-        Track track = null;
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+        Gson gson = new Gson();
 
-        // Get or create cart in session
-        HttpSession session = request.getSession();
-        List<Track> cartItems = (List<Track>) session.getAttribute("cartItems");
+        try {
+            String action = request.getParameter("action");
+            String trackId = request.getParameter("trackId");
 
-        if (cartItems == null) {
-            cartItems = new ArrayList<>();
-            session.setAttribute("cartItems", cartItems);
-        }
+            // Get or create cart in session
+            HttpSession session = request.getSession();
+            List<Track> cartItems = (List<Track>) session.getAttribute("cartItems");
 
-        if (trackId != null) {
-            try {
-                track = TrackDAO.findTrackById(Integer.parseInt(trackId));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+            if (cartItems == null) {
+                cartItems = new ArrayList<>();
+                session.setAttribute("cartItems", cartItems);
             }
 
-            if (track != null) {
-                switch (action) {
-                    case "add":
-                        addItemtoCart(cartItems, track);
-                        cartTotal = calculateTotal(cartItems);
-                        System.out.println("Item Added to Cart");
-                        break;
-                    case "remove":
-                        removeFromCart(cartItems, track);
-                        cartTotal = calculateTotal(cartItems);
-                        break;
-                }
+            // Handle getState action - return current cart state without modification
+            if ("getState".equals(action)) {
+                double cartTotal = calculateTotal(cartItems);
+                int itemCount = cartItems.size();
+
+                CartResponse cartResponse = new CartResponse(
+                        cartItems != null ? cartItems : new ArrayList<>(),
+                        cartTotal,
+                        itemCount
+                );
+
+                out.print(gson.toJson(cartResponse));
+                out.flush();
+                return;
+            }
+
+            // Validate parameters for other actions
+            if (trackId == null || trackId.trim().isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.print(gson.toJson(new ErrorResponse("Track ID is required")));
+                out.flush();
+                return;
+            }
+
+            if (action == null || (!action.equals("add") && !action.equals("remove"))) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.print(gson.toJson(new ErrorResponse("Invalid or missing action")));
+                out.flush();
+                return;
+            }
+
+            // Parse trackId and fetch track
+            Track track;
+            try {
+                track = TrackDAO.findTrackById(Integer.parseInt(trackId));
+            } catch (NumberFormatException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                out.print(gson.toJson(new ErrorResponse("Invalid track ID format")));
+                out.flush();
+                return;
+            } catch (SQLException e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                out.print(gson.toJson(new ErrorResponse("Database error occurred")));
+                out.flush();
+                return;
+            }
+
+            if (track == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                out.print(gson.toJson(new ErrorResponse("Track not found")));
+                out.flush();
+                return;
+            }
+
+            Double cartTotal = 0.0;
+
+            // Perform cart action
+            switch (action) {
+                case "add":
+                    addItemtoCart(cartItems, track);
+                    cartTotal = calculateTotal(cartItems);
+                    System.out.println("Item Added to Cart: " + trackId);
+                    break;
+                case "remove":
+                    removeFromCart(cartItems, track);
+                    cartTotal = calculateTotal(cartItems);
+                    System.out.println("Item Removed from Cart: " + trackId);
+                    break;
             }
 
             // Update cart in session
             session.setAttribute("cartItems", cartItems);
             session.setAttribute("cartTotal", cartTotal);
 
-            // Redirect back to home page
-            response.sendRedirect(request.getContextPath() + "/");
-            return;
+            // Respond with JSON
+            CartResponse cartResponse = new CartResponse(cartItems, cartTotal, cartItems.size());
+            out.print(gson.toJson(cartResponse));
+            out.flush();
+
+        } catch (Exception e) {
+            // Catch any unexpected errors
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print(gson.toJson(new ErrorResponse("Unexpected error: " + e.getMessage())));
+            out.flush();
+            e.printStackTrace();
         }
     }
 
@@ -88,14 +151,45 @@ public class CartServlet extends HttpServlet {
 
     private double calculateTotal(List<Track> cartItems) {
         double total = 0;
-        for (Track track: cartItems) {
-            total += track.getPrice();
+        if (cartItems != null) {
+            for (Track track : cartItems) {
+                total += track.getPrice();
+            }
         }
         return total;
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doGet(request, response);
+    }
 
+    // Inner class for JSON response
+    private static class CartResponse {
+        private List<Track> cartItems;
+        private double cartTotal;
+        private int itemCount;
+
+        public CartResponse(List<Track> cartItems, double cartTotal, int itemCount) {
+            this.cartItems = cartItems;
+            this.cartTotal = cartTotal;
+            this.itemCount = itemCount;
+        }
+
+        // Add getters for JSON serialization
+        public List<Track> getCartItems() { return cartItems; }
+        public double getCartTotal() { return cartTotal; }
+        public int getItemCount() { return itemCount; }
+    }
+
+    // Inner class for error response
+    private static class ErrorResponse {
+        private String error;
+
+        public ErrorResponse(String error) {
+            this.error = error;
+        }
+
+        public String getError() { return error; }
     }
 }
