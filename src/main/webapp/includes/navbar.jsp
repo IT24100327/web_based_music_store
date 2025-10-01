@@ -4,8 +4,8 @@
 <c:set var="activePage" value="${param.page}" />
 
 <!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-  <div class="container">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top mb-2">
+  <div class="container-fluid">
     <a class="navbar-brand" href="#">
       <i class="fas fa-music me-2"></i>RhythmWave
     </a>
@@ -15,7 +15,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link ${activePage eq 'index' ? 'active' : ''}" href="${pageContext.request.contextPath}/index.jsp">Home</a>
+          <a class="nav-link ${activePage eq 'index' ? 'active' : ''}" href="${pageContext.request.contextPath}/index">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link ${activePage eq 'search' ? 'active' : ''}" href="${pageContext.request.contextPath}/search">Search</a>

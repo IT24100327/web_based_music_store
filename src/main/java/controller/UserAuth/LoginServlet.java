@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
                 response.addCookie(cookie);
             }
 
-            response.sendRedirect("index.jsp");
+            response.sendRedirect(request.getContextPath() + "/index");
         } else {
             request.setAttribute("error", "Wrong password");
             RequestDispatcher rd = request.getRequestDispatcher("login.jsp");

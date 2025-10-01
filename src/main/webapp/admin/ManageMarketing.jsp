@@ -26,8 +26,8 @@
       <div class="user-info">
         <div class="user-avatar">A</div>
         <div>
-          <div>Administrator</div>
-          <div class="text-muted">admin@rhythmwave.com</div>
+          <div>${sessionScope.USER.firstName} ${sessionScope.USER.lastName}</div>
+          <div class="text-muted">${sessionScope.USER.email}</div>
         </div>
       </div>
     </header>

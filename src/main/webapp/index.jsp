@@ -2,10 +2,6 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<c:if test="${empty requestScope.noOfPages}">
-    <c:redirect url="/trackPaginate"/>
-</c:if>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +23,7 @@
 </jsp:include>
 
 <!-- Banner Section -->
-<div class="container">
+<div class="container-fluid">
     <div class="banner">
         <c:choose>
             <c:when test="${empty sessionScope.USER}">
@@ -66,9 +62,11 @@
                                 <div class="play-btn me-2">
                                     <i class="fas fa-play"></i>
                                 </div>
-                                <button class="cart-btn" data-track-id="${track.trackId}">
-                                    <i class="fas fa-cart-plus"></i>
-                                </button>
+                                <c:if test="${not empty sessionScope.USER}">
+                                    <button class="cart-btn" data-track-id="${track.trackId}">
+                                        <i class="fas fa-cart-plus"></i>
+                                    </button>
+                                </c:if>
                             </div>
                         </div>
                     </div>
@@ -113,6 +111,7 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/music.js"></script>
 <script src="${pageContext.request.contextPath}/js/cart.js"></script>
 </body>
 </html>

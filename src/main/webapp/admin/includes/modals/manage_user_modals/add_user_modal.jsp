@@ -30,9 +30,18 @@
           </div>
           <div class="form-group">
             <label for="addRole">Role</label>
-            <select class="form-control" id="addRole" name="role" required>
+            <select class="form-control" id="addRole" name="role" required onchange="toggleAdminRoleField('add')">
               <option value="user">User</option>
               <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="form-group" id="addAdminRoleGroup" style="display: none;">
+            <label for="addAdminRole">Admin Role</label>
+            <select class="form-control" id="addAdminRole" name="adminRole">
+              <option value="">Select Admin Role</option>
+              <c:forEach var="role" items="${adminRoles}">
+                <option value="${role}">${role}</option>
+              </c:forEach>
             </select>
           </div>
         </div>

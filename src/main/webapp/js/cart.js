@@ -1,19 +1,5 @@
 // Cart functionality for RhythmWave Music Store
 document.addEventListener('DOMContentLoaded', function() {
-    // Play button functionality
-    const playButtons = document.querySelectorAll('.play-btn');
-    playButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            this.classList.toggle('playing');
-            const icon = this.querySelector('i');
-            if (icon.classList.contains('fa-play')) {
-                icon.classList.replace('fa-play', 'fa-pause');
-            } else {
-                icon.classList.replace('fa-pause', 'fa-play');
-            }
-        });
-    });
-
     // Initialize cart buttons
     initializeCartButtons();
 
@@ -53,7 +39,7 @@ function initializeCartModal() {
 // Load initial cart state from server
 async function loadCartState() {
     try {
-        const response = await fetch('CartServlet?action=getState', {
+        const response = await fetch('${pageContext.request.contextPath}/CartServlet?action=getState', {
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',

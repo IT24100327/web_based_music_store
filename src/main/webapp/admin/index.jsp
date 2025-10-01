@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
 <!DOCTYPE html>
@@ -22,10 +23,10 @@
         <header class="admin-header">
             <h1>RhythmWave Admin Dashboard</h1>
             <div class="user-info">
-                <div class="user-avatar">A</div>
+                <div class="user-avatar"><c:out value="${fn:substring(sessionScope.USER.firstName, 0, 1)}" /></div>
                 <div>
-                    <div>Administrator</div>
-                    <div class="text-muted">admin@rhythmwave.com</div>
+                    <div>${sessionScope.USER.firstName} ${sessionScope.USER.lastName}</div>
+                    <div class="text-muted">${sessionScope.USER.email}</div>
                 </div>
             </div>
         </header>
@@ -36,7 +37,7 @@
                 <i class="fas fa-music"></i>
             </div>
             <div class="welcome-content">
-                <h2>Welcome back, Administrator!</h2>
+                <h2>Welcome back, ${sessionScope.USER.firstName}!</h2>
                 <p>Manage your music platform efficiently with the RhythmWave Admin Panel.</p>
             </div>
         </section>
@@ -83,6 +84,9 @@
 
         <!-- Dashboard Cards -->
         <div class="dashboard-grid">
+
+            <c:if test="${sessionScope.USER.role.roleName eq 'super_admin'}">
+
             <!-- User Management Card -->
             <div class="dashboard-card card-user">
                 <div class="card-icon">
@@ -95,17 +99,27 @@
                 </a>
             </div>
 
-            <!-- Marketing Management Card -->
-            <div class="dashboard-card card-user">
-                <div class="card-icon">
-                    <i class="fas fa-chart-bar"></i>
+            </c:if>
+
+            <c:if test="${sessionScope.USER.role.roleName eq 'marketing_manager'
+            or sessionScope.USER.role.roleName eq 'super_admin'}">
+
+                <!-- Marketing Management Card -->
+                <div class="dashboard-card card-user">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="card-title">Marketing Management</h3>
+                    <p class="card-description">Create promotions and advertisements</p>
+                    <a href="<%=request.getContextPath()%>/marketing" class="card-link">
+                        Manage Marketing <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
-                <h3 class="card-title">Marketing Management</h3>
-                <p class="card-description">Create promotions and advertisements</p>
-                <a href="<%=request.getContextPath()%>/marketing" class="card-link">
-                    Manage Marketing <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
+
+            </c:if>
+
+            <c:if test="${sessionScope.USER.role.roleName eq 'finance_manager'
+            or sessionScope.USER.role.roleName eq 'super_admin'}">
 
             <!-- Content Management Card -->
             <div class="dashboard-card">
@@ -118,6 +132,25 @@
                     Manage Content <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
+
+            </c:if>
+
+            <c:if test="${sessionScope.USER.role.roleName eq 'finance_manager'
+            or sessionScope.USER.role.roleName eq 'super_admin'}">
+
+                <!-- Content Management Card -->
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-list"></i>
+                    </div>
+                    <h3 class="card-title">Order Management</h3>
+                    <p class="card-description">Manage Orders, Payments, and Analytics</p>
+                    <a href="${pageContext.request.contextPath}/manageOrders" class="card-link">
+                        Manage Orders <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+            </c:if>
 
             <!-- Settings Card -->
             <div class="dashboard-card">

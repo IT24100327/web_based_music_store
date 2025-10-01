@@ -29,11 +29,10 @@
                                     <div class="cart-item-artist">by ${track.artist}</div>
                                     <div class="cart-item-price">Rs. ${track.price}</div>
                                 </div>
-                                <a href="${pageContext.request.contextPath}/CartServlet?action=remove&trackId=${track.trackId}">
-                                    <button class="cart-item-remove">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </a>
+
+                                <button class="cart-item-remove" data-track-id="${track.trackId}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
 
                             </div>
                         </c:forEach>
@@ -47,7 +46,9 @@
                     <span class="cart-total">Rs. ${sessionScope.cartTotal}</span>
                 </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
-                <button type="button" class="btn btn-primary">Proceed to Checkout</button>
+                <a href="${pageContext.request.contextPath}/orderDetails">
+                    <button type="button" class="btn btn-primary">Proceed to Checkout</button>
+                </a>
             </div>
         </div>
     </div>

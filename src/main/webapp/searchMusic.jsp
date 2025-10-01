@@ -314,11 +314,11 @@
                                         <div class="play-btn me-2">
                                             <i class="fas fa-play"></i>
                                         </div>
-                                        <a href="${pageContext.request.contextPath}/CartServlet?action=add&trackId=${track.trackId}">
-                                            <div class="cart-btn">
+                                        <c:if test="${not empty sessionScope.USER}">
+                                            <button class="cart-btn" data-track-id="${track.trackId}">
                                                 <i class="fas fa-cart-plus"></i>
-                                            </div>
-                                        </a>
+                                            </button>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>
@@ -367,36 +367,8 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Play button functionality
-        const playButtons = document.querySelectorAll('.play-btn');
-        playButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                this.classList.toggle('playing');
-                const icon = this.querySelector('i');
-                if (icon.classList.contains('fa-play')) {
-                    icon.classList.replace('fa-play', 'fa-pause');
-                } else {
-                    icon.classList.replace('fa-pause', 'fa-play');
-                }
-            });
-        });
+<script src="${pageContext.request.contextPath}/js/music.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart.js"></script>
 
-        // Add to cart functionality
-        const cartButtons = document.querySelectorAll('.cart-btn');
-        cartButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                this.classList.toggle('added');
-                const icon = this.querySelector('i');
-                if (this.classList.contains('added')) {
-                    icon.classList.replace('fa-cart-plus', 'fa-check');
-                } else {
-                    icon.classList.replace('fa-check', 'fa-cart-plus');
-                }
-            });
-        });
-    });
-</script>
 </body>
 </html>

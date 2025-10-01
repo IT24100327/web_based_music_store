@@ -1,10 +1,12 @@
 package controller;
 
+import dao.CartDAO;
 import dao.TrackDAO;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.Track;
+import model.User;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,16 +29,13 @@ public class CartServlet extends HttpServlet {
             String action = request.getParameter("action");
             String trackId = request.getParameter("trackId");
 
-            // Get or create cart in session
             HttpSession session = request.getSession();
-            List<Track> cartItems = (List<Track>) session.getAttribute("cartItems");
+            User user = (User) session.getAttribute("USER");
 
-            if (cartItems == null) {
-                cartItems = new ArrayList<>();
-                session.setAttribute("cartItems", cartItems);
-            }
+            // Get cart items - try database first, then session
+            List<Track> cartItems = getCartItems(session, user);
 
-            // Handle getState action - return current cart state without modification
+            // Handle getState action
             if ("getState".equals(action)) {
                 double cartTotal = calculateTotal(cartItems);
                 int itemCount = cartItems.size();
@@ -95,12 +94,12 @@ public class CartServlet extends HttpServlet {
             // Perform cart action
             switch (action) {
                 case "add":
-                    addItemtoCart(cartItems, track);
+                    addItemToCart(cartItems, track, user);
                     cartTotal = calculateTotal(cartItems);
                     System.out.println("Item Added to Cart: " + trackId);
                     break;
                 case "remove":
-                    removeFromCart(cartItems, track);
+                    removeFromCart(cartItems, track, user);
                     cartTotal = calculateTotal(cartItems);
                     System.out.println("Item Removed from Cart: " + trackId);
                     break;
@@ -116,7 +115,6 @@ public class CartServlet extends HttpServlet {
             out.flush();
 
         } catch (Exception e) {
-            // Catch any unexpected errors
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print(gson.toJson(new ErrorResponse("Unexpected error: " + e.getMessage())));
             out.flush();
@@ -124,7 +122,26 @@ public class CartServlet extends HttpServlet {
         }
     }
 
-    private void addItemtoCart(List<Track> cartItems, Track track) {
+    private List<Track> getCartItems(HttpSession session, User user) {
+        List<Track> cartItems = (List<Track>) session.getAttribute("cartItems");
+
+        // If user is logged in and session cart is empty, try to load from database
+        if (user != null && (cartItems == null || cartItems.isEmpty())) {
+            try {
+                cartItems = CartDAO.getCartItems(user.getUserId());
+                session.setAttribute("cartItems", cartItems);
+            } catch (SQLException e) {
+                System.err.println("Error loading cart from database: " + e.getMessage());
+                cartItems = new ArrayList<>();
+            }
+        } else if (cartItems == null) {
+            cartItems = new ArrayList<>();
+        }
+
+        return cartItems;
+    }
+
+    private void addItemToCart(List<Track> cartItems, Track track, User user) throws SQLException {
         // Check if track already exists in cart
         boolean exists = false;
         for (Track item : cartItems) {
@@ -136,14 +153,24 @@ public class CartServlet extends HttpServlet {
 
         if (!exists) {
             cartItems.add(track);
+
+            // If user is logged in, save to database
+            if (user != null) {
+                CartDAO.addToCart(user.getUserId(), track.getTrackId());
+            }
         }
     }
 
-    private void removeFromCart(List<Track> cartItems, Track track) {
+    private void removeFromCart(List<Track> cartItems, Track track, User user) throws SQLException {
         // Find and remove the track by ID
         for (int i = 0; i < cartItems.size(); i++) {
             if (cartItems.get(i).getTrackId() == track.getTrackId()) {
                 cartItems.remove(i);
+
+                // If user is logged in, remove from database
+                if (user != null) {
+                    CartDAO.removeFromCart(user.getUserId(), track.getTrackId());
+                }
                 break;
             }
         }

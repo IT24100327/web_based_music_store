@@ -10,8 +10,8 @@ import java.util.Properties;
 
 public class EmailHandleUtil {
     public static void sendMail(String to, String subject, String body) throws Exception {
-        final String username = "";   // Your Gmail
-        final String password = "";    // 16-char app password
+        final String username = "prageethperera2002@gmail.com";   // Your Gmail
+        final String password = "bgma yxkv cvsq glzw";    // 16-char app password
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");

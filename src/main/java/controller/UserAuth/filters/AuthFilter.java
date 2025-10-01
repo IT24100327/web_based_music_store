@@ -1,13 +1,16 @@
 package controller.UserAuth.filters;
 
+import dao.CartDAO;
 import dao.UserDAO;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import model.Track;
 import model.User;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @WebFilter("/*")
 public class AuthFilter implements Filter {
@@ -29,7 +32,16 @@ public class AuthFilter implements Filter {
 
                         try {
                             User user = UserDAO.findUserById(Integer.parseInt(cookie.getValue()));
-                            session.setAttribute("USER", user);
+                            if (user != null) {
+                                session.setAttribute("USER", user);
+
+                                // Load user's cart from database
+                                List<Track> cartItems = CartDAO.getCartItems(user.getUserId());
+                                session.setAttribute("cartItems", cartItems);
+
+                                double cartTotal = calculateCartTotal(cartItems);
+                                session.setAttribute("cartTotal", cartTotal);
+                            }
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
@@ -39,5 +51,15 @@ public class AuthFilter implements Filter {
         }
 
         chain.doFilter(request, response);
+    }
+
+    private double calculateCartTotal(List<Track> cartItems) {
+        double total = 0;
+        if (cartItems != null) {
+            for (Track track : cartItems) {
+                total += track.getPrice();
+            }
+        }
+        return total;
     }
 }

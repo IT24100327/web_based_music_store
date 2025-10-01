@@ -26,22 +26,16 @@
       <div class="user-info">
         <div class="user-avatar">A</div>
         <div>
-          <div>Administrator</div>
-          <div class="text-muted">admin@rhythmwave.com</div>
+          <div>${sessionScope.USER.firstName} ${sessionScope.USER.lastName}</div>
+          <div class="text-muted">${sessionScope.USER.email}</div>
         </div>
       </div>
     </header>
 
-    <!-- Welcome Section -->
-    <section class="welcome-section">
-      <div class="welcome-icon">
-        <i class="fas fa-users-cog"></i>
-      </div>
-      <div class="welcome-content">
-        <h2>User Management</h2>
-        <p>Manage all users, their roles, and permissions in the system.</p>
-      </div>
-    </section>
+    <!-- Error Message Display -->
+    <c:if test="${not empty error}">
+      <div class="alert alert-danger"><c:out value="${error}"/></div>
+    </c:if>
 
     <!-- Users Table -->
     <div class="table-container">
@@ -67,25 +61,42 @@
         <tbody>
         <c:forEach var="user" items="${requestScope.allUsers}">
           <tr>
-            <td>${user.userId}</td>
+            <td><c:out value="${user.userId}"/></td>
             <td>
-              <div><strong>${user.firstName} ${user.lastName}</strong></div>
-              <div class="text-muted">Joined: 2023-10-15</div>
+              <div><strong><c:out value="${user.firstName} ${user.lastName}"/></strong></div>
+<%--              <div class="text-muted">Joined: 2023-10-15</div>--%>
             </td>
-            <td>${user.email}</td>
+            <td><c:out value="${user.email}"/></td>
             <td>
               <span class="status-badge ${user.isAdmin() ? 'status-active' : 'status-inactive'}">
-                  ${user.isAdmin() ? "Admin" : "User"}
+                <c:choose>
+                  <c:when test="${user.isAdmin()}">
+                    <c:choose>
+                      <c:when test="${user.isAdmin()}">
+                        Admin
+                        <c:if test="${not empty user.role}">
+                          (${user.role.roleName})
+                        </c:if>
+                      </c:when>
+                      <c:otherwise>
+                        User
+                      </c:otherwise>
+                    </c:choose>
+                  </c:when>
+                  <c:otherwise>
+                    <c:out value="User"/>
+                  </c:otherwise>
+                </c:choose>
               </span>
             </td>
             <td>
               <span class="status-badge status-active">Active</span>
             </td>
             <td class="actions">
-              <button class="btn btn-edit btn-sm" onclick="openEditModal('${user.userId}', '${user.firstName}', '${user.lastName}', '${user.email}', '${user.isAdmin()}')">
+              <button class="btn btn-edit btn-sm" onclick="openEditModal('<c:out value="${user.userId}"/>', '<c:out value="${user.firstName}"/>', '<c:out value="${user.lastName}"/>', '<c:out value="${user.email}"/>', '<c:out value="${user.isAdmin()}"/>', '<c:out value="${user.isAdmin() && user.getRole() != null ? user.getRole().getRoleName() : ''}"/>')">
                 <i class="fas fa-edit"></i> Edit
               </button>
-              <button class="btn btn-delete btn-sm" onclick="openDeleteModal('${user.userId}', '${user.firstName} ${user.lastName}')">
+              <button class="btn btn-delete btn-sm" onclick="openDeleteModal('<c:out value="${user.userId}"/>', '<c:out value="${user.firstName} ${user.lastName}"/>')">
                 <i class="fas fa-trash"></i> Delete
               </button>
             </td>
@@ -102,7 +113,7 @@
 </div>
 
 <!-- Add User Modal -->
-<jsp:include page="includes/modals/manage_user_modals/add_user_modal.jsp" >
+<jsp:include page="includes/modals/manage_user_modals/add_user_modal.jsp">
   <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
 </jsp:include>
 
@@ -112,7 +123,9 @@
 </jsp:include>
 
 <!-- Delete User Modal -->
-<jsp:include page="includes/modals/manage_user_modals/delete_user_modal.jsp" />
+<jsp:include page="includes/modals/manage_user_modals/delete_user_modal.jsp">
+  <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -122,6 +135,8 @@
   const deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
 
   function openAddUserModal() {
+    document.getElementById('addUserForm').reset();
+    document.getElementById('addAdminRoleGroup').style.display = 'none';
     addUserModal.show();
   }
 
@@ -129,12 +144,15 @@
     addUserModal.hide();
   }
 
-  function openEditModal(userId, firstName, lastName, email, isAdmin) {
+  function openEditModal(userId, firstName, lastName, email, isAdmin, adminRole) {
+    console.log('openEditModal called with:', userId, firstName, lastName, email, isAdmin, adminRole);
     document.getElementById('editUserId').value = userId;
     document.getElementById('editFirstName').value = firstName;
     document.getElementById('editLastName').value = lastName;
     document.getElementById('editEmail').value = email;
     document.getElementById('editRole').value = isAdmin === 'true' ? 'admin' : 'user';
+    document.getElementById('editAdminRole').value = adminRole || '';
+    document.getElementById('editAdminRoleGroup').style.display = isAdmin === 'true' ? 'block' : 'none';
     editUserModal.show();
   }
 
@@ -151,6 +169,31 @@
   function closeDeleteModal() {
     deleteUserModal.hide();
   }
+
+  function toggleAdminRoleField(prefix) {
+    const roleSelect = document.getElementById(prefix + 'Role');
+    const adminRoleGroup = document.getElementById(prefix + 'AdminRoleGroup');
+    adminRoleGroup.style.display = roleSelect.value === 'admin' ? 'block' : 'none';
+  }
+
+  // Client-side validation for forms
+  document.getElementById('editUserForm').addEventListener('submit', function(event) {
+    const role = document.getElementById('editRole').value;
+    const adminRole = document.getElementById('editAdminRole').value;
+    if (role === 'admin' && !adminRole) {
+      event.preventDefault();
+      alert('Please select an admin role.');
+    }
+  });
+
+  document.getElementById('addUserForm').addEventListener('submit', function(event) {
+    const role = document.getElementById('addRole').value;
+    const adminRole = document.getElementById('addAdminRole').value;
+    if (role === 'admin' && !adminRole) {
+      event.preventDefault();
+      alert('Please select an admin role.');
+    }
+  });
 </script>
 </body>
 </html>

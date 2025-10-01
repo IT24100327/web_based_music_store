@@ -1,4 +1,4 @@
-/* Admin-specific styles for ManageUsers.jsp, ManageMarketing.jsp */
+/* Admin-specific styles for ManageUsers.jsp, ManageMarketing.jsp, ManageOrders.jsp */
 @import "theme.css";
 
 /* Table Styles */
@@ -210,6 +210,11 @@ tr:hover {
 .status-inactive {
     background-color: rgba(220, 53, 69, 0.2);
     color: #dc3545;
+}
+
+.status-pending {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
 }
 
 /* Image Preview */
