@@ -34,8 +34,8 @@ public class AddAdvertisementServlet extends HttpServlet {
         try {
             ImageUploadUtil.ImageUploadResult uploadResult = imageUtil.handleImageUpload(request, "imageFile");
             if (uploadResult != null) {
-                imageData = uploadResult.getImageData();
-                imageUrl = uploadResult.getImageUrl();
+                imageData = uploadResult.imageData();
+                imageUrl = uploadResult.imageUrl();
             }
 
             adService.addAdvertisement(title, content, imageData, imageUrl, startDate, endDate, active);

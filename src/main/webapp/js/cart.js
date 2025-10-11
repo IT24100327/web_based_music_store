@@ -195,3 +195,9 @@ function escapeHtml(text) {
     };
     return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
+
+// Expose for dynamic re-init (called after AJAX updates)
+window.reInitCart = function() {
+    initializeCartButtons();  // Re-attach click listeners to new .cart-btn
+    loadCartState();         // Refresh cart data from server (updates classes/icons)
+};

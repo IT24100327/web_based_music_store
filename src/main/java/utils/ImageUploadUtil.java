@@ -75,16 +75,6 @@ public class ImageUploadUtil {
     }
 
     // Inner result class for convenience
-    public static class ImageUploadResult {
-        private final byte[] imageData;
-        private final String imageUrl;
-
-        public ImageUploadResult(byte[] imageData, String imageUrl) {
-            this.imageData = imageData;
-            this.imageUrl = imageUrl;
-        }
-
-        public byte[] getImageData() { return imageData; }
-        public String getImageUrl() { return imageUrl; }
+        public record ImageUploadResult(byte[] imageData, String imageUrl) {
     }
 }

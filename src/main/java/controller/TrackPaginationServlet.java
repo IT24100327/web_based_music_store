@@ -62,7 +62,16 @@ public class TrackPaginationServlet extends HttpServlet {
         request.setAttribute("noOfPages", noOfPages);
         request.setAttribute("currentPage", page);
 
-        RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-        rd.forward(request, response);
+        // Check for AJAX request
+        String ajax = request.getParameter("ajax");
+        if ("true".equals(ajax)) {
+            // Forward to fragment for partial render
+            RequestDispatcher rd = request.getRequestDispatcher("/includes/track-cards.jsp");
+            rd.forward(request, response);
+        } else {
+            // Full page forward (initial load)
+            RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+            rd.forward(request, response);
+        }
     }
 }

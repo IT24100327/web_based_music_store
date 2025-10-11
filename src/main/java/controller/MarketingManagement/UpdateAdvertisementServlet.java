@@ -40,8 +40,8 @@ public class UpdateAdvertisementServlet extends HttpServlet {
             String imageUrl = null;
             ImageUploadUtil.ImageUploadResult uploadResult = imageUtil.handleImageUpload(request, "imageFile");
             if (uploadResult != null) {
-                imageData = uploadResult.getImageData();
-                imageUrl = uploadResult.getImageUrl();
+                imageData = uploadResult.imageData();
+                imageUrl = uploadResult.imageUrl();
             }
 
             adService.updateAdvertisement(adId, title, content, imageData, imageUrl, startDate, endDate, active);
