@@ -1,0 +1,26 @@
+/* ==========================================================================
+   BANNER
+   ========================================================================== */
+.compact-banner {
+    background: linear-gradient(135deg, #ba85fa 0%, #121212 100%);
+    padding: clamp(40px, 5vw, 60px) 24px clamp(20px, 3vw, 40px); /* Fluid padding */
+    margin-bottom: 0;
+}
+
+.compact-banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.compact-banner h1 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem); /* Fluid typography */
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.compact-banner p {
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}

@@ -1,9 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    initializeCartFromServerState();
-    initializeCartButtons();
-    initializeCartModal();
-});
-
+// Cart Utilities: API, UI Updates, Errors
 function initializeCartFromServerState() {
     if (window.initialCartState) {
         updateCartUI({
@@ -13,44 +8,6 @@ function initializeCartFromServerState() {
         });
     }
     // Removed duplicate loadCartState() call - now only called in initializeCartModal()
-}
-
-function initializeCartButtons() {
-    // Use consistent selector that matches all cart button variants
-    const cartButtons = document.querySelectorAll('.cart-btn, .cart-btn-sm');
-    cartButtons.forEach(button => {
-        // Remove existing listeners to prevent duplicates
-        button.replaceWith(button.cloneNode(true));
-    });
-
-    // Re-query after clone
-    document.querySelectorAll('.cart-btn, .cart-btn-sm').forEach(button => {
-        button.addEventListener('click', function() {
-            const trackId = this.getAttribute('data-track-id');
-            if (!trackId) {
-                console.warn('Cart button missing track-id');
-                return;
-            }
-
-            const isAdded = this.classList.contains('added');
-            const action = isAdded ? 'remove' : 'add';
-            updateCart(action, trackId, this);
-        });
-    });
-}
-
-function initializeCartModal() {
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.cart-item-remove')) {
-            const button = e.target.closest('.cart-item-remove');
-            const trackId = button.getAttribute('data-track-id');
-            if (trackId) {
-                updateCart('remove', trackId, null);
-            }
-        }
-    });
-
-    loadCartState();
 }
 
 async function loadCartState() {
@@ -107,32 +64,7 @@ async function updateCart(action, trackId, button) {
     }
 }
 
-function updateCartButtonState(button, isAdded) {
-    if (isAdded) {
-        button.classList.add('added');
-        const icon = button.querySelector('i');
-        if (icon) {
-            icon.classList.replace('fa-cart-plus', 'fa-check');
-        }
-    } else {
-        button.classList.remove('added');
-        const icon = button.querySelector('i');
-        if (icon) {
-            icon.classList.replace('fa-check', 'fa-cart-plus');
-        }
-    }
-}
-
 function updateCartUI(data) {
-    updateCartBadges(data);
-    updateCartButtons(data);
-
-    if (data.cartItems) {
-        updateCartModal(data);
-    }
-}
-
-function updateCartBadges(data) {
     const cartBadges = document.querySelectorAll('.cart-badge');
     cartBadges.forEach(badge => {
         badge.textContent = data.itemCount;
@@ -145,9 +77,7 @@ function updateCartBadges(data) {
             }, 600);
         }
     });
-}
 
-function updateCartButtons(data) {
     if (data.cartItems) {
         const cartSet = new Set(data.cartItems.map(item => item.trackId));
         document.querySelectorAll('.cart-btn, .cart-btn-sm').forEach(btn => {
@@ -167,6 +97,10 @@ function updateCartButtons(data) {
                 }
             }
         });
+    }
+
+    if (data.cartItems) {
+        updateCartModal(data);
     }
 }
 
@@ -226,12 +160,10 @@ function escapeHtml(text) {
 
 function handleCartError(error, userMessage = 'Cart operation failed') {
     console.error('Cart Error:', error);
-    // Use a more user-friendly notification system instead of alert in production
     showUserNotification(userMessage + ': ' + error.message, 'error');
 }
 
 function showUserNotification(message, type = 'error') {
-    // Simple notification - replace with toast/notification system in production
     const notification = document.createElement('div');
     notification.className = `user-notification ${type}`;
     notification.textContent = message;
@@ -257,8 +189,25 @@ function showUserNotification(message, type = 'error') {
     }, 5000);
 }
 
-// Update cart button initialization for new structure
-window.reInitCart = function() {
+function reInitCart() {
     initializeCartButtons();
     loadCartState();
-};
+}
+
+function updateCartButtonState(button, isAdded) {
+    if (isAdded) {
+        button.classList.add('added');
+        const icon = button.querySelector('i');
+        if (icon) {
+            icon.classList.replace('fa-cart-plus', 'fa-check');
+        }
+    } else {
+        button.classList.remove('added');
+        const icon = button.querySelector('i');
+        if (icon) {
+            if (icon.classList.contains('fa-check')) {
+                icon.classList.replace('fa-check', 'fa-cart-plus');
+            }
+        }
+    }
+}

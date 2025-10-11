@@ -1,0 +1,106 @@
+/* ==========================================================================
+   RESPONSIVE DESIGN - Music Cards
+   ========================================================================== */
+@media (max-width: 768px) {
+    .compact-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 16px;
+        padding: 0;
+    }
+
+    .compact-card-footer {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .compact-card-actions {
+        gap: 4px;
+    }
+
+    .play-btn-sm,
+    .cart-btn-sm {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+
+    /* List view mobile adjustments */
+    .list-view .compact-music-card {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .list-view .album-cover-container {
+        width: 50px;
+        height: 50px;
+    }
+
+    .list-view .compact-album-cover {
+        width: 50px;
+        height: 50px;
+    }
+
+    .list-view .compact-card-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .list-view .compact-card-footer {
+        width: 100%;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .list-view .price-tag-sm {
+        min-width: auto;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    .list-view .compact-card-actions {
+        gap: 6px;
+    }
+
+    .list-view .play-btn-sm,
+    .list-view .cart-btn-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .compact-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .compact-music-card {
+        padding: 12px;
+    }
+
+    /* List view extra small screens */
+    .list-view .compact-music-card {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .list-view .album-cover-container {
+        width: 45px;
+        height: 45px;
+    }
+
+    .list-view .compact-album-cover {
+        width: 45px;
+        height: 45px;
+    }
+
+    .list-view .compact-card-title {
+        font-size: 0.9rem;
+    }
+
+    .list-view .compact-card-artist {
+        font-size: 0.8rem;
+    }
+}

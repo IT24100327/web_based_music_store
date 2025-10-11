@@ -22,29 +22,35 @@
 
 <!-- Banner Section -->
 <div class="container-fluid">
-    <div class="banner">
-        <c:choose>
-            <c:when test="${empty sessionScope.USER}">
-                <div class="container text-center">
-                    <h1 class="display-4 fw-bold">Discover Your Soundtrack</h1>
-                    <p class="lead">Millions of songs at your fingertips. Curated playlists and exclusive releases.</p>
-                    <button class="btn btn-primary btn-lg mt-3">Explore Now</button>
-                </div>
-            </c:when>
-            <c:otherwise>
-                <div class="container text-center">
-                    <h1 class="display-4 fw-bold">Welcome Back! ${sessionScope.USER.firstName}</h1>
-                    <p class="lead">Millions of songs at your fingertips. Curated playlists and exclusive releases.</p>
-                    <button class="btn btn-primary btn-lg mt-3">Explore Now</button>
-                </div>
-            </c:otherwise>
-        </c:choose>
+    <div class="compact-banner">
+        <div class="compact-banner-content">
+            <c:choose>
+                <c:when test="${empty sessionScope.USER}">
+                    <h1>Discover Your Soundtrack</h1>
+                    <p>Millions of songs at your fingertips</p>
+                </c:when>
+                <c:otherwise>
+                    <h1>Welcome Back, ${sessionScope.USER.firstName}!</h1>
+                    <p>Continue your musical journey</p>
+                </c:otherwise>
+            </c:choose>
+        </div>
     </div>
 </div>
 
 <!-- Music Listing Section -->
-<div class="container track-section">
-    <h2 class="mb-4">Featured Music</h2>
+<div class="main-content">
+    <div class="section-header">
+        <h2>Featured Music</h2>
+        <div class="view-controls">
+            <button class="view-btn active" data-view="grid" data-tooltip="Grid View">
+                <i class="fas fa-th"></i>
+            </button>
+            <button class="view-btn" data-view="list" data-tooltip="List View">
+                <i class="fas fa-list"></i>
+            </button>
+        </div>
+    </div>
     <c:import url="/includes/track-cards.jsp" />
 </div>
 
@@ -65,7 +71,11 @@
     window.noOfPages = ${requestScope.noOfPages > 0 ? requestScope.noOfPages : 1};
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="${pageContext.request.contextPath}/js/music.js"></script>
-<script src="${pageContext.request.contextPath}/js/cart.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-utils.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-handlers.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-main.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-pagination.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-handlers.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-main.js"></script>
 </body>
 </html>

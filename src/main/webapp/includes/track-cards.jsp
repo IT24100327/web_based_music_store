@@ -1,26 +1,29 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
-<div class="row" id="track-row">
+<div class="compact-grid" id="track-row">
     <c:forEach var="track" items="${requestScope.trackList}">
-        <div class="col-md-4 col-lg-3 mb-3">
-            <div class="music-card">
-                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" class="album-cover" alt="Album Cover">
-                <div class="p-3">
-                    <h5>${track.title}</h5>
-                    <p class="artist-name">by ${track.artist}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="price-tag">Rs. ${track.price}</span>
-                        <div class="d-flex">
-                            <div class="play-btn me-2">
-                                <i class="fas fa-play"></i>
-                            </div>
-                            <c:if test="${not empty sessionScope.USER}">
-                                <button class="cart-btn" data-track-id="${track.trackId}">
-                                    <i class="fas fa-cart-plus"></i>
-                                </button>
-                            </c:if>
-                        </div>
+        <div class="compact-music-card">
+            <div class="album-cover-container">
+                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+                     class="compact-album-cover" alt="Album Cover">
+            </div>
+            <div class="compact-card-content">
+                <div class="compact-card-text">
+                    <div class="compact-card-title">${track.title}</div>
+                    <div class="compact-card-artist">${track.artist}</div>
+                </div>
+                <div class="compact-card-footer">
+                    <span class="price-tag-sm">Rs. ${track.price}</span>
+                    <div class="compact-card-actions">
+                        <button class="play-btn-sm">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <c:if test="${not empty sessionScope.USER}">
+                            <button class="cart-btn-sm" data-track-id="${track.trackId}">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </c:if>
                     </div>
                 </div>
             </div>
@@ -28,7 +31,7 @@
     </c:forEach>
 </div>
 
-<!-- Pagination (same as in index.jsp) -->
+<!-- Pagination -->
 <c:set var="currentPage" value="${requestScope.currentPage}"/>
 <c:set var="noOfPages" value="${requestScope.noOfPages}"/>
 <c:if test="${noOfPages > 1}">

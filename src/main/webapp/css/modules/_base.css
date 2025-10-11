@@ -1,0 +1,35 @@
+/* ==========================================================================
+   BASE STYLES
+   ========================================================================== */
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Base Button Styles */
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    color: #000;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #9965f4;
+    color: #000;
+}
+
+.btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: #000;
+}

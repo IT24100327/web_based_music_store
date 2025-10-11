@@ -1,31 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    initializeViewControls();
-    initializePagination();
-    initializePlayButtons();
-
-    // Initial cart init
-    if (typeof window.reInitCart === 'function') {
-        window.reInitCart();
-    }
-});
-
-function initializeViewControls() {
-    document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const view = this.getAttribute('data-view');
-            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-
-            const grid = document.getElementById('track-row');
-            if (view === 'list') {
-                grid.parentElement.classList.add('list-view');
-            } else {
-                grid.parentElement.classList.remove('list-view');
-            }
-        });
-    });
-}
-
+// Music Pagination and Track Content
 function initializePagination() {
     document.addEventListener('click', function(e) {
         if (e.target.matches('#pagination .page-link[data-page]')) {
@@ -54,7 +27,6 @@ function handlePaginationClick(link) {
 }
 
 function loadTracksPage(page) {
-    // Show loading state
     const trackRow = document.getElementById('track-row');
     if (trackRow) {
         trackRow.innerHTML = '<div class="col-12 text-center"><i class="fas fa-spinner fa-spin"></i> Loading tracks...</div>';
@@ -79,7 +51,6 @@ function loadTracksPage(page) {
             updateTrackContent(html);
             scrollToTracks();
 
-            // Re-init cart for new buttons
             if (typeof window.reInitCart === 'function') {
                 window.reInitCart();
             }
@@ -107,7 +78,6 @@ function updateTrackContent(html) {
         const oldNav = document.querySelector('nav.mt-5');
         if (oldNav) oldNav.innerHTML = newNav.innerHTML;
     } else {
-        // Remove pagination if no longer needed
         const oldNav = document.querySelector('nav.mt-5');
         if (oldNav) oldNav.remove();
     }
@@ -119,7 +89,7 @@ function scrollToTracks() {
         const navbar = document.querySelector('.navbar');
         const navbarHeight = navbar ? navbar.offsetHeight : 0;
         const elementTop = trackSection.getBoundingClientRect().top + window.scrollY;
-        const offsetTop = elementTop - navbarHeight - 20; // 20px extra spacing
+        const offsetTop = elementTop - navbarHeight - 20;
 
         window.scrollTo({
             top: offsetTop,
@@ -138,27 +108,5 @@ function handleTracksLoadError(error) {
                 <button class="btn btn-primary mt-2" onclick="location.reload()">Retry</button>
             </div>
         `;
-    }
-}
-
-function initializePlayButtons() {
-    document.addEventListener('click', function(e) {
-        // Handle play buttons in new layout
-        if (e.target.matches('.play-btn-sm, .play-btn-sm i')) {
-            e.preventDefault();
-            togglePlayButton(e.target.closest('.play-btn-sm'));
-        }
-    });
-}
-
-function togglePlayButton(button) {
-    button.classList.toggle('playing');
-    const icon = button.querySelector('i');
-    if (icon.classList.contains('fa-play')) {
-        icon.classList.replace('fa-play', 'fa-pause');
-        console.log('Play started');
-    } else {
-        icon.classList.replace('fa-pause', 'fa-play');
-        console.log('Play paused');
     }
 }

@@ -1,0 +1,354 @@
+/* ==========================================================================
+   COMPONENTS: View Buttons
+   ========================================================================== */
+.view-controls {
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.view-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.view-btn.active,
+.view-btn:hover {
+    background: var(--primary);
+    color: #000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(187, 134, 252, 0.3);
+}
+
+.view-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+}
+
+/* Tooltip for view buttons */
+.view-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+}
+
+.view-btn:hover::after {
+    opacity: 1;
+}
+/* ==========================================================================
+   COMPONENTS: Music Cards (Grid) - Updated Layout
+   ========================================================================== */
+.compact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 24px;
+    padding: 0 16px;
+}
+
+.compact-music-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.compact-music-card:hover {
+    background: #282828;
+    transform: translateY(-4px);
+}
+
+.list-view .compact-music-card:hover {
+    transform: none;
+    background: #282828;
+}
+
+.album-cover-container {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.compact-album-cover {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Remove hover actions from album cover */
+.card-hover-actions {
+    display: none; /* We'll move these to the bottom */
+}
+
+/* New layout for card content with price and buttons side by side */
+.compact-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.compact-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+.compact-card-artist {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+/* New row for price and buttons */
+.compact-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.price-tag-sm {
+    font-size: 0.9rem;
+    color: var(--primary);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Button container for play and cart */
+.compact-card-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Play & Cart Buttons (Small) - Updated */
+.play-btn-sm,
+.cart-btn-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.play-btn-sm {
+    background: var(--primary);
+    color: #000;
+}
+
+.play-btn-sm:hover {
+    transform: scale(1.08);
+    background: #bb86fc;
+    box-shadow: 0 4px 12px rgba(187, 134, 252, 0.3);
+}
+
+.cart-btn-sm {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cart-btn-sm:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.08);
+    border-color: var(--primary);
+}
+
+.cart-btn-sm.added {
+    background: var(--primary);
+    color: #000;
+    border-color: var(--primary);
+}
+
+.cart-btn-sm.added:hover {
+    background: #9965f4;
+    border-color: #9965f4;
+}
+/* ==========================================================================
+   COMPONENTS: Card Content & Typography
+   ========================================================================== */
+.compact-card-content {
+    min-height: 60px;
+}
+
+.compact-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.compact-card-artist {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 8px;
+}
+
+.price-tag-sm {
+    font-size: 0.8rem;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.cart-btn-sm.added {
+    background: var(--primary);
+    color: #000;
+}
+
+/* ==========================================================================
+   COMPONENTS: List View Variant - Fixed for Desktop
+   ========================================================================== */
+.list-view .compact-grid {
+    grid-template-columns: 1fr;
+    gap: 1px;
+    padding: 0;
+}
+
+.list-view .compact-music-card {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 4px;
+    gap: 16px;
+    min-height: 80px;
+}
+
+.list-view .album-cover-container {
+    margin-bottom: 0;
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+}
+
+.list-view .compact-album-cover {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+}
+
+.list-view .compact-card-content {
+    flex: 1;
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-direction: row; /* Ensure horizontal layout */
+}
+
+.list-view .compact-card-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.list-view .compact-card-title {
+    margin-bottom: 4px;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-view .compact-card-artist {
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.list-view .compact-card-footer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.list-view .price-tag-sm {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+    min-width: 80px;
+    text-align: right;
+}
+
+.list-view .compact-card-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.list-view .play-btn-sm,
+.list-view .cart-btn-sm {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+}
+
+/* List view hover effects */
+.list-view .compact-music-card:hover {
+    background: #282828;
+    transform: none; /* Remove lift effect in list view */
+}
+
+/* Ensure proper spacing in list view */
+.list-view .compact-music-card:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.list-view .compact-music-card:hover {
+    border-bottom-color: transparent;
+}
