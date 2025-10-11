@@ -13,7 +13,7 @@ import java.util.*;
 
 @WebServlet("/trackPaginate")
 public class TrackPaginationServlet extends HttpServlet {
-    private final int RECORDS_PER_PAGE = 10;
+    private final int RECORDS_PER_PAGE = 12;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

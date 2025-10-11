@@ -45,8 +45,7 @@
                     <span>Total: </span>
                     <span class="cart-total">Rs. ${sessionScope.cartTotal}</span>
                 </div>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
-                <a href="${pageContext.request.contextPath}/orderDetails">
+                <a href="${pageContext.request.contextPath}/orderDetails" style="text-decoration: none;">
                     <button type="button" class="btn btn-primary">Proceed to Checkout</button>
                 </a>
             </div>

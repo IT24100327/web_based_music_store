@@ -1,6 +1,25 @@
 /* ==========================================================================
-   RESPONSIVE DESIGN - Music Cards
+   RESPONSIVE DESIGN - Music Cards & Layout
    ========================================================================== */
+@media (max-width: 992px) {
+    .content-wrapper {
+        flex-direction: column;
+        gap: 0;
+        max-width: 1200px;
+        justify-content: center;
+    }
+
+    .ad-sidebar {
+        display: none; /* Hide ads on tablet and mobile sizes */
+    }
+
+    .main-content {
+        max-width: 900px;
+        margin: 0 auto; /* Keep centered */
+        padding: clamp(30px, 5vw, 60px) 24px;
+    }
+}
+
 @media (max-width: 768px) {
     .compact-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

@@ -13,195 +13,6 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/index.css">
-    <style>
-        /* Ensure consistency with theme.css and index.css */
-        body {
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .search-header {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-            url('https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80');
-            background-size: cover;
-            background-position: center;
-            padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-        }
-
-        .search-header h1 {
-            color: var(--text-primary);
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-        }
-
-        .input-group input {
-            background-color: #2a2a2a;
-            border: 1px solid #444;
-            color: var(--text-primary);
-        }
-
-        .input-group input::placeholder {
-            color: var(--placeholder-color);
-        }
-
-        .input-group input:focus {
-            background-color: #2a2a2a;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.25rem rgba(187, 134, 252, 0.25);
-        }
-
-        .search-section {
-            background-color: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-        }
-
-        .filter-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-select {
-            background-color: #2a2a2a;
-            border: 1px solid #444;
-            color: var(--text-primary);
-            border-radius: 5px;
-        }
-
-        .form-select:focus {
-            background-color: #2a2a2a;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.25rem rgba(187, 134, 252, 0.25);
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            color: #000;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: #9965f4;
-            border-color: #9965f4;
-            transform: translateY(-2px);
-        }
-
-        .btn-outline-secondary {
-            border-color: var(--primary);
-            color: var(--primary);
-            transition: all 0.3s ease;
-        }
-
-        .btn-outline-secondary:hover {
-            background-color: var(--primary);
-            color: #000;
-            transform: translateY(-2px);
-        }
-
-        .search-results-info {
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-secondary);
-            background-color: var(--card-bg);
-            border-radius: 10px;
-        }
-
-        .no-results i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            display: block;
-            color: #555;
-        }
-
-        .music-card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            overflow: hidden;
-        }
-
-        .music-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
-        .album-cover {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-        }
-
-        .play-btn, .cart-btn {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .play-btn {
-            background-color: var(--primary);
-            color: #000;
-        }
-
-        .play-btn:hover {
-            background-color: #9965f4;
-            transform: scale(1.1);
-        }
-
-        .play-btn.playing {
-            background-color: var(--secondary);
-            animation: pulse 0.5s infinite;
-        }
-
-        .cart-btn {
-            background-color: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .cart-btn:hover {
-            background-color: var(--primary);
-            color: #000;
-            transform: scale(1.1);
-        }
-
-        .cart-btn.added {
-            background-color: var(--primary);
-            color: #000;
-        }
-
-        .price-tag {
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .artist-name {
-            color: var(--secondary);
-        }
-
-        /* Animation for play button */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-    </style>
 </head>
 <body>
 <!-- Navigation Bar -->
@@ -211,16 +22,16 @@
 </jsp:include>
 
 <!-- Search Header Section -->
-<div class="container mt-4">
-    <div class="search-header">
+<div class="search-header">
+    <div class="container">
         <h1 class="display-5 fw-bold mb-4">Search Our Music Library</h1>
         <!-- Main Search Bar -->
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <form action="${pageContext.request.contextPath}/search" method="get">
+                <form action="${pageContext.request.contextPath}/search" method="get" class="search-form">
                     <div class="input-group input-group-lg mb-4">
                         <input type="text" class="form-control" name="query" placeholder="Search artists, albums, or songs..." value="${param.query}">
-                        <button class="btn btn-primary" type="submit">
+                        <button class="btn" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
@@ -230,15 +41,17 @@
     </div>
 </div>
 
-<!-- Advanced Filters Section -->
+<!-- Main Content with Sidebar Layout -->
 <div class="container">
-    <div class="search-section">
-        <h2 class="mb-4">Refine Your Search</h2>
-        <form action="${pageContext.request.contextPath}/search" method="get">
-            <input type="hidden" name="query" value="${param.query}">
-            <div class="row mt-3">
-                <div class="col-md-3">
-                    <div class="filter-label">Genre</div>
+    <div class="search-content-wrapper">
+        <!-- Filters Sidebar -->
+        <aside class="search-filters-sidebar">
+            <h2>Refine Your Search</h2>
+            <form action="${pageContext.request.contextPath}/search" method="get">
+                <input type="hidden" name="query" value="${param.query}">
+
+                <div class="filter-group">
+                    <label class="filter-label">Genre</label>
                     <select class="form-select" name="genre">
                         <option value="">All Genres</option>
                         <option value="rock" ${param.genre == 'rock' ? 'selected' : ''}>Rock</option>
@@ -249,8 +62,9 @@
                         <option value="classical" ${param.genre == 'classical' ? 'selected' : ''}>Classical</option>
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <div class="filter-label">Price Range</div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Price Range</label>
                     <select class="form-select" name="price">
                         <option value="">Any Price</option>
                         <option value="under100" ${param.price == 'under100' ? 'selected' : ''}>Under Rs. 100</option>
@@ -259,8 +73,9 @@
                         <option value="over400" ${param.price == 'over400' ? 'selected' : ''}>Over Rs. 400</option>
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <div class="filter-label">Release Year</div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Release Year</label>
                     <select class="form-select" name="year">
                         <option value="">Any Year</option>
                         <option value="2023" ${param.year == '2023' ? 'selected' : ''}>2023</option>
@@ -270,8 +85,9 @@
                         <option value="before2010" ${param.year == 'before2010' ? 'selected' : ''}>Before 2010</option>
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <div class="filter-label">Rating</div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Rating</label>
                     <select class="form-select" name="rating">
                         <option value="">Any Rating</option>
                         <option value="5" ${param.rating == '5' ? 'selected' : ''}>5 Stars</option>
@@ -279,84 +95,88 @@
                         <option value="3" ${param.rating == '3' ? 'selected' : ''}>3+ Stars</option>
                     </select>
                 </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-md-12 text-end">
-                    <button type="submit" class="btn btn-primary">Apply Filters</button>
-                    <a href="${pageContext.request.contextPath}/search?query=${param.query}" class="btn btn-outline-secondary ms-2">Clear Filters</a>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
 
-<!-- Search Results Section -->
-<div class="container mt-5">
-    <c:choose>
-        <c:when test="${not empty requestScope.trackList}">
-            <div class="search-results-info">
-                <h4>${empty param.query ? 'All Tracks' : 'Search Results for "' += param.query += '"'}</h4>
-                <p>Found ${fn:length(requestScope.trackList)} results</p>
-            </div>
-            <div class="row">
-                <c:forEach var="track" items="${requestScope.trackList}">
-                    <div class="col-md-4 col-lg-3 mb-4">
-                        <div class="music-card">
-                            <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" class="album-cover" alt="Album Cover">
-                            <div class="p-3">
-                                <h5>${track.title}</h5>
-                                <p class="artist-name">by ${track.artist}</p>
-                                <p class="genre">Genre: ${track.genre}</p>
-                                <p class="rating">Rating: ${track.rating} Stars</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="price-tag">Rs. ${track.price}</span>
-                                    <div class="d-flex">
-                                        <div class="play-btn me-2">
-                                            <i class="fas fa-play"></i>
-                                        </div>
-                                        <c:if test="${not empty sessionScope.USER}">
-                                            <button class="cart-btn" data-track-id="${track.trackId}">
-                                                <i class="fas fa-cart-plus"></i>
+                <div class="filter-buttons">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="${pageContext.request.contextPath}/search?query=${param.query}" class="btn btn-outline-secondary">Clear Filters</a>
+                </div>
+            </form>
+        </aside>
+
+        <!-- Search Results Main Content -->
+        <main class="search-results-main">
+            <c:choose>
+                <c:when test="${not empty requestScope.trackList}">
+                    <div class="search-results-info">
+                        <h4>${empty param.query ? 'All Tracks' : 'Search Results for "' += param.query += '"'}</h4>
+                        <p>Found ${fn:length(requestScope.trackList)} results</p>
+                    </div>
+
+                    <!-- Use the same track cards component as index page -->
+                    <div class="search-results-grid">
+                        <c:forEach var="track" items="${requestScope.trackList}">
+                            <div class="compact-music-card">
+                                <div class="album-cover-container">
+                                    <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+                                         class="compact-album-cover" alt="Album Cover">
+                                </div>
+                                <div class="compact-card-content">
+                                    <div class="compact-card-text">
+                                        <div class="compact-card-title">${track.title}</div>
+                                        <div class="compact-card-artist">${track.artist}</div>
+                                    </div>
+                                    <div class="compact-card-footer">
+                                        <span class="price-tag-sm">Rs. ${track.price}</span>
+                                        <div class="compact-card-actions">
+                                            <button class="play-btn-sm">
+                                                <i class="fas fa-play"></i>
                                             </button>
-                                        </c:if>
+                                            <c:if test="${not empty sessionScope.USER}">
+                                                <button class="cart-btn-sm" data-track-id="${track.trackId}">
+                                                    <i class="fas fa-cart-plus"></i>
+                                                </button>
+                                            </c:if>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </c:forEach>
-            </div>
-            <!-- Pagination -->
-            <c:if test="${requestScope.noOfPages > 1}">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center mt-4">
-                        <c:if test="${requestScope.currentPage > 1}">
-                            <li class="page-item">
-                                <a class="page-link" href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${requestScope.currentPage - 1}">Previous</a>
-                            </li>
-                        </c:if>
-                        <c:forEach begin="1" end="${requestScope.noOfPages}" var="i">
-                            <li class="page-item ${requestScope.currentPage == i ? 'active' : ''}">
-                                <a class="page-link" href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${i}">${i}</a>
-                            </li>
                         </c:forEach>
-                        <c:if test="${requestScope.currentPage < requestScope.noOfPages}">
-                            <li class="page-item">
-                                <a class="page-link" href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${requestScope.currentPage + 1}">Next</a>
-                            </li>
-                        </c:if>
-                    </ul>
-                </nav>
-            </c:if>
-        </c:when>
-        <c:otherwise>
-            <div class="no-results">
-                <i class="fas fa-music"></i>
-                <h4>No tracks available</h4>
-                <p>No tracks found in the library. Please check back later.</p>
-            </div>
-        </c:otherwise>
-    </c:choose>
+                    </div>
+
+                    <!-- Pagination -->
+                    <c:if test="${requestScope.noOfPages > 1}">
+                        <nav class="search-pagination">
+                            <c:if test="${requestScope.currentPage > 1}">
+                                <a class="pagination-btn" href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${requestScope.currentPage - 1}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </c:if>
+
+                            <div class="page-numbers">
+                                <c:forEach begin="1" end="${requestScope.noOfPages}" var="i">
+                                    <a class="pagination-btn ${requestScope.currentPage == i ? 'active' : ''}"
+                                       href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${i}">${i}</a>
+                                </c:forEach>
+                            </div>
+
+                            <c:if test="${requestScope.currentPage < requestScope.noOfPages}">
+                                <a class="pagination-btn" href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${requestScope.currentPage + 1}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </c:if>
+                        </nav>
+                    </c:if>
+                </c:when>
+                <c:otherwise>
+                    <div class="no-results">
+                        <i class="fas fa-music"></i>
+                        <h4>No tracks available</h4>
+                        <p>No tracks found in the library. Please check back later.</p>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+        </main>
+    </div>
 </div>
 
 <!-- Footer -->
@@ -365,10 +185,23 @@
 <!-- Shopping Cart Modal -->
 <jsp:include page="/includes/modals/shopping-cart-modal.jsp" />
 
+<script>
+    window.contextPath = '${pageContext.request.contextPath}';
+    window.initialCartState = {
+        itemCount: ${sessionScope.cartItems != null ? sessionScope.cartItems.size() : 0},
+        cartTotal: ${sessionScope.cartTotal != null ? sessionScope.cartTotal : 0}
+    };
+    window.noOfPages = ${requestScope.noOfPages > 0 ? requestScope.noOfPages : 1};
+</script>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="${pageContext.request.contextPath}/js/music.js"></script>
-<script src="${pageContext.request.contextPath}/js/cart.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-utils.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-handlers.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-main.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-pagination.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-handlers.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-main.js"></script>
 
 </body>
 </html>

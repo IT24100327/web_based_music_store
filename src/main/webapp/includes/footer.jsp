@@ -1,16 +1,28 @@
-<footer class="footer mt-5">
+<footer class="footer">
     <div class="container">
-        <hr class="my-4">
-        <div class="row">
-            <div class="col-md-6">
-                <p class="text-secondary">© 2023 RhythmWave. All rights reserved.</p>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-music me-2"></i>
+                <span>RhythmWave</span>
             </div>
-            <div class="col-md-6 text-md-end">
-                <a href="#" class="text-secondary me-3"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="text-secondary me-3"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-secondary me-3"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="text-secondary"><i class="fab fa-youtube"></i></a>
+            <p class="footer-text">Discover music from around the world.</p>
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-youtube"></i>
+                </a>
             </div>
+            <p class="footer-copy">
+                © 2025 RhythmWave. All rights reserved.
+            </p>
         </div>
     </div>
 </footer>

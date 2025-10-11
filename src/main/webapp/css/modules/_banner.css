@@ -1,26 +1,171 @@
 /* ==========================================================================
-   BANNER
+   ENHANCED BANNER - Vibrant & Immersive Music Hero with Blurred Blobs
    ========================================================================== */
 .compact-banner {
-    background: linear-gradient(135deg, #ba85fa 0%, #121212 100%);
-    padding: clamp(40px, 5vw, 60px) 24px clamp(20px, 3vw, 40px); /* Fluid padding */
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--gradient-primary) 50%, var(--dark-bg) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    padding: clamp(60px, 8vw, 120px) 24px clamp(40px, 6vw, 60px);
     margin-bottom: 0;
+    border-bottom: 1px solid var(--border-light);
+    position: relative;
+    overflow: hidden;
+}
+
+.compact-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    animation: float 20s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Blurred Blobs - Abstract, Organic Shapes for Depth */
+.blob {
+    position: absolute;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    filter: blur(30px);
+    opacity: 0.4;
+    animation: blobFloat 25s ease-in-out infinite reverse;
+    z-index: 0;
+}
+
+/* Use radial-gradient for more organic blob feel */
+.blob-1 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle at 30% 30%, var(--primary) 0%, transparent 70%);
+    top: 20%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.blob-2 {
+    width: 350px;
+    height: 200px;
+    background: radial-gradient(ellipse at 70% 20%, #1ed760 0%, transparent 60%);
+    top: 60%;
+    right: 10%;
+    border-radius: 40% 60% 50% 30% / 30% 70% 40% 60%;
+    animation-delay: -5s;
+    animation-duration: 30s;
+}
+
+.blob-3 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle at 20% 80%, #00d4aa 0%, transparent 65%);
+    bottom: 20%;
+    left: 20%;
+    border-radius: 50% 70% 40% 60% / 60% 40% 70% 30%;
+    animation-delay: -10s;
 }
 
 .compact-banner-content {
     max-width: 1200px;
     margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
 }
 
 .compact-banner h1 {
-    font-size: clamp(1.8rem, 4vw, 2.5rem); /* Fluid typography */
-    font-weight: 700;
-    margin-bottom: 8px;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 16px;
     color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 1s ease-out;
 }
 
 .compact-banner p {
-    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    font-size: clamp(1.125rem, 2.5vw, 1.375rem);
     color: var(--text-secondary);
-    margin-bottom: 0;
+    margin-bottom: 32px;
+    font-weight: 400;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+/* Optional CTA Button - Add to HTML for enhanced engagement */
+.compact-banner .cta-btn {
+    display: inline-block;
+    padding: 14px 28px;
+    background: var(--gradient-primary);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-md);
+    animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.compact-banner .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(29, 185, 84, 0.3);
+    background: var(--gradient-hover);
+}
+
+/* Keyframe Animations */
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+@keyframes blobFloat {
+    0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    33% { transform: translate(30px, -30px) rotate(120deg) scale(1.1); }
+    66% { transform: translate(-20px, 20px) rotate(240deg) scale(0.9); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+    .compact-banner {
+        padding: clamp(40px, 6vw, 80px) 16px clamp(20px, 4vw, 40px);
+    }
+
+    .blob {
+        filter: blur(20px); /* Reduce blur on mobile for performance */
+    }
+
+    .compact-banner h1 {
+        margin-bottom: 12px;
+        letter-spacing: -0.01em;
+    }
+
+    .compact-banner p {
+        margin-bottom: 24px;
+    }
+
+    .compact-banner .cta-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
 }

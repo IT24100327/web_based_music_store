@@ -1,9 +1,9 @@
 // Music Pagination and Track Content
 function initializePagination() {
     document.addEventListener('click', function(e) {
-        if (e.target.matches('#pagination .page-link[data-page]')) {
+        if (e.target.closest('.music-pagination .pagination-btn[data-page]')) {
             e.preventDefault();
-            handlePaginationClick(e.target);
+            handlePaginationClick(e.target.closest('.pagination-btn[data-page]'));
         }
     });
 }
@@ -12,13 +12,13 @@ function handlePaginationClick(link) {
     const page = parseInt(link.getAttribute('data-page'));
     console.log('Pagination clicked for page:', page);
 
-    const currentPageElem = document.querySelector('.page-item.active .page-link');
+    const currentPageElem = document.querySelector('.pagination-btn.active');
     const currentPage = parseInt(currentPageElem?.getAttribute('data-page') || '1');
     const noOfPages = window.noOfPages || 1;
 
     console.log('Current page:', currentPage, 'Total pages:', noOfPages);
 
-    if (page < 1 || page > noOfPages || link.parentElement.classList.contains('disabled')) {
+    if (page < 1 || page > noOfPages || link.classList.contains('disabled')) {
         console.log('Invalid page, skipping');
         return;
     }
@@ -40,34 +40,24 @@ function loadTracksPage(page) {
         }
     })
         .then(response => {
-            console.log('Fetch response status:', response.status);
-            if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`Network response was not ok: ${response.status}`);
             return response.text();
         })
         .then(html => {
-            console.log('Received HTML length:', html.length);
             updateTrackContent(html);
             scrollToTracks();
-
             if (typeof window.reInitCart === 'function') {
                 window.reInitCart();
             }
-
-            console.log('Page update complete');
         })
-        .catch(error => {
-            console.error('Error loading tracks:', error);
-            handleTracksLoadError(error);
-        });
+        .catch(handleTracksLoadError);
 }
 
 function updateTrackContent(html) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
     const newRow = doc.getElementById('track-row');
-    const newNav = doc.querySelector('nav.mt-5');
+    const newNav = doc.querySelector('.music-pagination');
 
     if (newRow) {
         const oldRow = document.getElementById('track-row');
@@ -75,10 +65,10 @@ function updateTrackContent(html) {
     }
 
     if (newNav) {
-        const oldNav = document.querySelector('nav.mt-5');
+        const oldNav = document.querySelector('.music-pagination');
         if (oldNav) oldNav.innerHTML = newNav.innerHTML;
     } else {
-        const oldNav = document.querySelector('nav.mt-5');
+        const oldNav = document.querySelector('.music-pagination');
         if (oldNav) oldNav.remove();
     }
 }

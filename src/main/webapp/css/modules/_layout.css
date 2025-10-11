@@ -1,10 +1,50 @@
 /* ==========================================================================
-   LAYOUT & SECTIONS
+   CLEAN LAYOUT & SECTIONS
    ========================================================================== */
+.content-wrapper {
+    display: flex;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 40px auto;
+    align-items: flex-start;
+    justify-content: center; /* Center the content horizontally */
+}
+
+.ad-sidebar {
+    flex: 0 0 240px; /* Fixed width for 240x600 ads */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: fit-content;
+}
+
+.ad-banner {
+    display: block; /* Ensure the anchor tag is block-level for image */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-fast);
+    border: 1px solid var(--border-light);
+}
+
+.ad-banner:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.ad-image {
+    width: 240px;
+    height: 600px;
+    object-fit: cover;
+    display: block;
+}
+
 .main-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: clamp(20px, 5vw, 40px) 24px;
+    flex: 1;
+    max-width: 900px;
+    padding: clamp(30px, 5vw, 1px) 0;
+    margin: 0 auto; /* Center the main content */
 }
 
 .section-header {
@@ -17,15 +57,42 @@
 }
 
 .section-header h2 {
-    font-size: clamp(1.3rem, 3vw, 1.5rem);
-    font-weight: 700;
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 600;
     margin: 0;
     color: var(--text-primary);
-    flex-shrink: 0;
 }
 
+/* Clean View Controls */
 .view-controls {
     display: flex;
-    gap: 8px;
-    flex-shrink: 0;
+    gap: 4px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+}
+
+.view-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.view-btn.active,
+.view-btn:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+.view-btn:focus {
+    outline: none;
 }

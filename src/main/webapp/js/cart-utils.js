@@ -1,13 +1,6 @@
 // Cart Utilities: API, UI Updates, Errors
-function initializeCartFromServerState() {
-    if (window.initialCartState) {
-        updateCartUI({
-            cartItems: [],
-            cartTotal: window.initialCartState.cartTotal,
-            itemCount: window.initialCartState.itemCount
-        });
-    }
-    // Removed duplicate loadCartState() call - now only called in initializeCartModal()
+async function initializeCartFromServerState() {
+    await loadCartState();
 }
 
 async function loadCartState() {
@@ -65,19 +58,18 @@ async function updateCart(action, trackId, button) {
 }
 
 function updateCartUI(data) {
+    // Update badges
     const cartBadges = document.querySelectorAll('.cart-badge');
     cartBadges.forEach(badge => {
-        badge.textContent = data.itemCount;
+        badge.textContent = data.itemCount || 0;
         badge.style.display = data.itemCount > 0 ? 'flex' : 'none';
-
         if (data.itemCount > 0) {
             badge.classList.add('updated');
-            setTimeout(() => {
-                badge.classList.remove('updated');
-            }, 600);
+            setTimeout(() => badge.classList.remove('updated'), 600);
         }
     });
 
+    // Update buttons
     if (data.cartItems) {
         const cartSet = new Set(data.cartItems.map(item => item.trackId));
         document.querySelectorAll('.cart-btn, .cart-btn-sm').forEach(btn => {
@@ -86,19 +78,13 @@ function updateCartUI(data) {
             btn.classList.toggle('added', isAdded);
             const icon = btn.querySelector('i');
             if (icon) {
-                if (isAdded) {
-                    if (icon.classList.contains('fa-cart-plus')) {
-                        icon.classList.replace('fa-cart-plus', 'fa-check');
-                    }
-                } else {
-                    if (icon.classList.contains('fa-check')) {
-                        icon.classList.replace('fa-check', 'fa-cart-plus');
-                    }
-                }
+                icon.classList.toggle('fa-cart-plus', !isAdded);
+                icon.classList.toggle('fa-check', isAdded);
             }
         });
     }
 
+    // Update modal
     if (data.cartItems) {
         updateCartModal(data);
     }
@@ -107,44 +93,35 @@ function updateCartUI(data) {
 function updateCartModal(data) {
     const modalBody = document.querySelector('#shoppingCartModal .modal-body');
     const cartTotal = document.querySelector('.cart-total');
-
-    if (!modalBody || !cartTotal) return;
-
-    cartTotal.textContent = 'Rs. ' + data.cartTotal.toFixed(2);
-
     const modalHeaderBadge = document.querySelector('#shoppingCartModal .modal-title .cart-badge');
-    if (modalHeaderBadge) {
-        modalHeaderBadge.textContent = data.itemCount;
-        modalHeaderBadge.style.display = data.itemCount > 0 ? 'flex' : 'none';
-    }
 
-    if (data.itemCount === 0) {
-        modalBody.innerHTML = `
+    if (!modalBody || !cartTotal || !modalHeaderBadge) return;
+
+    cartTotal.textContent = `Rs. ${(data.cartTotal || 0).toFixed(2)}`;
+    modalHeaderBadge.textContent = data.itemCount || 0;
+    modalHeaderBadge.style.display = data.itemCount > 0 ? 'flex' : 'none';
+
+    modalBody.innerHTML = data.itemCount === 0
+        ? `
             <div class="cart-empty">
                 <i class="fas fa-shopping-cart"></i>
                 <p>Your cart is empty</p>
             </div>
-        `;
-    } else {
-        let cartItemsHtml = '';
-        data.cartItems.forEach(item => {
-            cartItemsHtml += `
-                <div class="cart-item">
-                    <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
-                         alt="Album Cover" class="cart-item-img">
-                    <div class="cart-item-details">
-                        <div class="cart-item-title">${escapeHtml(item.title)}</div>
-                        <div class="cart-item-artist">by ${escapeHtml(item.artist)}</div>
-                        <div class="cart-item-price">Rs. ${item.price.toFixed(2)}</div>
-                    </div>
-                    <button class="cart-item-remove" data-track-id="${item.trackId}">
-                        <i class="fas fa-trash"></i>
-                    </button>
+        `
+        : data.cartItems.map(item => `
+            <div class="cart-item">
+                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+                     alt="Album Cover" class="cart-item-img">
+                <div class="cart-item-details">
+                    <div class="cart-item-title">${escapeHtml(item.title)}</div>
+                    <div class="cart-item-artist">by ${escapeHtml(item.artist)}</div>
+                    <div class="cart-item-price">Rs. ${item.price.toFixed(2)}</div>
                 </div>
-            `;
-        });
-        modalBody.innerHTML = cartItemsHtml;
-    }
+                <button class="cart-item-remove" data-track-id="${item.trackId}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `).join('');
 }
 
 function escapeHtml(text) {
@@ -160,7 +137,7 @@ function escapeHtml(text) {
 
 function handleCartError(error, userMessage = 'Cart operation failed') {
     console.error('Cart Error:', error);
-    showUserNotification(userMessage + ': ' + error.message, 'error');
+    showUserNotification(`${userMessage}: ${error.message}. <button onclick="window.reInitCart()">Retry</button>`, 'error');
 }
 
 function showUserNotification(message, type = 'error') {

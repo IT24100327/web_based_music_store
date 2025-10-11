@@ -12,7 +12,7 @@ import java.util.*;
 
 @WebServlet("/search")
 public class SearchServlet extends HttpServlet {
-    private final int RECORDS_PER_PAGE = 8;
+    private final int RECORDS_PER_PAGE = 12;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

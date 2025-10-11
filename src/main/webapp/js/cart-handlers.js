@@ -1,23 +1,22 @@
 // Cart Handlers: Buttons and Modal
+// cart-handlers.js
 function initializeCartButtons() {
-    const cartButtons = document.querySelectorAll('.cart-btn, .cart-btn-sm');
-    cartButtons.forEach(button => {
-        button.replaceWith(button.cloneNode(true));
-    });
+    document.removeEventListener('click', handleCartButtonClick); // Remove any existing listener
+    document.addEventListener('click', handleCartButtonClick);
 
-    document.querySelectorAll('.cart-btn, .cart-btn-sm').forEach(button => {
-        button.addEventListener('click', function() {
-            const trackId = this.getAttribute('data-track-id');
+    function handleCartButtonClick(e) {
+        if (e.target.closest('.cart-btn, .cart-btn-sm')) {
+            const button = e.target.closest('.cart-btn, .cart-btn-sm');
+            const trackId = button.getAttribute('data-track-id');
             if (!trackId) {
                 console.warn('Cart button missing track-id');
                 return;
             }
-
-            const isAdded = this.classList.contains('added');
+            const isAdded = button.classList.contains('added');
             const action = isAdded ? 'remove' : 'add';
-            updateCart(action, trackId, this);
-        });
-    });
+            updateCart(action, trackId, button);
+        }
+    }
 }
 
 function initializeCartModal() {

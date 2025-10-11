@@ -4,6 +4,7 @@
 @import "modules/_banner.css";
 @import "modules/_layout.css";
 @import "modules/_modal.css";
+@import "modules/_search.css";
 @import "modules/_components.css";
 @import "animations.css";
 @import "modules/_responsive.css";  /* Last for overrides */

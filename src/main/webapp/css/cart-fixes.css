@@ -1,0 +1,43 @@
+/* Cart & Navbar Emergency Fixes */
+.cart-btn-nav {
+    position: relative !important;
+    padding: 8px 12px !important;
+}
+
+.cart-badge {
+    position: absolute !important;
+    top: -6px !important;
+    right: -6px !important;
+    background: var(--primary) !important;
+    color: #000 !important;
+    border-radius: 10px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid var(--dark-bg) !important;
+}
+
+/* Ensure modal dark theme */
+.modal-content {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--border-light) !important;
+}
+
+/* Navbar search fix */
+.navbar .input-group {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-light) !important;
+}
+
+.navbar .input-group .form-control {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+}

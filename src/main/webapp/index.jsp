@@ -23,6 +23,9 @@
 <!-- Banner Section -->
 <div class="container-fluid">
     <div class="compact-banner">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
         <div class="compact-banner-content">
             <c:choose>
                 <c:when test="${empty sessionScope.USER}">
@@ -38,20 +41,42 @@
     </div>
 </div>
 
-<!-- Music Listing Section -->
-<div class="main-content">
-    <div class="section-header">
-        <h2>Featured Music</h2>
-        <div class="view-controls">
-            <button class="view-btn active" data-view="grid" data-tooltip="Grid View">
-                <i class="fas fa-th"></i>
-            </button>
-            <button class="view-btn" data-view="list" data-tooltip="List View">
-                <i class="fas fa-list"></i>
-            </button>
+<!-- Music Listing Section with Side Ads -->
+<div class="content-wrapper">
+    <c:if test="${not empty activeAds and fn:length(activeAds) >= 1}">
+        <aside class="ad-sidebar ad-left">
+            <c:forEach var="ad" items="${activeAds}" varStatus="status" begin="0" end="1">
+                <a href="" class="ad-banner">
+                    <img src="${pageContext.request.contextPath}/image?adId=${ad.adId}" alt="${ad.title}" class="ad-image">
+                </a>
+            </c:forEach>
+        </aside>
+    </c:if>
+
+    <div class="main-content">
+        <div class="section-header">
+            <h2>Featured Music</h2>
+            <div class="view-controls">
+                <button class="view-btn active" data-view="grid" data-tooltip="Grid View">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="view-btn" data-view="list" data-tooltip="List View">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
         </div>
+        <c:import url="/includes/track-cards.jsp" />
     </div>
-    <c:import url="/includes/track-cards.jsp" />
+
+    <c:if test="${not empty activeAds and fn:length(activeAds) >= 3}">
+        <aside class="ad-sidebar ad-right">
+            <c:forEach var="ad" items="${activeAds}" varStatus="status" begin="2" end="3">
+                <a href="" class="ad-banner">
+                    <img src="${pageContext.request.contextPath}/image?adId=${ad.adId}" alt="${ad.title}" class="ad-image">
+                </a>
+            </c:forEach>
+        </aside>
+    </c:if>
 </div>
 
 <!-- Footer -->
@@ -67,7 +92,6 @@
         itemCount: ${sessionScope.cartItems != null ? sessionScope.cartItems.size() : 0},
         cartTotal: ${sessionScope.cartTotal != null ? sessionScope.cartTotal : 0}
     };
-    // Add this line: Set total pages from server
     window.noOfPages = ${requestScope.noOfPages > 0 ? requestScope.noOfPages : 1};
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

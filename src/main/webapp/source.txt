@@ -1,0 +1,6051 @@
+Folder Structure
+--------------------------------------------------
+webapp/
+    index.jsp
+    login.jsp
+    order-details.jsp
+    order-error.jsp
+    order-success.jsp
+    search-music.jsp
+    signup.jsp
+    admin/
+        index.jsp
+        manage-marketing.jsp
+        manage-orders.jsp
+        manage-users.jsp
+        css/
+            admin-styles.css
+            index.css
+            theme.css
+        includes/
+            admin_nav_bar.jsp
+            modals/
+                manage-marketing-modals/
+                    add-advertisement-modal.jsp
+                    add-promotion-modal.jsp
+                    delete-advertisement-modal.jsp
+                    delete-promotion-modal.jsp
+                    edit-advertisement-modal.jsp
+                    edit-promotion-modal.jsp
+                manage-orders-modals/
+                    delete-order-modal.jsp
+                    edit-order-modal.jsp
+                manage-user-modals/
+                    add-user-modal.jsp
+                    delete-user-modal.jsp
+                    edit-user-modal.jsp
+    css/
+        animations.css
+        index.css
+        login.css
+        navbar.css
+        order-details.css
+        signup.css
+        theme.css
+        modules/
+            _banner.css
+            _base.css
+            _components.css
+            _layout.css
+            _modal.css
+            _navbar.css
+            _responsive.css
+            _search.css
+    includes/
+        footer.jsp
+        navbar.jsp
+        track-cards.jsp
+        modals/
+            shopping-cart-modal.jsp
+    js/
+        cart-handlers.js
+        cart-main.js
+        cart-utils.js
+        music-handlers.js
+        music-main.js
+        music-pagination.js
+    WEB-INF/
+        web.xml
+
+
+File Contents
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\index.jsp
+File type: .jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RhythmWave Music Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/index.css">
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<jsp:include page="/includes/navbar.jsp">
+    <jsp:param name="page" value="index"/>
+    <jsp:param name="user" value="${sessionScope.USER}"/>
+</jsp:include>
+
+<!-- Banner Section -->
+<div class="container-fluid">
+    <div class="compact-banner">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="compact-banner-content">
+            <c:choose>
+                <c:when test="${empty sessionScope.USER}">
+                    <h1>Discover Your Soundtrack</h1>
+                    <p>Millions of songs at your fingertips</p>
+                </c:when>
+                <c:otherwise>
+                    <h1>Welcome Back, ${sessionScope.USER.firstName}!</h1>
+                    <p>Continue your musical journey</p>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </div>
+</div>
+
+<!-- Music Listing Section with Side Ads -->
+<div class="content-wrapper">
+    <c:if test="${not empty activeAds and fn:length(activeAds) >= 1}">
+        <aside class="ad-sidebar ad-left">
+            <c:forEach var="ad" items="${activeAds}" varStatus="status" begin="0" end="1">
+                <a href="" class="ad-banner">
+                    <img src="${pageContext.request.contextPath}/image?adId=${ad.adId}" alt="${ad.title}" class="ad-image">
+                </a>
+            </c:forEach>
+        </aside>
+    </c:if>
+
+    <div class="main-content">
+        <div class="section-header">
+            <h2>Featured Music</h2>
+            <div class="view-controls">
+                <button class="view-btn active" data-view="grid" data-tooltip="Grid View">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="view-btn" data-view="list" data-tooltip="List View">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+        <c:import url="/includes/track-cards.jsp" />
+    </div>
+
+    <c:if test="${not empty activeAds and fn:length(activeAds) >= 3}">
+        <aside class="ad-sidebar ad-right">
+            <c:forEach var="ad" items="${activeAds}" varStatus="status" begin="2" end="3">
+                <a href="" class="ad-banner">
+                    <img src="${pageContext.request.contextPath}/image?adId=${ad.adId}" alt="${ad.title}" class="ad-image">
+                </a>
+            </c:forEach>
+        </aside>
+    </c:if>
+</div>
+
+<!-- Footer -->
+<jsp:include page="includes/footer.jsp" />
+
+<!-- Shopping Cart Modal -->
+<jsp:include page="includes/modals/shopping-cart-modal.jsp" />
+
+<!-- Bootstrap JS -->
+<script>
+    window.contextPath = '${pageContext.request.contextPath}';
+    window.initialCartState = {
+        itemCount: ${sessionScope.cartItems != null ? sessionScope.cartItems.size() : 0},
+        cartTotal: ${sessionScope.cartTotal != null ? sessionScope.cartTotal : 0}
+    };
+    window.noOfPages = ${requestScope.noOfPages > 0 ? requestScope.noOfPages : 1};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-utils.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-handlers.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-main.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-pagination.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-handlers.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-main.js"></script>
+</body>
+</html>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\login.jsp
+File type: .jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RhythmWave - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+    <style>
+
+    </style>
+</head>
+<body>
+<!-- Auth Container -->
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">
+                <i class="fas fa-music"></i>
+            </div>
+            <h2>Welcome Back</h2>
+            <p class="text-secondary">Sign in to your RhythmWave account</p>
+        </div>
+
+        <form id="loginForm" action="${pageContext.request.contextPath}/login" method="post">
+            <div class="mb-3">
+                <label for="login-email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="login-email" name="email" placeholder="name@example.com" required>
+            </div>
+
+            <div class="mb-3 password-input-group">
+                <label for="login-password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="login-password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="mb-3 d-flex justify-content-between align-items-center">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me" value="true">
+                    <label class="form-check-label" for="remember-me">Remember me</label>
+                </div>
+                <a href="#" class="text-primary">Forgot password?</a>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                <a href="signup.jsp" class="btn btn-outline-light">Don't have an account? Sign Up</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                e.preventDefault()
+                alert('Please fill in all fields');
+            }
+
+        });
+    });
+</script>
+</body>
+</html>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\order-details.jsp
+File type: .jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RhythmWave - Order Details</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/theme.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/order-details.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css">
+</head>
+<body>
+<jsp:include page="/includes/navbar.jsp" />
+
+<div class="order-container">
+    <div class="order-header">
+        <h1><i class="fas fa-shopping-cart me-2"></i>Order Details</h1>
+        <p>Review your selected tracks before proceeding to checkout</p>
+    </div>
+
+    <c:choose>
+        <c:when test="${empty cartItems or fn:length(cartItems) == 0}">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <h3>Your cart is empty</h3>
+                <p>Add some tracks to get started!</p>
+                <a href="${pageContext.request.contextPath}/index" class="btn btn-primary">Continue Shopping</a>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="cart-items-section">
+                <h3>Cart Items</h3>
+                <c:forEach var="track" items="${cartItems}">
+                    <div class="cart-item">
+                        <div class="item-image">
+                            <i class="fas fa-music"></i>
+                        </div>
+                        <div class="item-details">
+                            <h5>${track.title}</h5>
+                            <p>by ${track.artist}</p>
+                        </div>
+                        <div class="item-price">Rs. ${track.price}</div>
+                    </div>
+                </c:forEach>
+            </div>
+
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <c:set var="totalAmount" value="${cartTotal}" />
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>Rs. ${totalAmount}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>Free</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span>Rs. ${totalAmount}</span>
+                </div>
+                <div class="d-grid gap-2 mt-3">
+                    <form action="${pageContext.request.contextPath}/order" method="post">
+                        <input type="hidden" name="paymentMethod" value="CARD">
+                        <input type="hidden" name="transactionId" value="TX12345">
+                        <button type="submit" class="btn btn-primary btn-checkout w-100">Place Order</button>
+                    </form>
+                    <a href="${pageContext.request.contextPath}/index" class="btn btn-outline-light">Continue Shopping</a>
+                </div>
+            </div>
+        </c:otherwise>
+    </c:choose>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add any client-side functionality here if needed
+    });
+</script>
+</body>
+</html>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\order-success.jsp
+File type: .jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Success</title>
+</head>
+<body>
+<h2>✅ Order Placed Successfully!</h2>
+<p>Your Order ID: ${orderId}</p>
+<a href="home.jsp">Continue Shopping</a>
+</body>
+</html>
+
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\search-music.jsp
+File type: .jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Music - RhythmWave Music Store</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/index.css">
+</head>
+<body>
+<!-- Navigation Bar -->
+<jsp:include page="/includes/navbar.jsp">
+    <jsp:param name="page" value="search"/>
+    <jsp:param name="searchBox" value="noShow"/>
+</jsp:include>
+
+<!-- Search Header Section -->
+<div class="search-header">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-4">Search Our Music Library</h1>
+        <!-- Main Search Bar -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form action="${pageContext.request.contextPath}/search" method="get" class="search-form">
+                    <div class="input-group input-group-lg mb-4">
+                        <input type="text" class="form-control" name="query" placeholder="Search artists, albums, or songs..." value="${param.query}">
+                        <button class="btn" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content with Sidebar Layout -->
+<div class="container">
+    <div class="search-content-wrapper">
+        <!-- Filters Sidebar -->
+        <aside class="search-filters-sidebar">
+            <h2>Refine Your Search</h2>
+            <form action="${pageContext.request.contextPath}/search" method="get">
+                <input type="hidden" name="query" value="${param.query}">
+
+                <div class="filter-group">
+                    <label class="filter-label">Genre</label>
+                    <select class="form-select" name="genre">
+                        <option value="">All Genres</option>
+                        <option value="rock" ${param.genre == 'rock' ? 'selected' : ''}>Rock</option>
+                        <option value="pop" ${param.genre == 'pop' ? 'selected' : ''}>Pop</option>
+                        <option value="hiphop" ${param.genre == 'hiphop' ? 'selected' : ''}>Hip Hop</option>
+                        <option value="electronic" ${param.genre == 'electronic' ? 'selected' : ''}>Electronic</option>
+                        <option value="jazz" ${param.genre == 'jazz' ? 'selected' : ''}>Jazz</option>
+                        <option value="classical" ${param.genre == 'classical' ? 'selected' : ''}>Classical</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Price Range</label>
+                    <select class="form-select" name="price">
+                        <option value="">Any Price</option>
+                        <option value="under100" ${param.price == 'under100' ? 'selected' : ''}>Under Rs. 100</option>
+                        <option value="100-200" ${param.price == '100-200' ? 'selected' : ''}>Rs. 100 - Rs. 200</option>
+                        <option value="200-400" ${param.price == '200-400' ? 'selected' : ''}>Rs. 200 - Rs. 400</option>
+                        <option value="over400" ${param.price == 'over400' ? 'selected' : ''}>Over Rs. 400</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Release Year</label>
+                    <select class="form-select" name="year">
+                        <option value="">Any Year</option>
+                        <option value="2023" ${param.year == '2023' ? 'selected' : ''}>2023</option>
+                        <option value="2022" ${param.year == '2022' ? 'selected' : ''}>2022</option>
+                        <option value="2020-2021" ${param.year == '2020-2021' ? 'selected' : ''}>2020-2021</option>
+                        <option value="2010-2019" ${param.year == '2010-2019' ? 'selected' : ''}>2010-2019</option>
+                        <option value="before2010" ${param.year == 'before2010' ? 'selected' : ''}>Before 2010</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Rating</label>
+                    <select class="form-select" name="rating">
+                        <option value="">Any Rating</option>
+                        <option value="5" ${param.rating == '5' ? 'selected' : ''}>5 Stars</option>
+                        <option value="4" ${param.rating == '4' ? 'selected' : ''}>4+ Stars</option>
+                        <option value="3" ${param.rating == '3' ? 'selected' : ''}>3+ Stars</option>
+                    </select>
+                </div>
+
+                <div class="filter-buttons">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="${pageContext.request.contextPath}/search?query=${param.query}" class="btn btn-outline-secondary">Clear Filters</a>
+                </div>
+            </form>
+        </aside>
+
+        <!-- Search Results Main Content -->
+        <main class="search-results-main">
+            <c:choose>
+                <c:when test="${not empty requestScope.trackList}">
+                    <div class="search-results-info">
+                        <h4>${empty param.query ? 'All Tracks' : 'Search Results for "' += param.query += '"'}</h4>
+                        <p>Found ${fn:length(requestScope.trackList)} results</p>
+                    </div>
+
+                    <!-- Use the same track cards component as index page -->
+                    <div class="search-results-grid">
+                        <c:forEach var="track" items="${requestScope.trackList}">
+                            <div class="compact-music-card">
+                                <div class="album-cover-container">
+                                    <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+                                         class="compact-album-cover" alt="Album Cover">
+                                </div>
+                                <div class="compact-card-content">
+                                    <div class="compact-card-text">
+                                        <div class="compact-card-title">${track.title}</div>
+                                        <div class="compact-card-artist">${track.artist}</div>
+                                    </div>
+                                    <div class="compact-card-footer">
+                                        <span class="price-tag-sm">Rs. ${track.price}</span>
+                                        <div class="compact-card-actions">
+                                            <button class="play-btn-sm">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                            <c:if test="${not empty sessionScope.USER}">
+                                                <button class="cart-btn-sm" data-track-id="${track.trackId}">
+                                                    <i class="fas fa-cart-plus"></i>
+                                                </button>
+                                            </c:if>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
+
+                    <!-- Pagination -->
+                    <c:if test="${requestScope.noOfPages > 1}">
+                        <nav class="search-pagination">
+                            <c:if test="${requestScope.currentPage > 1}">
+                                <a class="pagination-btn" href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${requestScope.currentPage - 1}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </c:if>
+
+                            <div class="page-numbers">
+                                <c:forEach begin="1" end="${requestScope.noOfPages}" var="i">
+                                    <a class="pagination-btn ${requestScope.currentPage == i ? 'active' : ''}"
+                                       href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${i}">${i}</a>
+                                </c:forEach>
+                            </div>
+
+                            <c:if test="${requestScope.currentPage < requestScope.noOfPages}">
+                                <a class="pagination-btn" href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${requestScope.currentPage + 1}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </c:if>
+                        </nav>
+                    </c:if>
+                </c:when>
+                <c:otherwise>
+                    <div class="no-results">
+                        <i class="fas fa-music"></i>
+                        <h4>No tracks available</h4>
+                        <p>No tracks found in the library. Please check back later.</p>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+        </main>
+    </div>
+</div>
+
+<!-- Footer -->
+<jsp:include page="/includes/footer.jsp" />
+
+<!-- Shopping Cart Modal -->
+<jsp:include page="/includes/modals/shopping-cart-modal.jsp" />
+
+<script>
+    window.contextPath = '${pageContext.request.contextPath}';
+    window.initialCartState = {
+        itemCount: ${sessionScope.cartItems != null ? sessionScope.cartItems.size() : 0},
+        cartTotal: ${sessionScope.cartTotal != null ? sessionScope.cartTotal : 0}
+    };
+    window.noOfPages = ${requestScope.noOfPages > 0 ? requestScope.noOfPages : 1};
+</script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-utils.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-handlers.js"></script>
+<script src="${pageContext.request.contextPath}/js/cart-main.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-pagination.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-handlers.js"></script>
+<script src="${pageContext.request.contextPath}/js/music-main.js"></script>
+
+</body>
+</html>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\signup.jsp
+File type: .jsp
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RhythmWave - Sign Up</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/css/signup.css">
+  <style>
+    .invalid-feedback {
+      display: block;
+      color: #dc3545;
+      font-size: 0.875em;
+      margin-top: 0.25rem;
+    }
+    .is-invalid {
+      border-color: #dc3545;
+    }
+    .is-valid {
+      border-color: #198754;
+    }
+  </style>
+</head>
+<body>
+<!-- Auth Container -->
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-icon">
+        <i class="fas fa-music"></i>
+      </div>
+      <h2>Create Your RhythmWave Account</h2>
+      <p class="text-secondary">Join our community of music lovers today</p>
+    </div>
+
+    <form id="signupForm" action="${pageContext.request.contextPath}/register" method="post" novalidate>
+      <div class="form-group">
+        <label for="first-name" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="first-name" name="first-name" placeholder="Enter your first name" required minlength="2" maxlength="50">
+        <div class="invalid-feedback" id="first-name-error"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="last-name" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="last-name" name="last-name" placeholder="Enter your last name" required minlength="2" maxlength="50">
+        <div class="invalid-feedback" id="last-name-error"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+        <div class="invalid-feedback" id="email-error"></div>
+      </div>
+
+      <div class="form-group password-input-group">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Create a strong password" required minlength="8">
+        <span class="password-toggle" id="signup-password-toggle">
+          <i class="far fa-eye"></i>
+        </span>
+        <div class="invalid-feedback" id="password-error"></div>
+      </div>
+
+      <div class="form-group password-input-group">
+        <label for="signup-confirm-password" class="form-label">Confirm Password</label>
+        <input type="password" class="form-control" id="signup-confirm-password" placeholder="Confirm your password" required minlength="8">
+        <span class="password-toggle" id="signup-confirm-password-toggle">
+          <i class="far fa-eye"></i>
+        </span>
+        <div class="invalid-feedback" id="confirm-password-error"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="signup-genre" class="form-label">Favorite Music Genre</label>
+        <select class="form-control" id="signup-genre" name="signup-genre" required>
+          <option value="">Select your favorite genre</option>
+          <option value="rock">Rock</option>
+          <option value="pop">Pop</option>
+          <option value="jazz">Jazz</option>
+          <option value="hiphop">Hip Hop</option>
+          <option value="electronic">Electronic</option>
+          <option value="classical">Classical</option>
+          <option value="country">Country</option>
+          <option value="r&b">R&B</option>
+        </select>
+        <div class="invalid-feedback" id="genre-error"></div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">Create Account</button>
+
+      <div class="text-center mt-4">
+        <p class="text-secondary">Already have an account? <a href="login.jsp" class="text-primary">Log In</a></p>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Password toggle functionality
+  function togglePasswordVisibility(inputId, toggleId) {
+    const input = document.getElementById(inputId);
+    const toggle = document.getElementById(toggleId);
+    const icon = toggle.querySelector('i');
+    toggle.addEventListener('click', function() {
+      const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+      input.setAttribute('type', type);
+      icon.classList.toggle('fa-eye');
+      icon.classList.toggle('fa-eye-slash');
+    });
+  }
+  togglePasswordVisibility('password', 'signup-password-toggle');
+  togglePasswordVisibility('signup-confirm-password', 'signup-confirm-password-toggle');
+
+  // Name validation (letters only, min 2 chars)
+  function validateName(name) {
+    const nameRegex = /^[a-zA-Z\s]{2,50}$/;
+    return nameRegex.test(name);
+  }
+
+  // Email validation
+  function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // Form validation
+  document.getElementById('signupForm').addEventListener('submit', function(e) {
+    let isValid = true;
+
+    // Reset previous states
+    document.querySelectorAll('.form-control').forEach(input => {
+      input.classList.remove('is-invalid', 'is-valid');
+    });
+    document.querySelectorAll('.invalid-feedback').forEach(div => {
+      div.textContent = '';
+    });
+
+    // First Name
+    const firstName = document.getElementById('first-name').value.trim();
+    if (!firstName) {
+      document.getElementById('first-name').classList.add('is-invalid');
+      document.getElementById('first-name-error').textContent = 'First name is required.';
+      isValid = false;
+    } else if (!validateName(firstName)) {
+      document.getElementById('first-name').classList.add('is-invalid');
+      document.getElementById('first-name-error').textContent = 'First name must be 2-50 letters only.';
+      isValid = false;
+    } else {
+      document.getElementById('first-name').classList.add('is-valid');
+    }
+
+    // Last Name
+    const lastName = document.getElementById('last-name').value.trim();
+    if (!lastName) {
+      document.getElementById('last-name').classList.add('is-invalid');
+      document.getElementById('last-name-error').textContent = 'Last name is required.';
+      isValid = false;
+    } else if (!validateName(lastName)) {
+      document.getElementById('last-name').classList.add('is-invalid');
+      document.getElementById('last-name-error').textContent = 'Last name must be 2-50 letters only.';
+      isValid = false;
+    } else {
+      document.getElementById('last-name').classList.add('is-valid');
+    }
+
+    // Email
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+      document.getElementById('email').classList.add('is-invalid');
+      document.getElementById('email-error').textContent = 'Email is required.';
+      isValid = false;
+    } else if (!validateEmail(email)) {
+      document.getElementById('email').classList.add('is-invalid');
+      document.getElementById('email-error').textContent = 'Please enter a valid email address.';
+      isValid = false;
+    } else {
+      document.getElementById('email').classList.add('is-valid');
+    }
+
+    const password = document.getElementById('password').value;
+    if (!password) {
+      document.getElementById('password').classList.add('is-invalid');
+      document.getElementById('password-error').textContent = 'Password is required.';
+      isValid = false;
+    } else if (password.length < 4) {
+      document.getElementById('password').classList.add('is-invalid');
+      document.getElementById('password-error').textContent = 'Password must be at least 4 characters.';
+      isValid = false;
+    } else {
+      document.getElementById('password').classList.add('is-valid');
+    }
+
+    const confirmPassword = document.getElementById('signup-confirm-password').value;
+    if (!confirmPassword) {
+      document.getElementById('signup-confirm-password').classList.add('is-invalid');
+      document.getElementById('confirm-password-error').textContent = 'Please confirm your password.';
+      isValid = false;
+    } else if (password !== confirmPassword) {
+      document.getElementById('signup-confirm-password').classList.add('is-invalid');
+      document.getElementById('confirm-password-error').textContent = 'Passwords do not match.';
+      isValid = false;
+    } else {
+      document.getElementById('signup-confirm-password').classList.add('is-valid');
+    }
+
+    const genre = document.getElementById('signup-genre').value;
+    if (!genre) {
+      document.getElementById('signup-genre').classList.add('is-invalid');
+      document.getElementById('genre-error').textContent = 'Please select your favorite genre.';
+      isValid = false;
+    } else {
+      document.getElementById('signup-genre').classList.add('is-valid');
+    }
+
+    if (!isValid) {
+      e.preventDefault();
+      const firstError = document.querySelector('.is-invalid');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+  document.getElementById('signup-confirm-password').addEventListener('input', function() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = this.value;
+    const confirmInput = document.getElementById('signup-confirm-password');
+    const errorDiv = document.getElementById('confirm-password-error');
+    if (confirmPassword && password !== confirmPassword) {
+      confirmInput.classList.add('is-invalid');
+      errorDiv.textContent = 'Passwords do not match.';
+    } else if (confirmPassword) {
+      confirmInput.classList.remove('is-invalid');
+      confirmInput.classList.add('is-valid');
+      errorDiv.textContent = '';
+    }
+  });
+
+  ['first-name', 'last-name', 'email', 'signup-genre'].forEach(id => {
+    document.getElementById(id).addEventListener('blur', function() {
+      const value = this.value.trim();
+      const errorDiv = document.getElementById(id + '-error');
+      this.classList.remove('is-invalid', 'is-valid');
+      errorDiv.textContent = '';
+      let isFieldValid = true;
+      if (!value) {
+        isFieldValid = false;
+        errorDiv.textContent = this.name.replace('-', ' ') + ' is required.';
+      } else if (id === 'first-name' || id === 'last-name') {
+        if (!validateName(value)) {
+          isFieldValid = false;
+          errorDiv.textContent = this.name.replace('-', ' ') + ' must be 2-50 letters only.';
+        }
+      } else if (id === 'email') {
+        if (!validateEmail(value)) {
+          isFieldValid = false;
+          errorDiv.textContent = 'Please enter a valid email address.';
+        }
+      } else if (id === 'signup-genre') {
+        if (!value) {
+          isFieldValid = false;
+          errorDiv.textContent = 'Please select your favorite genre.';
+        }
+      }
+      if (isFieldValid) {
+        this.classList.add('is-valid');
+      } else {
+        this.classList.add('is-invalid');
+      }
+    });
+  });
+</script>
+</body>
+</html>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\index.jsp
+File type: .jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/index.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/admin-styles.css">
+</head>
+<body>
+<div class="admin-container">
+    <!-- Sidebar Navigation -->
+    <jsp:include page="includes/admin_nav_bar.jsp" />
+
+    <!-- Main Content Area -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1>RhythmWave Admin Dashboard</h1>
+            <div class="user-info">
+                <div class="user-avatar"><c:out value="${fn:substring(sessionScope.USER.firstName, 0, 1)}" /></div>
+                <div>
+                    <div>${sessionScope.USER.firstName} ${sessionScope.USER.lastName}</div>
+                    <div class="text-muted">${sessionScope.USER.email}</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-icon">
+                <i class="fas fa-music"></i>
+            </div>
+            <div class="welcome-content">
+                <h2>Welcome back, ${sessionScope.USER.firstName}!</h2>
+                <p>Manage your music platform efficiently with the RhythmWave Admin Panel.</p>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3></h3>
+                    <p>Total Users</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3></h3>
+                    <p>Total Artists</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <div class="stat-content">
+                    <h3></h3>
+                    <p>Active Promotions</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-ad"></i>
+                </div>
+                <div class="stat-content">
+                    <h3></h3>
+                    <p>Running Ads</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <h3></h3>
+                    <p>Total Revenue</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="dashboard-grid">
+
+            <c:if test="${sessionScope.USER.role.roleName eq 'super_admin'}">
+
+            <!-- User Management Card -->
+            <div class="dashboard-card card-user">
+                <div class="card-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <h3 class="card-title">User Management</h3>
+                <p class="card-description">Manage users, roles, and permissions</p>
+                <a href="<%=request.getContextPath()%>/manage-users" class="card-link">
+                    Manage Users <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            </c:if>
+
+            <c:if test="${sessionScope.USER.role.roleName eq 'marketing_manager'
+            or sessionScope.USER.role.roleName eq 'super_admin'}">
+
+                <!-- Marketing Management Card -->
+                <div class="dashboard-card card-user">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="card-title">Marketing Management</h3>
+                    <p class="card-description">Create promotions and advertisements</p>
+                    <a href="<%=request.getContextPath()%>/manage-marketing" class="card-link">
+                        Manage Marketing <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+            </c:if>
+
+            <c:if test="${sessionScope.USER.role.roleName eq 'finance_manager'
+            or sessionScope.USER.role.roleName eq 'super_admin'}">
+
+            <!-- Content Management Card -->
+            <div class="dashboard-card">
+                <div class="card-icon">
+                    <i class="fas fa-music"></i>
+                </div>
+                <h3 class="card-title">Content Management</h3>
+                <p class="card-description">Manage songs, albums, and playlists</p>
+                <a href="#" class="card-link">
+                    Manage Content <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            </c:if>
+
+            <c:if test="${sessionScope.USER.role.roleName eq 'finance_manager'
+            or sessionScope.USER.role.roleName eq 'super_admin'}">
+
+                <!-- Content Management Card -->
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-list"></i>
+                    </div>
+                    <h3 class="card-title">Order Management</h3>
+                    <p class="card-description">Manage Orders, Payments, and Analytics</p>
+                    <a href="${pageContext.request.contextPath}/manageOrders" class="card-link">
+                        Manage Orders <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+            </c:if>
+
+            <!-- Settings Card -->
+            <div class="dashboard-card">
+                <div class="card-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h3 class="card-title">Settings</h3>
+                <p class="card-description">Configure system settings</p>
+                <a href="#" class="card-link">
+                    Open Settings <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <footer class="admin-footer">
+            &copy; 2023 RhythmWave | Admin Panel
+        </footer>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\manage-marketing.jsp
+File type: .jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Admin - Marketing Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/index.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/admin-styles.css">
+</head>
+<body>
+<div class="admin-container">
+  <!-- Sidebar Navigation -->
+  <jsp:include page="includes/admin_nav_bar.jsp">
+    <jsp:param name="page" value="manage-marketing"/>
+  </jsp:include>
+
+  <!-- Main Content Area -->
+  <main class="admin-main">
+    <header class="admin-header">
+      <h1>Marketing Management</h1>
+      <div class="user-info">
+        <div class="user-avatar">A</div>
+        <div>
+          <div>${sessionScope.USER.firstName} ${sessionScope.USER.lastName}</div>
+          <div class="text-muted">${sessionScope.USER.email}</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+      <div class="welcome-icon">
+        <i class="fas fa-chart-bar"></i>
+      </div>
+      <div class="welcome-content">
+        <h2>Marketing Management</h2>
+        <p>Manage promotions, advertisements, and marketing campaigns for your platform.</p>
+      </div>
+    </section>
+
+    <!-- Promotions Section -->
+    <div class="table-container">
+      <div class="table-header">
+        <h3>Manage Promotions</h3>
+        <div class="table-actions">
+          <button class="btn btn-primary" onclick="openAddPromotionModal()">
+            <i class="fas fa-plus"></i> Add Promotion
+          </button>
+        </div>
+      </div>
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Code</th>
+          <th>Discount</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Usage</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:choose>
+          <c:when test="${not empty requestScope.allPromotions}">
+            <c:forEach var="promo" items="${requestScope.allPromotions}">
+              <tr>
+                <td>${promo.promotionId}</td>
+                <td><strong>${promo.code}</strong></td>
+                <td>${promo.discount}%</td>
+                <td>${promo.startDate}</td>
+                <td>${promo.endDate}</td>
+                <td>${promo.usageCount}</td>
+                <td>${promo.description}</td>
+                <td>
+                  <span class="status-badge status-active">Active</span>
+                </td>
+                <td class="actions">
+                  <button class="btn btn-edit btn-sm" onclick="openEditPromotionModal('${promo.promotionId}', '${promo.code}', '${promo.discount}', '${promo.startDate}', '${promo.endDate}', '${promo.description}')">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-delete btn-sm" onclick="openDeletePromotionModal('${promo.promotionId}', '${promo.code}')">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </c:forEach>
+          </c:when>
+          <c:otherwise>
+            <tr>
+              <td colspan="9" class="text-muted text-center py-4">No promotions found.</td>
+            </tr>
+          </c:otherwise>
+        </c:choose>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Advertisements Section -->
+    <div class="table-container">
+      <div class="table-header">
+        <h3>Manage Advertisements</h3>
+        <div class="table-actions">
+          <button class="btn btn-primary" onclick="openAddAdvertisementModal()">
+            <i class="fas fa-plus"></i> Add Advertisement
+          </button>
+        </div>
+      </div>
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Content</th>
+          <th>Image</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:choose>
+          <c:when test="${not empty requestScope.allAdvertisements}">
+            <c:forEach var="ad" items="${requestScope.allAdvertisements}">
+              <tr>
+                <td>${ad.adId}</td>
+                <td><strong>${ad.title}</strong></td>
+                <td>${ad.content}</td>
+                <td>
+                  <c:if test="${not empty ad.imageData}">
+                    <img src="${pageContext.request.contextPath}/image?adId=${ad.adId}" class="preview-img" alt="Ad Image">
+                  </c:if>
+                </td>
+                <td>${ad.startDate}</td>
+                <td>${ad.endDate}</td>
+                <td>
+                  <span class="status-badge ${ad.active ? 'status-active' : 'status-inactive'}">
+                      ${ad.active ? 'Active' : 'Inactive'}
+                  </span>
+                </td>
+                <td class="actions">
+                  <button class="btn btn-edit btn-sm" onclick="openEditAdvertisementModal('${ad.adId}', '${ad.title}', '${ad.content}', '${ad.imageUrl}', '${ad.startDate}', '${ad.endDate}', '${ad.active}')">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-delete btn-sm" onclick="openDeleteAdvertisementModal('${ad.adId}', '${ad.title}')">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </c:forEach>
+          </c:when>
+          <c:otherwise>
+            <tr>
+              <td colspan="8" class="text-muted text-center py-4">No advertisements found.</td>
+            </tr>
+          </c:otherwise>
+        </c:choose>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="admin-footer">
+      &copy; 2023 RhythmWave | Admin Panel
+    </footer>
+  </main>
+</div>
+
+<!-- Modals -->
+<jsp:include page="includes/modals/manage-marketing-modals/add-promotion-modal.jsp">
+  <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+<jsp:include page="includes/modals/manage-marketing-modals/edit-promotion-modal.jsp">
+  <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+<jsp:include page="includes/modals/manage-marketing-modals/delete-promotion-modal.jsp">
+  <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+<jsp:include page="includes/modals/manage-marketing-modals/add-advertisement-modal.jsp">
+  <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+<jsp:include page="includes/modals/manage-marketing-modals/edit-advertisement-modal.jsp">
+  <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+<jsp:include page="includes/modals/manage-marketing-modals/delete-advertisement-modal.jsp">
+  <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Initialize Bootstrap modals
+  const addPromotionModal = new bootstrap.Modal(document.getElementById('addPromotionModal'));
+  const editPromotionModal = new bootstrap.Modal(document.getElementById('editPromotionModal'));
+  const deletePromotionModal = new bootstrap.Modal(document.getElementById('deletePromotionModal'));
+  const addAdvertisementModal = new bootstrap.Modal(document.getElementById('addAdvertisementModal'));
+  const editAdvertisementModal = new bootstrap.Modal(document.getElementById('editAdvertisementModal'));
+  const deleteAdvertisementModal = new bootstrap.Modal(document.getElementById('deleteAdvertisementModal'));
+
+  function openAddPromotionModal() {
+    addPromotionModal.show();
+  }
+
+  function closeAddPromotionModal() {
+    addPromotionModal.hide();
+  }
+
+  function openEditPromotionModal(promotionId, code, discount, startDate, endDate, description) {
+    document.getElementById('editPromotionId').value = promotionId;
+    document.getElementById('editPromoCode').value = code;
+    document.getElementById('editDiscount').value = discount;
+    document.getElementById('editStartDate').value = startDate;
+    document.getElementById('editEndDate').value = endDate;
+    document.getElementById('editDescription').value = description;
+    editPromotionModal.show();
+  }
+
+  function closeEditPromotionModal() {
+    editPromotionModal.hide();
+  }
+
+  function openDeletePromotionModal(promotionId, code) {
+    document.getElementById('deletePromotionId').value = promotionId;
+    document.getElementById('deletePromoCode').textContent = code;
+    deletePromotionModal.show();
+  }
+
+  function closeDeletePromotionModal() {
+    deletePromotionModal.hide();
+  }
+
+  function openAddAdvertisementModal() {
+    addAdvertisementModal.show();
+  }
+
+  function closeAddAdvertisementModal() {
+    addAdvertisementModal.hide();
+  }
+
+  function openEditAdvertisementModal(adId, title, content, imageUrl, startDate, endDate, active) {
+    document.getElementById('editAdId').value = adId;
+    document.getElementById('editAdTitle').value = title;
+    document.getElementById('editAdContent').value = content;
+    document.getElementById('editAdStartDate').value = startDate;
+    document.getElementById('editAdEndDate').value = endDate;
+    document.getElementById('editAdActive').value = active;
+
+    // Load current image preview
+    const previewImg = document.getElementById('editAdPreview');
+    const contextPath = '${pageContext.request.contextPath}'; // Assumes JSP context available
+    if (adId) {
+      previewImg.src = contextPath + '/image?adId=' + adId;
+      previewImg.style.display = 'block'; // Show preview
+    } else {
+      previewImg.style.display = 'none';
+    }
+
+    editAdvertisementModal.show();
+  }
+
+  function closeEditAdvertisementModal() {
+    editAdvertisementModal.hide();
+  }
+
+  function openDeleteAdvertisementModal(adId, title) {
+    document.getElementById('deleteAdId').value = adId;
+    document.getElementById('deleteAdTitle').textContent = title;
+    deleteAdvertisementModal.show();
+  }
+
+  function closeDeleteAdvertisementModal() {
+    deleteAdvertisementModal.hide();
+  }
+</script>
+</body>
+</html>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\manage-orders.jsp
+File type: .jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Admin - Order Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/index.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/admin-styles.css">
+</head>
+<body>
+<div class="admin-container">
+    <!-- Sidebar Navigation -->
+    <jsp:include page="includes/admin_nav_bar.jsp">
+        <jsp:param name="page" value="manageOrders"/>
+    </jsp:include>
+
+    <!-- Main Content Area -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1>Order Management</h1>
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <div>
+                    <div>${sessionScope.USER.firstName} ${sessionScope.USER.lastName}</div>
+                    <div class="text-muted">${sessionScope.USER.email}</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="welcome-content">
+                <h2>Order Management</h2>
+                <p>Manage customer orders, update statuses, and handle cancellations for your platform.</p>
+            </div>
+        </section>
+
+        <!-- Orders Section -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3>Manage Orders</h3>
+                <div class="table-actions">
+                    <!-- No add button for orders, as they are user-generated -->
+                </div>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Order Date</th>
+                    <th>Payment Method</th>
+                    <th>Transaction ID</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:choose>
+                    <c:when test="${not empty requestScope.allOrders}">
+                        <c:forEach var="order" items="${requestScope.allOrders}">
+                            <tr>
+                                <td>${order.orderId}</td>
+                                <td>${order.userId}</td>
+                                <td>$${order.totalAmount}</td>
+                                <td>
+                  <span class="status-badge ${order.status == 'PENDING' ? 'status-pending' : (order.status == 'COMPLETED' || order.status == 'DELIVERED') ? 'status-active' : (order.status == 'CANCELLED' ? 'status-inactive' : 'status-pending')}">
+                          ${order.status}
+                  </span>
+                                </td>
+                                <td>${order.orderDate}</td>
+                                <td>${order.paymentMethod}</td>
+                                <td>${order.transactionId}</td>
+                                <td class="actions">
+                                    <button class="btn btn-edit btn-sm" onclick="openEditOrderModal('${order.orderId}', '${order.status}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-delete btn-sm" onclick="openDeleteOrderModal('${order.orderId}', 'Order #${order.orderId}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <tr>
+                            <td colspan="8" class="text-muted text-center py-4">No orders found.</td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="admin-footer">
+            &copy; 2023 RhythmWave | Admin Panel
+        </footer>
+    </main>
+</div>
+
+<!-- Modals -->
+<jsp:include page="includes/modals/manage-orders-modals/edit-order-modal.jsp">
+    <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+<jsp:include page="includes/modals/manage-orders-modals/delete-order-modal.jsp">
+    <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Initialize Bootstrap modals
+    const editOrderModal = new bootstrap.Modal(document.getElementById('editOrderModal'));
+    const deleteOrderModal = new bootstrap.Modal(document.getElementById('deleteOrderModal'));
+
+    function openEditOrderModal(orderId, status) {
+        document.getElementById('editOrderId').value = orderId;
+        document.getElementById('editStatus').value = status;
+        editOrderModal.show();
+    }
+
+    function closeEditOrderModal() {
+        editOrderModal.hide();
+    }
+
+    function openDeleteOrderModal(orderId, orderInfo) {
+        document.getElementById('deleteOrderId').value = orderId;
+        document.getElementById('deleteOrderInfo').textContent = orderInfo;
+        deleteOrderModal.show();
+    }
+
+    function closeDeleteOrderModal() {
+        deleteOrderModal.hide();
+    }
+</script>
+</body>
+</html>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\manage-users.jsp
+File type: .jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Admin - User Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/index.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/admin-styles.css">
+</head>
+<body>
+<div class="admin-container">
+  <!-- Sidebar Navigation -->
+  <jsp:include page="includes/admin_nav_bar.jsp">
+    <jsp:param name="page" value="manage-users"/>
+  </jsp:include>
+
+  <!-- Main Content Area -->
+  <main class="admin-main">
+    <header class="admin-header">
+      <h1>User Management</h1>
+      <div class="user-info">
+        <div class="user-avatar">A</div>
+        <div>
+          <div>${sessionScope.USER.firstName} ${sessionScope.USER.lastName}</div>
+          <div class="text-muted">${sessionScope.USER.email}</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Error Message Display -->
+    <c:if test="${not empty error}">
+      <div class="alert alert-danger"><c:out value="${error}"/></div>
+    </c:if>
+
+    <!-- Users Table -->
+    <div class="table-container">
+      <div class="table-header">
+        <h3>All Users</h3>
+        <div class="table-actions">
+          <button class="btn btn-primary" onclick="openAddUserModal()">
+            <i class="fas fa-plus"></i> Add User
+          </button>
+        </div>
+      </div>
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <c:forEach var="user" items="${requestScope.allUsers}">
+          <tr>
+            <td><c:out value="${user.userId}"/></td>
+            <td>
+              <div><strong><c:out value="${user.firstName} ${user.lastName}"/></strong></div>
+<%--              <div class="text-muted">Joined: 2023-10-15</div>--%>
+            </td>
+            <td><c:out value="${user.email}"/></td>
+            <td>
+              <span class="status-badge ${user.isAdmin() ? 'status-active' : 'status-inactive'}">
+                <c:choose>
+                  <c:when test="${user.isAdmin()}">
+                    <c:choose>
+                      <c:when test="${user.isAdmin()}">
+                        Admin
+                        <c:if test="${not empty user.role}">
+                          (${user.role.roleName})
+                        </c:if>
+                      </c:when>
+                      <c:otherwise>
+                        User
+                      </c:otherwise>
+                    </c:choose>
+                  </c:when>
+                  <c:otherwise>
+                    <c:out value="User"/>
+                  </c:otherwise>
+                </c:choose>
+              </span>
+            </td>
+            <td>
+              <span class="status-badge status-active">Active</span>
+            </td>
+            <td class="actions">
+              <button class="btn btn-edit btn-sm" onclick="openEditModal('<c:out value="${user.userId}"/>', '<c:out value="${user.firstName}"/>', '<c:out value="${user.lastName}"/>', '<c:out value="${user.email}"/>', '<c:out value="${user.isAdmin()}"/>', '<c:out value="${user.isAdmin() && user.getRole() != null ? user.getRole().getRoleName() : ''}"/>')">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button class="btn btn-delete btn-sm" onclick="openDeleteModal('<c:out value="${user.userId}"/>', '<c:out value="${user.firstName} ${user.lastName}"/>')">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
+        </c:forEach>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="admin-footer">
+      &copy; 2023 RhythmWave | Admin Panel
+    </footer>
+  </main>
+</div>
+
+<!-- Add User Modal -->
+<jsp:include page="includes/modals/manage-user-modals/add-user-modal.jsp">
+  <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+
+<!-- Edit User Modal -->
+<jsp:include page="includes/modals/manage-user-modals/edit-user-modal.jsp">
+  <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+
+<!-- Delete User Modal -->
+<jsp:include page="includes/modals/manage-user-modals/delete-user-modal.jsp">
+  <jsp:param name="contextPath" value="${pageContext.request.contextPath}"/>
+</jsp:include>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Initialize Bootstrap modals
+  const addUserModal = new bootstrap.Modal(document.getElementById('addUserModal'));
+  const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+  const deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+
+  function openAddUserModal() {
+    document.getElementById('addUserForm').reset();
+    document.getElementById('addAdminRoleGroup').style.display = 'none';
+    addUserModal.show();
+  }
+
+  function closeAddUserModal() {
+    addUserModal.hide();
+  }
+
+  function openEditModal(userId, firstName, lastName, email, isAdmin, adminRole) {
+    console.log('openEditModal called with:', userId, firstName, lastName, email, isAdmin, adminRole);
+    document.getElementById('editUserId').value = userId;
+    document.getElementById('editFirstName').value = firstName;
+    document.getElementById('editLastName').value = lastName;
+    document.getElementById('editEmail').value = email;
+    document.getElementById('editRole').value = isAdmin === 'true' ? 'admin' : 'user';
+    document.getElementById('editAdminRole').value = adminRole || '';
+    document.getElementById('editAdminRoleGroup').style.display = isAdmin === 'true' ? 'block' : 'none';
+    editUserModal.show();
+  }
+
+  function closeEditModal() {
+    editUserModal.hide();
+  }
+
+  function openDeleteModal(userId, userName) {
+    document.getElementById('deleteUserId').value = userId;
+    document.getElementById('deleteUserName').textContent = userName;
+    deleteUserModal.show();
+  }
+
+  function closeDeleteModal() {
+    deleteUserModal.hide();
+  }
+
+  function toggleAdminRoleField(prefix) {
+    const roleSelect = document.getElementById(prefix + 'Role');
+    const adminRoleGroup = document.getElementById(prefix + 'AdminRoleGroup');
+    adminRoleGroup.style.display = roleSelect.value === 'admin' ? 'block' : 'none';
+  }
+
+  // Client-side validation for forms
+  document.getElementById('editUserForm').addEventListener('submit', function(event) {
+    const role = document.getElementById('editRole').value;
+    const adminRole = document.getElementById('editAdminRole').value;
+    if (role === 'admin' && !adminRole) {
+      event.preventDefault();
+      alert('Please select an admin role.');
+    }
+  });
+
+  document.getElementById('addUserForm').addEventListener('submit', function(event) {
+    const role = document.getElementById('addRole').value;
+    const adminRole = document.getElementById('addAdminRole').value;
+    if (role === 'admin' && !adminRole) {
+      event.preventDefault();
+      alert('Please select an admin role.');
+    }
+  });
+</script>
+</body>
+</html>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\css\admin-styles.css
+File type: .css
+/* Admin-specific styles for manage-users.jsp, manage-marketing.jsp, manage-orders.jsp */
+@import "theme.css";
+
+/* Table Styles */
+.table-container {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    border: 1px solid #333;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.table-header h3 {
+    color: var(--text-primary);
+    font-size: var(--font-size-subheading);
+    margin: 0;
+}
+
+.table-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-primary);
+}
+
+/* Add or modify these styles */
+th, td {
+    padding: 0.875rem;
+    text-align: left;
+    border-bottom: 1px solid #333;
+    font-size: var(--font-size-small);
+    vertical-align: middle; /* Center content vertically */
+    min-height: 100px; /* Match preview-img height */
+}
+
+th {
+    background-color: rgba(42, 42, 42, 0.5);
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+td.actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center; /* Center buttons vertically */
+}
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: var(--font-size-label);
+    height: 100%; /* Fill the cell height */
+    box-sizing: border-box; /* Include padding in height */
+}
+
+tr:hover {
+    background-color: rgba(42, 42, 42, 0.3);
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: var(--font-size-small);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: #000;
+}
+
+.btn-primary:hover {
+    background-color: #9965f4;
+}
+
+.btn-secondary {
+    background-color: #2a2a2a;
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background-color: #3a3a3a;
+}
+
+.btn-edit {
+    background-color: var(--secondary);
+    color: #000;
+}
+
+.btn-edit:hover {
+    background-color: #02b3a1;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+}
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: var(--font-size-label);
+}
+
+/* Modal Styles */
+.modal-content {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid #333;
+    border-radius: var(--border-radius);
+}
+
+.modal-header {
+    border-bottom: 1px solid #333;
+    padding: 1.25rem 1.5rem;
+}
+
+.modal-title {
+    color: var(--text-primary);
+    font-size: var(--font-size-subheading);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #333;
+    padding: 1.25rem 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-size: var(--font-size-label);
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #444;
+    border-radius: var(--border-radius);
+    background-color: #2a2a2a;
+    color: var(--text-primary);
+    font-size: var(--font-size-small);
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(187, 134, 252, 0.25);
+    outline: none;
+}
+
+/* Image Preview */
+.preview-img {
+    width: 100px;
+    height: 60px;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+    border: 1px solid #333;
+    vertical-align: middle; /* Align image with other content */
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: var(--font-size-label);
+    font-weight: 500;
+}
+
+.status-active {
+    background-color: rgba(3, 218, 198, 0.2);
+    color: var(--secondary);
+}
+
+.status-inactive {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+.status-pending {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+}
+
+/* Image Preview */
+.image-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: var(--border-radius);
+    object-fit: cover;
+    border: 1px solid #333;
+}
+
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\css\index.css
+File type: .css
+/* General application styles from index.css */
+@import "theme.css";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+}
+
+/* Admin Layout Styles */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--card-bg);
+    border-right: 1px solid #333;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1000;
+    transition: var(--transition);
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #333;
+    text-align: center;
+}
+
+.sidebar-header h2 {
+    color: var(--primary);
+    font-size: var(--font-size-subheading);
+    margin: 0;
+}
+
+.sidebar-nav {
+    padding: 1rem 0;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.875rem 1.5rem;
+    transition: var(--transition);
+    font-size: var(--font-size-small);
+}
+
+.sidebar-nav a:hover, .sidebar-nav a.active {
+    background-color: rgba(187, 134, 252, 0.1);
+    color: var(--primary);
+    border-left: 3px solid var(--primary);
+}
+
+.sidebar-nav i {
+    width: 20px;
+    text-align: center;
+}
+
+.admin-main {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 1.5rem;
+    transition: var(--transition);
+}
+
+.admin-header {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-header h1 {
+    color: var(--text-primary);
+    font-size: var(--font-size-heading);
+    margin: 0;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: bold;
+}
+
+/* Dashboard Styles */
+.welcome-section {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.welcome-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.welcome-icon i {
+    font-size: 2rem;
+    color: #000;
+}
+
+.welcome-content h2 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.welcome-content p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    border: 1px solid #333;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    border-color: var(--primary);
+}
+
+.card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(187, 134, 252, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.card-icon i {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
+.card-title {
+    font-size: var(--font-size-subheading);
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.card-description {
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+    margin-bottom: 1rem;
+}
+
+.card-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: var(--font-size-small);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.card-link:hover {
+    color: var(--secondary);
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(187, 134, 252, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-icon i {
+    font-size: 1.25rem;
+    color: var(--primary);
+}
+
+.stat-content h3 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.stat-content p {
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+    margin: 0;
+}
+
+/* Footer */
+.admin-footer {
+    background-color: #1a1a1a;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-small);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .admin-sidebar.active {
+        transform: translateX(0);
+    }
+
+    .admin-main {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome-section {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\css\theme.css
+File type: .css
+/* theme.css - Updated with proper font sizes */
+:root {
+    --dark-bg: #121212;
+    --card-bg: #1e1e1e;
+    --primary: #bb86fc;
+    --secondary: #03dac6;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --placeholder-color: #888;
+    --font-size-base: 1rem;
+    --font-size-heading: 1.5rem;
+    --font-size-subheading: 1.25rem;
+    --font-size-small: 0.875rem;
+    --font-size-label: 0.8rem;
+    --border-radius: 8px;
+    --sidebar-width: 250px;
+    --header-height: 70px;
+    --transition: all 0.3s ease;
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\admin_nav_bar.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="page" value="${param.page}" />
+
+<nav class="admin-sidebar">
+  <div class="sidebar-header">
+    <h2>RhythmWave Admin</h2>
+  </div>
+  <div class="sidebar-nav">
+    <c:if test="${sessionScope.USER != null}">
+      <a href="${pageContext.request.contextPath}/admin/index.jsp" class="${empty page ? 'active' : ''}">
+        <i class="fas fa-tachometer-alt"></i>
+        Dashboard
+      </a>
+
+      <c:if test="${sessionScope.USER.role != null && sessionScope.USER.role.roleName eq 'super_admin'}">
+        <a href="${pageContext.request.contextPath}/manage-users" class="${page eq 'manage-users' ? 'active' : ''}">
+          <i class="fas fa-users-cog"></i>
+          User Management
+        </a>
+      </c:if>
+
+      <c:if test="${sessionScope.USER.role != null && (sessionScope.USER.role.roleName eq 'super_admin' ||
+       sessionScope.USER.role.roleName eq 'finance_manager')}">
+        <a href="${pageContext.request.contextPath}/manageOrders" class="${page eq 'manageOrders' ? 'active' : ''}">
+          <i class="fas fa-users-cog"></i>
+          Order Management
+        </a>
+      </c:if>
+
+      <c:if test="${sessionScope.USER.role != null && (sessionScope.USER.role.roleName eq 'super_admin' ||
+       sessionScope.USER.role.roleName eq 'marketing_manager')}">
+        <a href="${pageContext.request.contextPath}/manage-marketing" class="${page eq 'manage-marketing' ? 'active' : ''}">
+          <i class="fas fa-chart-bar"></i>
+          Marketing Management
+        </a>
+      </c:if>
+
+      <a href="${pageContext.request.contextPath}/logout" class="${page eq 'logout' ? 'active' : ''}">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+      </a>
+    </c:if>
+  </div>
+</nav>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-marketing-modals\add-advertisement-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="addAdvertisementModal" tabindex="-1" aria-labelledby="addAdvertisementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAdvertisementModalLabel">Add New Advertisement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addAdvertisementForm" action="${contextPath}/add-advertisement" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="ad_add">
+                    <div class="form-group">
+                        <label for="addAdTitle">Title</label>
+                        <input type="text" class="form-control" id="addAdTitle" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addAdContent">Content</label>
+                        <input type="text" class="form-control" id="addAdContent" name="content" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addAdImage" class="form-label">Image</label>
+                        <input type="file" class="form-control" id="addAdImage" name="imageFile" accept="image/png,image/jpeg,image/jpg">
+                    </div>
+                    <div class="form-group">
+                        <label for="addAdStartDate">Start Date</label>
+                        <input type="date" class="form-control" id="addAdStartDate" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addAdEndDate">End Date</label>
+                        <input type="date" class="form-control" id="addAdEndDate" name="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addAdActive">Active</label>
+                        <select class="form-control" id="addAdActive" name="active" required>
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Advertisement</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-marketing-modals\add-promotion-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPromotionModalLabel">Add New Promotion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addPromotionForm" action="${contextPath}/add-promotion" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="add">
+                    <div class="form-group">
+                        <label for="addPromoCode">Code</label>
+                        <input type="text" class="form-control" id="addPromoCode" name="code" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDiscount">Discount</label>
+                        <input type="number" class="form-control" id="addDiscount" name="discount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addStartDate">Start Date</label>
+                        <input type="date" class="form-control" id="addStartDate" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addEndDate">End Date</label>
+                        <input type="date" class="form-control" id="addEndDate" name="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addDescription">Description</label>
+                        <input type="text" class="form-control" id="addDescription" name="description" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Promotion</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-marketing-modals\delete-advertisement-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="deleteAdvertisementModal" tabindex="-1" aria-labelledby="deleteAdvertisementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAdvertisementModalLabel">Delete Advertisement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="deleteAdvertisementForm" action="${contextPath}/delete-advertisement" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="deleteAdId" name="adId">
+                    <input type="hidden" name="action" value="ad_delete">
+                    <p>Are you sure you want to delete advertisement <strong id="deleteAdTitle"></strong>?</p>
+                    <p class="text-muted">This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-marketing-modals\delete-promotion-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="deletePromotionModal" tabindex="-1" aria-labelledby="deletePromotionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deletePromotionModalLabel">Delete Promotion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="deletePromotionForm" action="${contextPath}/delete-promotion" method="POST">
+        <div class="modal-body">
+          <input type="hidden" id="deletePromotionId" name="promotionId">
+          <input type="hidden" name="action" value="delete">
+          <p>Are you sure you want to delete promotion <strong id="deletePromoCode"></strong>?</p>
+          <p class="text-muted">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-marketing-modals\edit-advertisement-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="editAdvertisementModal" tabindex="-1" aria-labelledby="editAdvertisementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAdvertisementModalLabel">Edit Advertisement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editAdvertisementForm" action="${contextPath}/update-advertisement" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" id="editAdId" name="adId">
+                    <input type="hidden" name="action" value="ad_update">
+                    <div class="form-group">
+                        <label for="editAdTitle">Title</label>
+                        <input type="text" class="form-control" id="editAdTitle" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAdContent">Content</label>
+                        <input type="text" class="form-control" id="editAdContent" name="content" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAdImage">Image</label>
+                        <div class="custom-file-upload">
+                            <input type="file" id="editAdImage" name="imageFile" accept="image/png,image/jpeg,image/jpg">
+                            <label for="editAdImage">
+                                <span class="file-name">No file chosen</span>
+                                <span class="btn">Choose File</span>
+                            </label>
+                        </div>
+                        <!-- New: Image Preview -->
+                        <div id="editAdPreviewContainer" class="mt-2" style="display: none;">
+                            <label class="form-label">Current Image:</label>
+                            <img id="editAdPreview" src="" class="img-thumbnail" style="max-width: 200px; max-height: 200px;" alt="Current Ad Image">
+                            <small class="text-muted">Choose a new file to replace it.</small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAdStartDate">Start Date</label>
+                        <input type="date" class="form-control" id="editAdStartDate" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAdEndDate">End Date</label>
+                        <input type="date" class="form-control" id="editAdEndDate" name="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAdActive">Active</label>
+                        <select class="form-control" id="editAdActive" name="active" required>
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('editAdImage').addEventListener('change', function() {
+        const fileName = this.files.length > 0 ? this.files[0].name : 'No file chosen';
+        this.nextElementSibling.querySelector('.file-name').textContent = fileName;
+    });
+</script>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-marketing-modals\edit-promotion-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="editPromotionModal" tabindex="-1" aria-labelledby="editPromotionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPromotionModalLabel">Edit Promotion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editPromotionForm" action="${contextPath}/update-promotion" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="editPromotionId" name="promotionId">
+                    <input type="hidden" name="action" value="update">
+                    <div class="form-group">
+                        <label for="editPromoCode">Code</label>
+                        <input type="text" class="form-control" id="editPromoCode" name="code" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDiscount">Discount</label>
+                        <input type="number" class="form-control" id="editDiscount" name="discount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStartDate">Start Date</label>
+                        <input type="date" class="form-control" id="editStartDate" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEndDate">End Date</label>
+                        <input type="date" class="form-control" id="editEndDate" name="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescription">Description</label>
+                        <input type="text" class="form-control" id="editDescription" name="description" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-orders-modals\delete-order-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="deleteOrderModal" tabindex="-1" aria-labelledby="deleteOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteOrderModalLabel">Delete Order</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="deleteOrderForm" action="${contextPath}/manageOrders" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="deleteOrderId" name="orderId">
+                    <input type="hidden" name="action" value="delete">
+                    <p>Are you sure you want to delete <strong id="deleteOrderInfo"></strong>?</p>
+                    <p class="text-muted">This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-orders-modals\edit-order-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editOrderModalLabel">Edit Order Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editOrderForm" action="${contextPath}/manageOrders" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="editOrderId" name="orderId">
+                    <input type="hidden" name="action" value="update_status">
+                    <div class="form-group">
+                        <label for="editStatus">Status</label>
+                        <select class="form-control" id="editStatus" name="status" required>
+                            <option value="PENDING">Pending</option>
+                            <option value="PROCESSING">Processing</option>
+                            <option value="SHIPPED">Shipped</option>
+                            <option value="DELIVERED">Delivered</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-user-modals\add-user-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="addUserForm" action="${contextPath}/add-user" method="POST">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="addFirstName">First Name</label>
+            <input type="text" class="form-control" id="addFirstName" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label for="addLastName">Last Name</label>
+            <input type="text" class="form-control" id="addLastName" name="lastName" required>
+          </div>
+          <div class="form-group">
+            <label for="addEmail">Email</label>
+            <input type="email" class="form-control" id="addEmail" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="addPassword">Password</label>
+            <input type="password" class="form-control" id="addPassword" name="password" required>
+          </div>
+          <div class="form-group">
+            <label for="addRole">Role</label>
+            <select class="form-control" id="addRole" name="role" required onchange="toggleAdminRoleField('add')">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="form-group" id="addAdminRoleGroup" style="display: none;">
+            <label for="addAdminRole">Admin Role</label>
+            <select class="form-control" id="addAdminRole" name="adminRole">
+              <option value="">Select Admin Role</option>
+              <c:forEach var="role" items="${adminRoles}">
+                <option value="${role}">${role}</option>
+              </c:forEach>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-user-modals\delete-user-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">Delete User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="deleteUserForm" action="${contextPath}/delete-user" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="deleteUserId" name="userId">
+                    <p>Are you sure you want to delete user <strong id="deleteUserName"></strong>?</p>
+                    <p class="text-muted">This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\admin\includes\modals\manage-user-modals\edit-user-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editUserForm" action="${contextPath}/update-user" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="editUserId" name="userId">
+                    <div class="form-group">
+                        <label for="editFirstName">First Name</label>
+                        <input type="text" class="form-control" id="editFirstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editLastName">Last Name</label>
+                        <input type="text" class="form-control" id="editLastName" name="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" class="form-control" id="editEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editRole">Role</label>
+                        <select class="form-control" id="editRole" name="role" required onchange="toggleAdminRoleField('edit')">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="editAdminRoleGroup" style="display: none;">
+                        <label for="editAdminRole">Admin Role</label>
+                        <select class="form-control" id="editAdminRole" name="adminRole">
+                            <option value="">Select Admin Role</option>
+                            <c:forEach var="role" items="${adminRoles}">
+                                <option value="${role}">${role}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPassword">Password</label>
+                        <input type="password" class="form-control" id="editPassword" name="editPassword" placeholder="New Password (leave blank to keep unchanged)">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\animations.css
+File type: .css
+/* ==========================================================================
+   MODERN ANIMATIONS
+   ========================================================================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(139, 92, 246, 0.8);
+    }
+}
+
+/* Animation Classes */
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.6s ease-out;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.4s ease-out;
+}
+
+.animate-glow {
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* Staggered animations for cards */
+.compact-music-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.compact-music-card:nth-child(odd) {
+    animation-delay: 0.1s;
+}
+
+.compact-music-card:nth-child(even) {
+    animation-delay: 0.2s;
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\index.css
+File type: .css
+@import "theme.css";
+@import "modules/_base.css";
+@import "modules/_navbar.css";
+@import "modules/_banner.css";
+@import "modules/_layout.css";
+@import "modules/_modal.css";
+@import "modules/_search.css";
+@import "modules/_components.css";
+@import "animations.css";
+@import "modules/_responsive.css";  /* Last for overrides */
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\login.css
+File type: .css
+@import "theme.css";
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box; /* Ensures consistent box model */
+}
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding: 2rem;
+}
+.auth-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    transition: box-shadow 0.3s ease; /* Smooth hover effect */
+}
+.auth-card:hover {
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6); /* Subtle elevation on hover */
+}
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.auth-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease; /* Icon animation */
+}
+.auth-icon:hover {
+    transform: scale(1.1); /* Slight scale on hover for interactivity */
+}
+.form-control {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+    box-sizing: border-box;
+}
+.password-input-group .form-control {
+    padding-right: 3rem; /* Extra space for password toggle to prevent overlap */
+}
+.form-control:focus {
+    background-color: #2a2a2a;
+    color: var(--text-primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(187, 134, 252, 0.25);
+}
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    color: #000;
+    padding: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease; /* Smooth hover /
+width: 100%; / Full width for better UX on forms */
+}
+.btn-primary:hover {
+    background-color: #9965f4;
+}
+.form-check-input {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    transition: background-color 0.3s ease;
+}
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+.form-control::placeholder {
+    color: var(--placeholder-color);
+    opacity: 1;
+}
+.form-control:-ms-input-placeholder {
+    color: var(--placeholder-color);
+}
+.form-control::-ms-input-placeholder {
+    color: var(--placeholder-color);
+}
+.password-toggle {
+    cursor: pointer;
+    position: absolute;
+    right: 12px;
+    top: 70%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.password-toggle:hover {
+    color: var(--primary); /* Highlight on hover */
+}
+.password-input-group {
+    position: relative;
+}
+.footer {
+    background-color: #1a1a1a;
+    padding: 1.5rem 0;
+    margin-top: auto;
+    text-align: center;
+}
+.footer-links {
+    margin-top: 0.5rem;
+}
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+.footer-links a:hover {
+    color: var(--primary);
+}
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .auth-container {
+        padding: 1rem;
+    }
+    .auth-card {
+        padding: 2rem 1.5rem;
+        margin: 0 1rem;
+    }
+    .auth-icon {
+        font-size: 2rem;
+    }
+    .btn-primary {
+        padding: 0.875rem;
+        font-size: 1.1rem; /* Slightly larger for touch targets */
+    }
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\navbar.css
+File type: .css
+/* navbar.css */
+
+/* Base styles (minimal, assuming theme.css is loaded) */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: rgba(18, 18, 18, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #333;
+}
+
+/* Button overrides for Bootstrap classes used in navbar */
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    color: #000;
+}
+
+.btn-primary:hover {
+    background-color: #9965f4;
+}
+
+.btn-outline-primary {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    color: #000;
+}
+
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.8);
+    color: #fff;
+}
+
+/* Search form styles */
+.input-group .form-control {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    color: var(--text-primary);
+}
+
+.input-group .form-control:focus {
+    background-color: #2a2a2a;
+    color: var(--text-primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(187, 134, 252, 0.25);
+}
+
+/* Enhanced Cart Badge Styles */
+.cart-badge {
+    background: linear-gradient(135deg, var(--primary), #7c3aed); /* Gradient for depth */
+    color: #000;
+    border-radius: 12px; /* Pill shape */
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4); /* Subtle glow */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    min-width: 24px; /* Ensures consistent size */
+}
+
+.cart-badge:empty {
+    display: none;
+}
+
+.cart-badge.updated {
+    animation: pulseBadge 0.6s ease-in-out;
+}
+
+@keyframes pulseBadge {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Navbar-specific: Absolute overlay on cart icon */
+.navbar .cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+}
+
+/* Responsive for navbar badge */
+@media (max-width: 768px) {
+    .cart-badge {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+        top: -6px;
+        right: -6px;
+    }
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\order-details.css
+File type: .css
+/* order-details.css */
+
+/* Base styles */
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar styles (minimal for included navbar) */
+.navbar {
+    background-color: rgba(18, 18, 18, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #333;
+}
+
+/* Button overrides for Bootstrap classes used */
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    color: #000;
+}
+
+.btn-primary:hover {
+    background-color: #9965f4;
+}
+
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.8);
+    color: #fff;
+}
+
+/* Order-specific container */
+.order-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Order header */
+.order-header {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #333;
+    text-align: center;
+}
+
+.order-header h1 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.order-header p {
+    color: var(--text-secondary);
+}
+
+/* Cart items and summary sections */
+.cart-items-section, .order-summary {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #333;
+}
+
+/* Cart item layout */
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #333;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+/* Item image placeholder */
+.item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    background-color: #333;
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+/* Item details */
+.item-details h5 {
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.item-details p {
+    margin-bottom: 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-small);
+}
+
+/* Item price */
+.item-price {
+    margin-left: auto;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+/* Summary rows */
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+}
+
+.summary-row.total {
+    border-top: 1px solid #333;
+    font-weight: bold;
+    font-size: var(--font-size-subheading);
+}
+
+/* Checkout button */
+.btn-checkout {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #000;
+    font-weight: 500;
+}
+
+.btn-checkout:hover {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: #000;
+}
+
+/* Empty cart state */
+.empty-cart {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+}
+
+.empty-cart i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\signup.css
+File type: .css
+@import "theme.css";
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: linear-gradient(to bottom, #1a1a1a, #2d2d2d);
+}
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding: 2rem;
+}
+
+.auth-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.auth-icon {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    color: var(--text-primary);
+    padding: 0.85rem 2.5rem 0.85rem 1.2rem;
+    font-size: 1.05rem;
+}
+
+.form-control:focus {
+    background-color: #2a2a2a;
+    color: var(--text-primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.3rem rgba(187, 134, 252, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--placeholder-color);
+    opacity: 1;
+}
+
+.form-control:-ms-input-placeholder {
+    color: var(--placeholder-color);
+}
+
+.form-control::-ms-input-placeholder {
+    color: var(--placeholder-color);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    color: #000;
+    padding: 0.9rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    transition: all 0.3s;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.btn-primary:hover {
+    background-color: #9965f4;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(187, 134, 252, 0.4);
+}
+
+.form-check-input {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.15em;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.form-check-label {
+    margin-left: 0.5em;
+}
+
+.password-input-group {
+    position: relative;
+}
+
+.password-toggle {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 70%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 10px;
+}
+
+.footer {
+    background-color: #1a1a1a;
+    padding: 1.5rem 0;
+    margin-top: auto;
+    text-align: center;
+}
+
+.footer-links {
+    margin-top: 0.5rem;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin: 0 12px;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.terms-text {
+    margin-left: 1.8rem;
+    margin-top: 0.5rem;
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\theme.css
+File type: .css
+/* ==========================================================================
+   ENHANCED THEME VARIABLES - Spotify-Inspired Vibrant Dark Mode
+   ========================================================================== */
+:root {
+    /* Vibrant Primary Palette - Energetic Green for Music Energy */
+    --primary: #8A2BE2; /* Spotify's iconic green for calls-to-action and highlights */
+    --primary-hover: #A155E7; /* Lighter green for hover states */
+
+    /* Background Colors - Deep Grays for Immersive Dark Mode */
+    --dark-bg: #121212; /* Primary dark background, reduces eye strain */
+    --card-bg: #181818; /* Slightly lighter for cards and surfaces */
+    --card-hover: #282828; /* Subtle hover state for interactivity */
+    --surface: rgba(69, 21, 113, 0.08); /* Subtle green-tinted overlay for depth */
+
+    /* Text Colors - High Contrast Grays for Readability */
+    --text-primary: #ffffff; /* Crisp white for main text */
+    --text-secondary: #b3b3b3; /* Medium gray for secondary info */
+    --text-muted: #535353; /* Darker gray for subtle elements */
+
+    /* Borders - Minimalist with Low Opacity */
+    --border-light: rgba(255, 255, 255, 0.08);
+    --border-medium: rgba(255, 255, 255, 0.12);
+
+    /* Shadows - Soft with Green Glow for Modern Feel */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(69, 21, 113, 0.15); /* Green-tinted for cohesion */
+    --shadow-lg: 0 8px 32px rgba(69, 21, 113, 0.1);
+
+    /* Gradients for Dynamic Music Vibes */
+    --gradient-primary: linear-gradient(135deg, var(--primary), #D0AAF3);
+    --gradient-hover: linear-gradient(135deg, var(--primary-hover), #290C43);
+
+    /* Transitions - Smooth for Fluid Interactions */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s ease;
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\modules\_banner.css
+File type: .css
+/* ==========================================================================
+   ENHANCED BANNER - Vibrant & Immersive Music Hero with Blurred Blobs
+   ========================================================================== */
+.compact-banner {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--gradient-primary) 50%, var(--dark-bg) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    padding: clamp(60px, 8vw, 120px) 24px clamp(40px, 6vw, 60px);
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border-light);
+    position: relative;
+    overflow: hidden;
+}
+
+.compact-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    animation: float 20s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Blurred Blobs - Abstract, Organic Shapes for Depth */
+.blob {
+    position: absolute;
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    filter: blur(30px);
+    opacity: 0.4;
+    animation: blobFloat 25s ease-in-out infinite reverse;
+    z-index: 0;
+}
+
+/* Use radial-gradient for more organic blob feel */
+.blob-1 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle at 30% 30%, var(--primary) 0%, transparent 70%);
+    top: 20%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.blob-2 {
+    width: 350px;
+    height: 200px;
+    background: radial-gradient(ellipse at 70% 20%, #1ed760 0%, transparent 60%);
+    top: 60%;
+    right: 10%;
+    border-radius: 40% 60% 50% 30% / 30% 70% 40% 60%;
+    animation-delay: -5s;
+    animation-duration: 30s;
+}
+
+.blob-3 {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle at 20% 80%, #00d4aa 0%, transparent 65%);
+    bottom: 20%;
+    left: 20%;
+    border-radius: 50% 70% 40% 60% / 60% 40% 70% 30%;
+    animation-delay: -10s;
+}
+
+.compact-banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.compact-banner h1 {
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 1s ease-out;
+}
+
+.compact-banner p {
+    font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    font-weight: 400;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+/* Optional CTA Button - Add to HTML for enhanced engagement */
+.compact-banner .cta-btn {
+    display: inline-block;
+    padding: 14px 28px;
+    background: var(--gradient-primary);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-md);
+    animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.compact-banner .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(29, 185, 84, 0.3);
+    background: var(--gradient-hover);
+}
+
+/* Keyframe Animations */
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+@keyframes blobFloat {
+    0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    33% { transform: translate(30px, -30px) rotate(120deg) scale(1.1); }
+    66% { transform: translate(-20px, 20px) rotate(240deg) scale(0.9); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+    .compact-banner {
+        padding: clamp(40px, 6vw, 80px) 16px clamp(20px, 4vw, 40px);
+    }
+
+    .blob {
+        filter: blur(20px); /* Reduce blur on mobile for performance */
+    }
+
+    .compact-banner h1 {
+        margin-bottom: 12px;
+        letter-spacing: -0.01em;
+    }
+
+    .compact-banner p {
+        margin-bottom: 24px;
+    }
+
+    .compact-banner .cta-btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+    }
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\modules\_base.css
+File type: .css
+/* ==========================================================================
+   CLEAN BASE STYLES
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Clean Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Clean Button Styles */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    border: none;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: 1px solid var(--primary);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-outline-primary {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.btn-outline-light {
+    border: 1px solid var(--border-medium);
+    color: var(--text-primary);
+    background: transparent;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: aliceblue;
+    border-color: var(--text-secondary);
+}
+
+/* Form Controls */
+.form-control {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    border-radius: 6px;
+    padding: 8px 12px;
+    transition: all var(--transition-fast);
+}
+
+.form-control:focus {
+    background: var(--card-bg);
+    border-color: var(--primary);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\modules\_components.css
+File type: .css
+/* ==========================================================================
+   COMPONENTS: View Buttons
+   ========================================================================== */
+.view-controls {
+    display: flex;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.view-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.view-btn.active,
+.view-btn:hover {
+    background: var(--primary);
+    color: #000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(187, 134, 252, 0.3);
+}
+
+.view-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+}
+
+/* Tooltip for view buttons */
+.view-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 1000;
+}
+
+.view-btn:hover::after {
+    opacity: 1;
+}
+/* ==========================================================================
+   COMPONENTS: Music Cards (Grid) - Updated Layout
+   ========================================================================== */
+.compact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 24px;
+    padding: 0 16px;
+}
+
+.compact-music-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.compact-music-card:hover {
+    background: #282828;
+    transform: translateY(-4px);
+}
+
+.list-view .compact-music-card:hover {
+    transform: none;
+    background: #282828;
+}
+
+.album-cover-container {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.compact-album-cover {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Remove hover actions from album cover */
+.card-hover-actions {
+    display: none; /* We'll move these to the bottom */
+}
+
+/* New layout for card content with price and buttons side by side */
+.compact-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.compact-card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+.compact-card-artist {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+/* New row for price and buttons */
+.compact-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.price-tag-sm {
+    font-size: 0.9rem;
+    color: var(--primary);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Button container for play and cart */
+.compact-card-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Play & Cart Buttons (Small) - Updated */
+.play-btn-sm,
+.cart-btn-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   COMPONENTS: Footer - Minimal Design
+   ========================================================================== */
+.footer {
+    background: var(--card-bg);
+    border-top: 1px solid var(--border-light);
+    padding: 30px 0; /* Reduced padding */
+    margin-top: 40px; /* Reduced margin */
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px; /* Tighter spacing */
+    text-align: center;
+}
+
+.footer-brand {
+    font-size: 1.25rem; /* Smaller font */
+    font-weight: 700;
+    color: var(--text-primary); /* Simpler color, no gradient */
+}
+
+.footer-text {
+    color: var(--text-secondary);
+    font-size: 0.85rem; /* Smaller font */
+    line-height: 1.4;
+    max-width: 400px; /* Slightly wider for balance */
+    margin: 0;
+}
+
+.social-links {
+    display: flex;
+    gap: 8px; /* Smaller gap */
+    margin: 8px 0;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; /* Smaller size */
+    height: 32px;
+    background: transparent; /* No background */
+    color: var(--text-secondary);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border: 1px solid var(--border-light);
+}
+
+.social-link:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-1px); /* Subtle hover effect */
+}
+
+.footer-copy {
+    color: var(--text-muted);
+    font-size: 0.8rem; /* Smaller font */
+    margin: 0;
+}
+
+/* ==========================================================================
+   COMPONENTS: Pagination - Consistent with Dark Theme
+   ========================================================================== */
+.music-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 40px 0;
+    padding: 0 16px;
+}
+
+.pagination-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: var(--primary);
+    color: #000;
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.pagination-btn.active {
+    background: var(--primary);
+    color: #000;
+    border-color: var(--primary);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.pagination-btn i {
+    font-size: 0.75rem;
+}
+
+/* Page Numbers Container */
+.page-numbers {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.page-numbers .pagination-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+    padding: 0;
+}
+
+/* Ellipsis for Long Lists */
+.ellipsis {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    padding: 0 8px;
+    align-self: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .music-pagination {
+        gap: 6px;
+        margin: 30px 0;
+        padding: 0 8px;
+    }
+
+    .pagination-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.8rem;
+    }
+
+    .page-numbers .pagination-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+
+    .ellipsis {
+        padding: 0 6px;
+        font-size: 0.8rem;
+    }
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\modules\_layout.css
+File type: .css
+/* ==========================================================================
+   CLEAN LAYOUT & SECTIONS
+   ========================================================================== */
+.content-wrapper {
+    display: flex;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 40px auto;
+    align-items: flex-start;
+    justify-content: center; /* Center the content horizontally */
+}
+
+.ad-sidebar {
+    flex: 0 0 240px; /* Fixed width for 240x600 ads */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: fit-content;
+}
+
+.ad-banner {
+    display: block; /* Ensure the anchor tag is block-level for image */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-fast);
+    border: 1px solid var(--border-light);
+}
+
+.ad-banner:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.ad-image {
+    width: 240px;
+    height: 600px;
+    object-fit: cover;
+    display: block;
+}
+
+.main-content {
+    flex: 1;
+    max-width: 900px;
+    padding: clamp(30px, 5vw, 1px) 0;
+    margin: 0 auto; /* Center the main content */
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 0 16px;
+    gap: 16px;
+}
+
+.section-header h2 {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+/* Clean View Controls */
+.view-controls {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+}
+
+.view-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.view-btn.active,
+.view-btn:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+.view-btn:focus {
+    outline: none;
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\modules\_modal.css
+File type: .css
+/* ==========================================================================
+   MODALS: Cart
+   ========================================================================== */
+.cart-modal .modal-content {
+    background: linear-gradient(145deg, var(--card-bg), #1a1a1a);
+    color: var(--text-primary);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.cart-modal .modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem 2rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.cart-modal .modal-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.cart-modal .modal-body {
+    padding: 2rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) rgba(0, 0, 0, 0.2);
+}
+
+.cart-modal .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cart-modal .modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.cart-modal .modal-body::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+.cart-modal .modal-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem 2rem;
+    background: rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.cart-modal .btn-close {
+    filter: invert(1);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+}
+
+.cart-modal .btn-close:hover {
+    opacity: 1;
+}
+
+/* Cart Items */
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 0 -1rem;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item-img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.cart-item:hover .cart-item-img {
+    transform: scale(1.05);
+}
+
+.cart-item-details {
+    flex-grow: 1;
+    text-align: left;
+    min-width: 0;
+    padding-right: 1rem;
+}
+
+.cart-item-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+}
+
+.cart-item-artist {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cart-item-price {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.cart-item-remove {
+    color: #dc3545;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 0.75rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-item-remove:hover {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Cart Summary */
+.cart-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 200px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.cart-total {
+    font-weight: 800;
+    color: var(--primary);
+    text-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+}
+
+/* Empty State */
+.cart-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+}
+
+.cart-empty i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: block;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.cart-empty p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Cart Badge in Modal */
+.modal .cart-badge {
+    background: linear-gradient(135deg, var(--primary), #7c3aed);
+    color: #000;
+    border-radius: 12px;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-left: 0.5rem;
+}
+
+/* Modal Button Styles */
+.cart-modal .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.cart-modal .btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #000;
+}
+
+.cart-modal .btn-primary:hover {
+    background-color: #9965f4;
+    border-color: #9965f4;
+    color: #000;
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\modules\_navbar.css
+File type: .css
+/* ==========================================================================
+   CLEAN NAVIGATION
+   ========================================================================== */
+.navbar {
+    background: rgba(17, 16, 16, 0.98);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-light);
+    padding: 0.75rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.navbar-brand i {
+    color: var(--primary);
+}
+
+.navbar-nav {
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-secondary);
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    transition: all var(--transition-fast);
+    font-size: 0.875rem;
+    margin: 0 0.125rem;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: var(--text-primary);
+    background: var(--surface);
+}
+
+.navbar-nav .nav-link.active {
+    color: var(--primary);
+}
+
+/* Clean Search Bar */
+.input-group {
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    max-width: 280px;
+    margin: 0 1rem;
+}
+
+.input-group:focus-within {
+    border-color: var(--primary);
+}
+
+.input-group .form-control {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.input-group .form-control:focus {
+    box-shadow: none;
+    background: transparent;
+}
+
+.input-group .btn {
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+}
+
+.input-group .btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+/* Navbar Actions */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.navbar-actions .btn {
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* Cart Button */
+.cart-btn-nav {
+    position: relative;
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--border-medium);
+    color: var(--text-primary);
+    border-radius: 6px;
+    transition: all var(--transition-fast);
+}
+
+.cart-btn-nav:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--text-secondary);
+}
+
+.cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border: 2px solid var(--dark-bg);
+}
+
+.cart-badge:empty {
+    display: none;
+}
+
+/* User Actions */
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Mobile Styles */
+@media (max-width: 991.98px) {
+    .navbar-nav {
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+
+    .navbar-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .navbar-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .input-group {
+        margin: 0.5rem 0;
+        max-width: 100%;
+    }
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\modules\_responsive.css
+File type: .css
+/* ==========================================================================
+   RESPONSIVE DESIGN - Music Cards & Layout
+   ========================================================================== */
+@media (max-width: 992px) {
+    .content-wrapper {
+        flex-direction: column;
+        gap: 0;
+        max-width: 1200px;
+        justify-content: center;
+    }
+
+    .ad-sidebar {
+        display: none; /* Hide ads on tablet and mobile sizes */
+    }
+
+    .main-content {
+        max-width: 900px;
+        margin: 0 auto; /* Keep centered */
+        padding: clamp(30px, 5vw, 60px) 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .compact-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 16px;
+        padding: 0;
+    }
+
+    .compact-card-footer {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .compact-card-actions {
+        gap: 4px;
+    }
+
+    .play-btn-sm,
+    .cart-btn-sm {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+
+    /* List view mobile adjustments */
+    .list-view .compact-music-card {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .list-view .album-cover-container {
+        width: 50px;
+        height: 50px;
+    }
+
+    .list-view .compact-album-cover {
+        width: 50px;
+        height: 50px;
+    }
+
+    .list-view .compact-card-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .list-view .compact-card-footer {
+        width: 100%;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .list-view .price-tag-sm {
+        min-width: auto;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    .list-view .compact-card-actions {
+        gap: 6px;
+    }
+
+    .list-view .play-btn-sm,
+    .list-view .cart-btn-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .compact-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .compact-music-card {
+        padding: 12px;
+    }
+
+    /* List view extra small screens */
+    .list-view .compact-music-card {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .list-view .album-cover-container {
+        width: 45px;
+        height: 45px;
+    }
+
+    .list-view .compact-album-cover {
+        width: 45px;
+        height: 45px;
+    }
+
+    .list-view .compact-card-title {
+        font-size: 0.9rem;
+    }
+
+    .list-view .compact-card-artist {
+        font-size: 0.8rem;
+    }
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\css\modules\_search.css
+File type: .css
+/* ==========================================================================
+   SEARCH PAGE STYLES - Consistent with Main Theme
+   ========================================================================== */
+
+/* Search Header Section */
+.search-header {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--gradient-primary) 50%, var(--dark-bg) 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+    padding: clamp(40px, 6vw, 80px) 24px;
+    margin: 0 0 40px 0;
+    border-bottom: 1px solid var(--border-light);
+    position: relative;
+    overflow: hidden;
+    text-align: center; /* Center the banner content */
+}
+
+.search-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    animation: float 20s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.search-header h1 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 1s ease-out;
+}
+
+/* Search Form Styling */
+.search-form .input-group {
+    max-width: 600px;
+    margin: 0 auto;
+    border-radius: 50px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-light);
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.search-form .input-group:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.search-form .form-control {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    padding: 12px 20px;
+    font-weight: 400;
+}
+
+.search-form .form-control::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+.search-form .form-control:focus {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--text-primary);
+}
+
+.search-form .btn {
+    background: var(--gradient-primary);
+    border: none;
+    color: #fff;
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: all var(--transition-normal);
+}
+
+.search-form .btn:hover {
+    background: var(--gradient-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Main Content Layout with Sidebar */
+.search-content-wrapper {
+    display: flex;
+    gap: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: flex-start;
+}
+
+/* Filters Sidebar */
+.search-filters-sidebar {
+    flex: 0 0 300px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid var(--border-light);
+    position: sticky;
+    top: 100px;
+    animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.search-filters-sidebar h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 12px;
+}
+
+.filter-group {
+    margin-bottom: 24px;
+}
+
+.filter-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-select {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+    width: 100%;
+}
+
+.form-select:focus {
+    background: var(--card-bg);
+    border-color: var(--primary);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
+}
+
+.form-select option {
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+/* Filter Buttons */
+.filter-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    text-align: center;
+    text-decoration: none;
+    display: block;
+}
+
+.btn-primary:hover {
+    background: var(--gradient-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-outline-secondary {
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all var(--transition-normal);
+    text-align: center;
+    text-decoration: none;
+    display: block;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--primary);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Search Results Main Content */
+.search-results-main {
+    flex: 1;
+    min-width: 0; /* Prevent flex item from overflowing */
+}
+
+/* Search Results Info */
+.search-results-info {
+    margin-bottom: 24px;
+    padding: 0 16px;
+    animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.search-results-info h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.search-results-info p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* No Results State */
+.no-results {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    animation: fadeInUp 1s ease-out;
+}
+
+.no-results i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    display: block;
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.no-results h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.no-results p {
+    font-size: 0.875rem;
+    margin: 0;
+    opacity: 0.8;
+}
+
+/* Music Cards Grid for Search Results */
+.search-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 24px;
+    padding: 0 16px;
+}
+
+/* Pagination for Search Results */
+.search-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 40px 0;
+    padding: 0 16px;
+}
+
+.search-pagination .pagination-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.search-pagination .pagination-btn:hover:not(:disabled) {
+    background: var(--primary);
+    color: #000;
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.search-pagination .pagination-btn.active {
+    background: var(--primary);
+    color: #000;
+    border-color: var(--primary);
+}
+
+.search-pagination .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .search-content-wrapper {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .search-filters-sidebar {
+        flex: none;
+        width: 100%;
+        position: static;
+    }
+
+    .filter-buttons {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    .filter-buttons .btn {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-header {
+        padding: clamp(30px, 5vw, 60px) 16px;
+        margin-bottom: 30px;
+    }
+
+    .search-filters-sidebar {
+        padding: 20px;
+    }
+
+    .filter-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .filter-buttons .btn {
+        width: 100%;
+    }
+
+    .search-results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 16px;
+        padding: 0;
+    }
+
+    .search-pagination {
+        margin: 30px 0;
+        padding: 0 8px;
+    }
+
+    .search-pagination .pagination-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-results-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .search-filters-sidebar {
+        padding: 16px;
+    }
+
+    .search-header h1 {
+        text-align: center;
+    }
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\includes\footer.jsp
+File type: .jsp
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-music me-2"></i>
+                <span>RhythmWave</span>
+            </div>
+            <p class="footer-text">Discover music from around the world.</p>
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+            <p class="footer-copy">
+                © 2025 RhythmWave. All rights reserved.
+            </p>
+        </div>
+    </div>
+</footer>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\includes\navbar.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<c:set var="activePage" value="${param.page}" />
+
+<!-- Clean Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="${pageContext.request.contextPath}/index">
+      <i class="fas fa-music me-2"></i>RhythmWave
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link ${activePage eq 'index' ? 'active' : ''}" href="${pageContext.request.contextPath}/index">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link ${activePage eq 'search' ? 'active' : ''}" href="${pageContext.request.contextPath}/search">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Genres</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">New Releases</a>
+        </li>
+      </ul>
+
+      <!-- Search Bar -->
+      <c:if test="${!(param.searchBox eq 'noShow')}">
+        <form action="${pageContext.request.contextPath}/search" method="get" class="input-group">
+          <input type="text" class="form-control" name="query" placeholder="Search music..." value="${param.query}">
+          <button class="btn" type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </form>
+      </c:if>
+
+      <div class="navbar-actions">
+        <c:choose>
+          <c:when test="${empty sessionScope.USER}">
+            <div class="user-actions">
+              <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-outline-light btn-sm">Login</a>
+              <a href="${pageContext.request.contextPath}/signup.jsp" class="btn btn-primary btn-sm">Sign Up</a>
+            </div>
+          </c:when>
+          <c:otherwise>
+            <button type="button" class="btn cart-btn-nav" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
+              <i class="fas fa-shopping-cart"></i>
+              <c:set var="cartItemCount" value="${sessionScope.cartItems != null ? sessionScope.cartItems.size() : 0}"/>
+              <span class="cart-badge" style="display: ${cartItemCount > 0 ? 'flex' : 'none'};">${cartItemCount}</span>
+            </button>
+
+            <c:choose>
+              <c:when test="${sessionScope.USER.isAdmin() eq true}">
+                <a href="${pageContext.request.contextPath}/admin/" class="btn btn-outline-light btn-sm">
+                  <i class="fa-solid fa-user-shield me-1"></i>Admin
+                </a>
+              </c:when>
+              <c:otherwise>
+                <a href="${pageContext.request.contextPath}/profile" class="btn btn-outline-light btn-sm">
+                  <i class="fa-solid fa-user me-1"></i>Profile
+                </a>
+              </c:otherwise>
+            </c:choose>
+
+            <a href="${pageContext.request.contextPath}/logout" class="btn btn-outline-light btn-sm">Logout</a>
+          </c:otherwise>
+        </c:choose>
+      </div>
+    </div>
+  </div>
+</nav>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\includes\track-cards.jsp
+File type: .jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<div class="compact-grid" id="track-row">
+    <c:forEach var="track" items="${requestScope.trackList}">
+        <div class="compact-music-card">
+            <div class="album-cover-container">
+                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+                     class="compact-album-cover" alt="Album Cover">
+            </div>
+            <div class="compact-card-content">
+                <div class="compact-card-text">
+                    <div class="compact-card-title">${track.title}</div>
+                    <div class="compact-card-artist">${track.artist}</div>
+                </div>
+                <div class="compact-card-footer">
+                    <span class="price-tag-sm">Rs. ${track.price}</span>
+                    <div class="compact-card-actions">
+                        <button class="play-btn-sm">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <c:if test="${not empty sessionScope.USER}">
+                            <button class="cart-btn-sm" data-track-id="${track.trackId}">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </c:if>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </c:forEach>
+</div>
+
+<!-- Pagination -->
+<c:set var="currentPage" value="${requestScope.currentPage}"/>
+<c:set var="noOfPages" value="${requestScope.noOfPages}"/>
+<c:if test="${noOfPages > 1}">
+    <nav class="music-pagination" id="pagination">
+        <a class="pagination-btn ${currentPage == 1 ? 'disabled' : ''}" href="#" data-page="${currentPage - 1}">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <div class="page-numbers">
+            <c:forEach var="i" begin="1" end="${noOfPages}">
+                <a class="pagination-btn ${i eq currentPage ? 'active' : ''}" href="#" data-page="${i}">${i}</a>
+            </c:forEach>
+        </div>
+        <a class="pagination-btn ${currentPage == noOfPages ? 'disabled' : ''}" href="#" data-page="${currentPage + 1}">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+    </nav>
+</c:if>
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\includes\modals\shopping-cart-modal.jsp
+File type: .jsp
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<div class="modal fade cart-modal" id="shoppingCartModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Your Shopping Cart <span class="cart-badge"> <c:out value="${fn:length(sessionScope.cartItems)}" /></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Cart Item 1 -->
+                <c:choose>
+                    <c:when test="${empty sessionScope.cartItems}">
+                        <div class="modal-body">
+                            <div class="cart-empty">
+                                <i class="fas fa-shopping-cart"></i>
+                                <p>Your cart is empty</p>
+                            </div>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="track" items="${sessionScope.cartItems}">
+                            <div class="cart-item">
+                                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+                                     alt="Album Cover" class="cart-item-img">
+                                <div class="cart-item-details">
+                                    <div class="cart-item-title">${track.title}</div>
+                                    <div class="cart-item-artist">by ${track.artist}</div>
+                                    <div class="cart-item-price">Rs. ${track.price}</div>
+                                </div>
+
+                                <button class="cart-item-remove" data-track-id="${track.trackId}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+
+                            </div>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
+
+            </div>
+            <div class="modal-footer">
+                <div class="cart-summary">
+                    <span>Total: </span>
+                    <span class="cart-total">Rs. ${sessionScope.cartTotal}</span>
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+                <a href="${pageContext.request.contextPath}/orderDetails">
+                    <button type="button" class="btn btn-primary">Proceed to Checkout</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\js\cart-handlers.js
+File type: .js
+// Cart Handlers: Buttons and Modal
+// cart-handlers.js
+function initializeCartButtons() {
+    document.removeEventListener('click', handleCartButtonClick); // Remove any existing listener
+    document.addEventListener('click', handleCartButtonClick);
+
+    function handleCartButtonClick(e) {
+        if (e.target.closest('.cart-btn, .cart-btn-sm')) {
+            const button = e.target.closest('.cart-btn, .cart-btn-sm');
+            const trackId = button.getAttribute('data-track-id');
+            if (!trackId) {
+                console.warn('Cart button missing track-id');
+                return;
+            }
+            const isAdded = button.classList.contains('added');
+            const action = isAdded ? 'remove' : 'add';
+            updateCart(action, trackId, button);
+        }
+    }
+}
+
+function initializeCartModal() {
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.cart-item-remove')) {
+            const button = e.target.closest('.cart-item-remove');
+            const trackId = button.getAttribute('data-track-id');
+            if (trackId) {
+                updateCart('remove', trackId, null);
+            }
+        }
+    });
+
+    loadCartState();
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\js\cart-main.js
+File type: .js
+// Cart Main Entry Point
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCartFromServerState();
+    initializeCartButtons();
+    initializeCartModal();
+});
+
+// Expose reInitCart globally for other scripts (e.g., music.js)
+window.reInitCart = reInitCart;
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\js\cart-utils.js
+File type: .js
+// Cart Utilities: API, UI Updates, Errors
+async function initializeCartFromServerState() {
+    await loadCartState();
+}
+
+async function loadCartState() {
+    try {
+        const response = await fetch(`${window.contextPath}/CartServlet?action=getState`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to load cart state: ${response.status}`);
+        }
+
+        const data = await response.json();
+        updateCartUI(data);
+    } catch (error) {
+        handleCartError(error, 'Failed to load cart');
+    }
+}
+
+async function updateCart(action, trackId, button) {
+    if (!trackId) {
+        handleCartError(new Error('Missing track ID'), 'Invalid track');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${window.contextPath}/CartServlet?action=${action}&trackId=${trackId}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || `Failed to update cart: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (button) {
+            updateCartButtonState(button, action === 'add');
+        }
+
+        updateCartUI(data);
+
+    } catch (error) {
+        handleCartError(error, 'Failed to update cart');
+    }
+}
+
+function updateCartUI(data) {
+    // Update badges
+    const cartBadges = document.querySelectorAll('.cart-badge');
+    cartBadges.forEach(badge => {
+        badge.textContent = data.itemCount || 0;
+        badge.style.display = data.itemCount > 0 ? 'flex' : 'none';
+        if (data.itemCount > 0) {
+            badge.classList.add('updated');
+            setTimeout(() => badge.classList.remove('updated'), 600);
+        }
+    });
+
+    // Update buttons
+    if (data.cartItems) {
+        const cartSet = new Set(data.cartItems.map(item => item.trackId));
+        document.querySelectorAll('.cart-btn, .cart-btn-sm').forEach(btn => {
+            const trackId = parseInt(btn.getAttribute('data-track-id'));
+            const isAdded = cartSet.has(trackId);
+            btn.classList.toggle('added', isAdded);
+            const icon = btn.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('fa-cart-plus', !isAdded);
+                icon.classList.toggle('fa-check', isAdded);
+            }
+        });
+    }
+
+    // Update modal
+    if (data.cartItems) {
+        updateCartModal(data);
+    }
+}
+
+function updateCartModal(data) {
+    const modalBody = document.querySelector('#shoppingCartModal .modal-body');
+    const cartTotal = document.querySelector('.cart-total');
+    const modalHeaderBadge = document.querySelector('#shoppingCartModal .modal-title .cart-badge');
+
+    if (!modalBody || !cartTotal || !modalHeaderBadge) return;
+
+    cartTotal.textContent = `Rs. ${(data.cartTotal || 0).toFixed(2)}`;
+    modalHeaderBadge.textContent = data.itemCount || 0;
+    modalHeaderBadge.style.display = data.itemCount > 0 ? 'flex' : 'none';
+
+    modalBody.innerHTML = data.itemCount === 0
+        ? `
+            <div class="cart-empty">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Your cart is empty</p>
+            </div>
+        `
+        : data.cartItems.map(item => `
+            <div class="cart-item">
+                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+                     alt="Album Cover" class="cart-item-img">
+                <div class="cart-item-details">
+                    <div class="cart-item-title">${escapeHtml(item.title)}</div>
+                    <div class="cart-item-artist">by ${escapeHtml(item.artist)}</div>
+                    <div class="cart-item-price">Rs. ${item.price.toFixed(2)}</div>
+                </div>
+                <button class="cart-item-remove" data-track-id="${item.trackId}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `).join('');
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function handleCartError(error, userMessage = 'Cart operation failed') {
+    console.error('Cart Error:', error);
+    showUserNotification(`${userMessage}: ${error.message}. <button onclick="window.reInitCart()">Retry</button>`, 'error');
+}
+
+function showUserNotification(message, type = 'error') {
+    const notification = document.createElement('div');
+    notification.className = `user-notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 16px;
+        background: ${type === 'error' ? '#f8d7da' : '#d1ecf1'};
+        color: ${type === 'error' ? '#721c24' : '#0c5460'};
+        border: 1px solid ${type === 'error' ? '#f5c6cb' : '#bee5eb'};
+        border-radius: 4px;
+        z-index: 10000;
+        max-width: 300px;
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
+
+function reInitCart() {
+    initializeCartButtons();
+    loadCartState();
+}
+
+function updateCartButtonState(button, isAdded) {
+    if (isAdded) {
+        button.classList.add('added');
+        const icon = button.querySelector('i');
+        if (icon) {
+            icon.classList.replace('fa-cart-plus', 'fa-check');
+        }
+    } else {
+        button.classList.remove('added');
+        const icon = button.querySelector('i');
+        if (icon) {
+            if (icon.classList.contains('fa-check')) {
+                icon.classList.replace('fa-check', 'fa-cart-plus');
+            }
+        }
+    }
+}
+
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\js\music-handlers.js
+File type: .js
+// Music Handlers: Play and View
+function initializeViewControls() {
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const view = this.getAttribute('data-view');
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const grid = document.getElementById('track-row');
+            if (view === 'list') {
+                grid.parentElement.classList.add('list-view');
+            } else {
+                grid.parentElement.classList.remove('list-view');
+            }
+        });
+    });
+}
+
+function initializePlayButtons() {
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('.play-btn-sm, .play-btn-sm i')) {
+            e.preventDefault();
+            togglePlayButton(e.target.closest('.play-btn-sm'));
+        }
+    });
+}
+
+function togglePlayButton(button) {
+    button.classList.toggle('playing');
+    const icon = button.querySelector('i');
+    if (icon.classList.contains('fa-play')) {
+        icon.classList.replace('fa-play', 'fa-pause');
+        console.log('Play started');
+    } else {
+        icon.classList.replace('fa-pause', 'fa-play');
+        console.log('Play paused');
+    }
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\js\music-main.js
+File type: .js
+// Music Main Entry Point
+document.addEventListener('DOMContentLoaded', function() {
+    initializeViewControls();
+    initializePagination();
+    initializePlayButtons();
+
+    // Initial cart init
+    if (typeof window.reInitCart === 'function') {
+        window.reInitCart();
+    }
+});
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\js\music-pagination.js
+File type: .js
+// Music Pagination and Track Content
+function initializePagination() {
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.music-pagination .pagination-btn[data-page]')) {
+            e.preventDefault();
+            handlePaginationClick(e.target.closest('.pagination-btn[data-page]'));
+        }
+    });
+}
+
+function handlePaginationClick(link) {
+    const page = parseInt(link.getAttribute('data-page'));
+    console.log('Pagination clicked for page:', page);
+
+    const currentPageElem = document.querySelector('.pagination-btn.active');
+    const currentPage = parseInt(currentPageElem?.getAttribute('data-page') || '1');
+    const noOfPages = window.noOfPages || 1;
+
+    console.log('Current page:', currentPage, 'Total pages:', noOfPages);
+
+    if (page < 1 || page > noOfPages || link.classList.contains('disabled')) {
+        console.log('Invalid page, skipping');
+        return;
+    }
+
+    loadTracksPage(page);
+}
+
+function loadTracksPage(page) {
+    const trackRow = document.getElementById('track-row');
+    if (trackRow) {
+        trackRow.innerHTML = '<div class="col-12 text-center"><i class="fas fa-spinner fa-spin"></i> Loading tracks...</div>';
+    }
+
+    fetch(`${window.contextPath}/trackPaginate?page=${page}&ajax=true`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'text/html'
+        }
+    })
+        .then(response => {
+            if (!response.ok) throw new Error(`Network response was not ok: ${response.status}`);
+            return response.text();
+        })
+        .then(html => {
+            updateTrackContent(html);
+            scrollToTracks();
+            if (typeof window.reInitCart === 'function') {
+                window.reInitCart();
+            }
+        })
+        .catch(handleTracksLoadError);
+}
+
+function updateTrackContent(html) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const newRow = doc.getElementById('track-row');
+    const newNav = doc.querySelector('.music-pagination');
+
+    if (newRow) {
+        const oldRow = document.getElementById('track-row');
+        if (oldRow) oldRow.innerHTML = newRow.innerHTML;
+    }
+
+    if (newNav) {
+        const oldNav = document.querySelector('.music-pagination');
+        if (oldNav) oldNav.innerHTML = newNav.innerHTML;
+    } else {
+        const oldNav = document.querySelector('.music-pagination');
+        if (oldNav) oldNav.remove();
+    }
+}
+
+function scrollToTracks() {
+    const trackSection = document.querySelector('.main-content');
+    if (trackSection) {
+        const navbar = document.querySelector('.navbar');
+        const navbarHeight = navbar ? navbar.offsetHeight : 0;
+        const elementTop = trackSection.getBoundingClientRect().top + window.scrollY;
+        const offsetTop = elementTop - navbarHeight - 20;
+
+        window.scrollTo({
+            top: offsetTop,
+            behavior: 'smooth'
+        });
+    }
+}
+
+function handleTracksLoadError(error) {
+    const trackRow = document.getElementById('track-row');
+    if (trackRow) {
+        trackRow.innerHTML = `
+            <div class="col-12 text-center text-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Error loading tracks. Please try again.</p>
+                <button class="btn btn-primary mt-2" onclick="location.reload()">Retry</button>
+            </div>
+        `;
+    }
+}
+
+--------------------------------------------------
+File End
+--------------------------------------------------
+
+
+E:\SLIIT\Year 2 Semester 1\SE2030 - Software Engineering\Assignment\web_based_music_store\src\main\webapp\WEB-INF\web.xml
+File type: .xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+</web-app>
+
+--------------------------------------------------
+File End
+--------------------------------------------------

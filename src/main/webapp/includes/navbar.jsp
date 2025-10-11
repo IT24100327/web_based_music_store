@@ -3,10 +3,10 @@
 
 <c:set var="activePage" value="${param.page}" />
 
-<!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top mb-2">
+<!-- Clean Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="${pageContext.request.contextPath}/index">
       <i class="fas fa-music me-2"></i>RhythmWave
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -21,65 +21,55 @@
           <a class="nav-link ${activePage eq 'search' ? 'active' : ''}" href="${pageContext.request.contextPath}/search">Search</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ${activePage eq '' ? 'active' : ''}" href="#">Genres</a>
+          <a class="nav-link" href="#">Genres</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ${activePage eq '' ? 'active' : ''}" href="#">New Releases</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link ${activePage eq '' ? 'active' : ''}" href="#">Top Charts</a>
+          <a class="nav-link" href="#">New Releases</a>
         </li>
       </ul>
 
       <!-- Search Bar -->
       <c:if test="${!(param.searchBox eq 'noShow')}">
-        <form action="${pageContext.request.contextPath}/search" method="get" class="input-group me-3" style="max-width: 300px;">
-          <input type="text" class="form-control" name="query" placeholder="Search artists, albums, or songs..." value="${param.query}">
-          <button class="btn btn-primary" type="submit">
+        <form action="${pageContext.request.contextPath}/search" method="get" class="input-group">
+          <input type="text" class="form-control" name="query" placeholder="Search music..." value="${param.query}">
+          <button class="btn" type="submit">
             <i class="fas fa-search"></i>
           </button>
         </form>
       </c:if>
 
-      <c:choose>
-        <c:when test="${empty sessionScope.USER}">
-          <div class="d-flex">
-            <a href="login.jsp" class="btn btn-outline-primary me-2">Login</a>
-            <a href="signup.jsp" class="btn btn-primary me-3">Sign Up</a>
-          </div>
-        </c:when>
-        <c:otherwise>
-          <div class="d-flex">
-            <a href="${pageContext.request.contextPath}/logout" class="btn btn-primary me-2">Logout</a>
-
-            <button type="button" class="btn btn-outline-light position-relative me-3" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
+      <div class="navbar-actions">
+        <c:choose>
+          <c:when test="${empty sessionScope.USER}">
+            <div class="user-actions">
+              <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-outline-light btn-sm">Login</a>
+              <a href="${pageContext.request.contextPath}/signup.jsp" class="btn btn-primary btn-sm">Sign Up</a>
+            </div>
+          </c:when>
+          <c:otherwise>
+            <button type="button" class="btn cart-btn-nav" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
               <i class="fas fa-shopping-cart"></i>
               <c:set var="cartItemCount" value="${sessionScope.cartItems != null ? sessionScope.cartItems.size() : 0}"/>
-              <span class="cart-badge"
-                    style="display: ${cartItemCount > 0 ? 'flex' : 'none'};">
-                  ${cartItemCount}
-              </span>
+              <span class="cart-badge" style="display: ${cartItemCount > 0 ? 'flex' : 'none'};">${cartItemCount}</span>
             </button>
 
             <c:choose>
               <c:when test="${sessionScope.USER.isAdmin() eq true}">
-                <a href="${pageContext.request.contextPath}/admin/">
-                  <button type="button" class="btn btn-outline-light position-relative me-2">
-                    <i class="fa-solid fa-user me-2" ></i> Admin Panel
-                  </button>
+                <a href="${pageContext.request.contextPath}/admin/" class="btn btn-outline-light btn-sm">
+                  <i class="fa-solid fa-user-shield me-1"></i>Admin
                 </a>
               </c:when>
               <c:otherwise>
-                <a href="${pageContext.request.contextPath}/profile">
-                  <button type="button" class="btn btn-outline-light position-relative me-2">
-                    <i class="fa-solid fa-user me-2" ></i> Profile
-                  </button>
+                <a href="${pageContext.request.contextPath}/profile" class="btn btn-outline-light btn-sm">
+                  <i class="fa-solid fa-user me-1"></i>Profile
                 </a>
               </c:otherwise>
             </c:choose>
-          </div>
-        </c:otherwise>
-      </c:choose>
+
+            <a href="${pageContext.request.contextPath}/logout" class="btn btn-outline-light btn-sm">Logout</a>
+          </c:otherwise>
+        </c:choose>
+      </div>
     </div>
   </div>
 </nav>

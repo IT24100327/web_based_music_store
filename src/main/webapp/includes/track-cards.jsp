@@ -35,24 +35,17 @@
 <c:set var="currentPage" value="${requestScope.currentPage}"/>
 <c:set var="noOfPages" value="${requestScope.noOfPages}"/>
 <c:if test="${noOfPages > 1}">
-    <nav class="mt-5">
-        <ul class="pagination justify-content-center" id="pagination">
-            <li class="page-item ${currentPage == 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
-            </li>
+    <nav class="music-pagination" id="pagination">
+        <a class="pagination-btn ${currentPage == 1 ? 'disabled' : ''}" href="#" data-page="${currentPage - 1}">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <div class="page-numbers">
             <c:forEach var="i" begin="1" end="${noOfPages}">
-                <c:choose>
-                    <c:when test="${i eq currentPage}">
-                        <li class="page-item active"><a class="page-link" href="#" data-page="${i}">${i}</a></li>
-                    </c:when>
-                    <c:otherwise>
-                        <li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>
-                    </c:otherwise>
-                </c:choose>
+                <a class="pagination-btn ${i eq currentPage ? 'active' : ''}" href="#" data-page="${i}">${i}</a>
             </c:forEach>
-            <li class="page-item ${currentPage == noOfPages ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
-            </li>
-        </ul>
+        </div>
+        <a class="pagination-btn ${currentPage == noOfPages ? 'disabled' : ''}" href="#" data-page="${currentPage + 1}">
+            <i class="fas fa-chevron-right"></i>
+        </a>
     </nav>
 </c:if>
