@@ -49,8 +49,17 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>1,254</h3>
+                    <h3></h3>
                     <p>Total Users</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3></h3>
+                    <p>Total Artists</p>
                 </div>
             </div>
             <div class="stat-card">
@@ -58,7 +67,7 @@
                     <i class="fas fa-tag"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>24</h3>
+                    <h3></h3>
                     <p>Active Promotions</p>
                 </div>
             </div>
@@ -67,7 +76,7 @@
                     <i class="fas fa-ad"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>12</h3>
+                    <h3></h3>
                     <p>Running Ads</p>
                 </div>
             </div>
@@ -76,8 +85,8 @@
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <div class="stat-content">
-                    <h3>+8.2%</h3>
-                    <p>Revenue Growth</p>
+                    <h3></h3>
+                    <p>Total Revenue</p>
                 </div>
             </div>
         </div>
@@ -94,7 +103,7 @@
                 </div>
                 <h3 class="card-title">User Management</h3>
                 <p class="card-description">Manage users, roles, and permissions</p>
-                <a href="<%=request.getContextPath()%>/manageUsers" class="card-link">
+                <a href="<%=request.getContextPath()%>/manage-users" class="card-link">
                     Manage Users <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -111,7 +120,7 @@
                     </div>
                     <h3 class="card-title">Marketing Management</h3>
                     <p class="card-description">Create promotions and advertisements</p>
-                    <a href="<%=request.getContextPath()%>/marketing" class="card-link">
+                    <a href="<%=request.getContextPath()%>/manage-marketing" class="card-link">
                         Manage Marketing <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>

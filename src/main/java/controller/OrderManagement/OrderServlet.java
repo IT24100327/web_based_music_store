@@ -1,8 +1,9 @@
 package controller.OrderManagement;
 
 import dao.OrderDAO;
-import dao.UserDAO;
 import model.Order;
+import model.Track;
+import service.OrderService;  // Use Service instead of DAO
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,11 +16,12 @@ import model.User;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet("/order")
 public class OrderServlet extends HttpServlet {
 
-    private OrderDAO orderDAO;
+    private OrderService orderService = new OrderService();  // Delegate to Service
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -36,13 +38,20 @@ public class OrderServlet extends HttpServlet {
             }
 
             // 2. Get cart details (stored in session or passed as form fields)
+
             @SuppressWarnings("unchecked")
-            List<Integer> trackIds = (List<Integer>) session.getAttribute("cartItems");
+            List<Track> cartTracks = (List<Track>) session.getAttribute("cartItems");
+            List<Integer> trackIds = cartTracks.stream()
+                    .map(Track::getTrackId)
+                    .collect(Collectors.toList());
+
+            System.out.println(trackIds);
+
             Double cartTotal = (Double) session.getAttribute("cartTotal");
 
             if (trackIds == null || trackIds.isEmpty()) {
                 request.setAttribute("error", "Your cart is empty!");
-                request.getRequestDispatcher("order_error.jsp").forward(request, response);
+                request.getRequestDispatcher("order-error.jsp").forward(request, response);
                 return;
             }
 
@@ -50,30 +59,21 @@ public class OrderServlet extends HttpServlet {
             String paymentMethod = request.getParameter("paymentMethod"); // e.g., CARD, COD
             String transactionId = request.getParameter("transactionId"); // from payment gateway if available
 
-            // 4. Create order object
-            Order order = new Order();
-            order.setUserId(user.getUserId());
-            order.setTrackIds(trackIds);
-            order.setTotalAmount(cartTotal);
-            order.setStatus("PENDING");
-            order.setOrderDate(LocalDateTime.now());
-            order.setPaymentMethod(paymentMethod);
-            order.setTransactionId(transactionId);
+            // 4. Delegate to Service for creation, validation, and persistence
+            orderService.addOrder(user.getUserId(), trackIds, cartTotal, paymentMethod, transactionId);
 
-            // 5. Insert order into DB
-            OrderDAO.addOrder(order);
-                // Clear cart
-                session.removeAttribute("cartItems");
-                session.removeAttribute("cartTotal");
+            // Clear cart
+            session.removeAttribute("cartItems");
+            session.removeAttribute("cartTotal");
 
-                // Send success
-                request.setAttribute("orderId", order.getOrderId());
-                request.getRequestDispatcher("order_success.jsp").forward(request, response);
+            // Send success (note: order ID not directly available; fetch if needed)
+            request.setAttribute("success", "Order placed successfully!");
+            request.getRequestDispatcher("order-success.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Something went wrong.");
-            request.getRequestDispatcher("order_error.jsp").forward(request, response);
+            request.setAttribute("error", "Something went wrong: " + e.getMessage());
+            request.getRequestDispatcher("order-error.jsp").forward(request, response);
         }
     }
 }

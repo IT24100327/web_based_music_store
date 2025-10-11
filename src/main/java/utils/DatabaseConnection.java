@@ -1,7 +1,5 @@
 package utils;
 
-import com.microsoft.sqlserver.jdbc.SQLServerConnection;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -10,14 +8,14 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DatabaseConnection {
-    private static String DB_URL = "jdbc:sqlserver://localhost;instanceName=SQLEXPRESS;database=test1;encrypt=true;trustServerCertificate=true";
-    private static String DB_USER = "Prageeth";
+    private static String DB_URL = "jdbc:mysql://localhost:3306/music_db?useSSL=false&serverTimezone=UTC";
+    private static String DB_USER = "root";
     private static String DB_PASSWORD = "1234";
 
     public static Connection getConnection() throws SQLException {
 
         try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             System.out.println("Driver not found: " + e.getMessage());
         }

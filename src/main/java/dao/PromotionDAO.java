@@ -1,8 +1,9 @@
 package dao;
 
+import factory.PromotionFactory;
 import model.Promotion;
 import utils.DatabaseConnection;
-
+import dao.constants.PromotionSQLConstants;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
@@ -10,21 +11,16 @@ import java.util.LinkedList;
 
 public class PromotionDAO {
 
-    static {
-        ensureTableExists();
-    }
-
     public static LinkedList<Promotion> getPromotions() throws SQLException {
         LinkedList<Promotion> allPromotions = new LinkedList<>();
-        String sql = "SELECT * FROM promotions";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(PromotionSQLConstants.SELECT_ALL_PROMOTIONS)) {
 
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                allPromotions.add(createPromotionFromResultSet(rs));
+                allPromotions.add(PromotionFactory.createPromotionFromResultSet(rs));
             }
         }
 
@@ -33,11 +29,11 @@ public class PromotionDAO {
 
     public static void addPromotion(Promotion promotion) throws IOException, SQLException {
         if (promotion != null) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                System.out.println("Connected to Database!");
+            try (Connection con = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = con.prepareStatement(
+                         PromotionSQLConstants.INSERT_PROMOTION, Statement.RETURN_GENERATED_KEYS)) {
 
-                String sql = "INSERT INTO promotions (code, discount, startDate, endDate, usageCount, description) VALUES (?, ?, ?, ?, ?, ?)";
-                PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                System.out.println("Connected to Database!");
 
                 pstmt.setString(1, promotion.getCode());
                 pstmt.setDouble(2, promotion.getDiscount());
@@ -64,10 +60,8 @@ public class PromotionDAO {
             throw new IllegalArgumentException("Promotion cannot be null");
         }
 
-        String sql = "DELETE FROM promotions WHERE promotionId = ?";
-
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(PromotionSQLConstants.DELETE_PROMOTION)) {
 
             pstmt.setInt(1, promotion.getPromotionId());
             int affectedRows = pstmt.executeUpdate();
@@ -81,16 +75,14 @@ public class PromotionDAO {
     }
 
     public static Promotion findPromotionById(int promotionId) throws SQLException {
-        String sql = "SELECT * FROM promotions WHERE promotionId = ?";
-
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(PromotionSQLConstants.SELECT_PROMOTION_BY_ID)) {
 
             pstmt.setInt(1, promotionId);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return createPromotionFromResultSet(rs);
+                    return PromotionFactory.createPromotionFromResultSet(rs);
                 }
             }
         }
@@ -98,35 +90,32 @@ public class PromotionDAO {
     }
 
     public static Promotion findPromotionByCode(String code) throws SQLException {
-        String sql = "SELECT * FROM promotions WHERE code = ?";
-
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(PromotionSQLConstants.SELECT_PROMOTION_BY_CODE)) {
 
             pstmt.setString(1, code);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return createPromotionFromResultSet(rs);
+                    return PromotionFactory.createPromotionFromResultSet(rs);
                 }
             }
         }
         return null;
     }
 
-    public static void updatePromotion(int promotionId, String code, double discount, LocalDate startDate, LocalDate endDate, int usageCount, String description) throws IOException, SQLException {
-        String sql = "UPDATE promotions SET code = ?, discount = ?, startDate = ?, endDate = ?, usageCount = ?, description = ? WHERE promotionId = ?";
-
+    public static void updatePromotion(int promotionId, String code, double discount,
+                                       LocalDate startDate, LocalDate endDate, String description)
+            throws IOException, SQLException {
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(PromotionSQLConstants.UPDATE_PROMOTION)) {
 
             pstmt.setString(1, code);
             pstmt.setDouble(2, discount);
             pstmt.setDate(3, Date.valueOf(startDate));
             pstmt.setDate(4, Date.valueOf(endDate));
-            pstmt.setInt(5, usageCount);
-            pstmt.setString(6, description);
-            pstmt.setInt(7, promotionId);
+            pstmt.setString(5, description);
+            pstmt.setInt(6, promotionId);
 
             int affectedRows = pstmt.executeUpdate();
 
@@ -139,10 +128,8 @@ public class PromotionDAO {
     }
 
     public static void incrementUsageCount(String code) throws SQLException {
-        String sql = "UPDATE promotions SET usageCount = usageCount + 1 WHERE code = ?";
-
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(PromotionSQLConstants.INCREMENT_USAGE_COUNT)) {
 
             pstmt.setString(1, code);
 
@@ -157,10 +144,8 @@ public class PromotionDAO {
     }
 
     public static int trackUsage(String code) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM bookings WHERE promoCode = ?";
-
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(PromotionSQLConstants.TRACK_USAGE)) {
 
             pstmt.setString(1, code);
 
@@ -172,41 +157,4 @@ public class PromotionDAO {
         }
         return 0;
     }
-
-    private static Promotion createPromotionFromResultSet(ResultSet rs) throws SQLException {
-        return new Promotion(
-                rs.getInt("promotionId"),
-                rs.getString("code"),
-                rs.getDouble("discount"),
-                rs.getDate("startDate").toLocalDate(),
-                rs.getDate("endDate").toLocalDate(),
-                rs.getInt("usageCount"),
-                rs.getString("description")
-        );
-    }
-
-    private static void ensureTableExists() {
-        try (Connection con = DatabaseConnection.getConnection();
-             Statement stmt = con.createStatement()) {
-
-            // Create promotions table if it doesn't exist
-            stmt.executeUpdate(
-                    "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'promotions') " +
-                            "BEGIN " +
-                            "CREATE TABLE promotions (" +
-                            "promotionId INT IDENTITY(1,1) PRIMARY KEY, " +
-                            "code VARCHAR(50) UNIQUE, " +
-                            "discount DECIMAL(10,2), " +   // updated for larger amounts
-                            "startDate DATE, " +
-                            "endDate DATE, " +
-                            "usageCount INT, " +
-                            "description VARCHAR(255)" +
-                            ")" +
-                            "END"
-            );
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }

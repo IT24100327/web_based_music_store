@@ -38,13 +38,16 @@ body {
     margin-bottom: 1.5rem;
 }
 
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
 .form-control {
     background-color: #2a2a2a;
     border: 1px solid #444;
     color: var(--text-primary);
     padding: 0.85rem 2.5rem 0.85rem 1.2rem;
     font-size: 1.05rem;
-    margin-bottom: 1.5rem;
 }
 
 .form-control:focus {
@@ -111,7 +114,7 @@ body {
     cursor: pointer;
     position: absolute;
     right: 10px;
-    top: 50%;
+    top: 70%;
     transform: translateY(-50%);
     color: var(--text-secondary);
     font-size: 1.1rem;

@@ -7,9 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RhythmWave - Login</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
     <style>
@@ -28,7 +26,7 @@
             <p class="text-secondary">Sign in to your RhythmWave account</p>
         </div>
 
-        <form id="loginForm" action="${pageContext.request.contextPath}/LoginServlet" method="post">
+        <form id="loginForm" action="${pageContext.request.contextPath}/login" method="post">
             <div class="mb-3">
                 <label for="login-email" class="form-label">Email address</label>
                 <input type="email" class="form-control" id="login-email" name="email" placeholder="name@example.com" required>
@@ -59,7 +57,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Form validation
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;

@@ -1,3 +1,4 @@
+// SearchServlet.java
 package controller;
 
 import dao.TrackDAO;
@@ -5,20 +6,13 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import model.Track;
-import utils.DatabaseConnection;
 
 import java.io.IOException;
-import java.sql.*;
 import java.util.*;
 
 @WebServlet("/search")
 public class SearchServlet extends HttpServlet {
     private final int RECORDS_PER_PAGE = 8;
-
-    @Override
-    public void init() throws ServletException {
-        TrackDAO.ensureTableExists();
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -28,7 +22,7 @@ public class SearchServlet extends HttpServlet {
         String priceRange = request.getParameter("price");
         String rating = request.getParameter("rating");
 
-        // Parse price range
+        // Parse price range (in LKR)
         Double minPrice = null;
         Double maxPrice = null;
         if (priceRange != null && !priceRange.isEmpty()) {
@@ -56,7 +50,7 @@ public class SearchServlet extends HttpServlet {
             try {
                 minRating = Double.parseDouble(rating);
             } catch (NumberFormatException e) {
-                minRating = null;
+                minRating = null;  // Ignore invalid
             }
         }
 
@@ -65,6 +59,7 @@ public class SearchServlet extends HttpServlet {
         if (request.getParameter("page") != null) {
             try {
                 page = Integer.parseInt(request.getParameter("page"));
+                if (page < 1) page = 1;  // Prevent invalid pages
             } catch (NumberFormatException e) {
                 page = 1;
             }
@@ -75,32 +70,40 @@ public class SearchServlet extends HttpServlet {
         int noOfPages = 0;
 
         try {
-            // Check if no search parameters are provided
-            if ((title == null || title.isEmpty()) &&
-                    (genre == null || genre.isEmpty()) &&
-                    (priceRange == null || priceRange.isEmpty()) &&
-                    (rating == null || rating.isEmpty())) {
+            // Check if no search parameters (use OR: fallback only if truly empty)
+            boolean hasSearchParams = (title != null && !title.trim().isEmpty()) ||
+                    (genre != null && !genre.isEmpty()) ||
+                    (priceRange != null && !priceRange.isEmpty()) ||
+                    (rating != null && !rating.isEmpty());
+
+            if (!hasSearchParams) {
                 // Fetch all tracks with pagination
                 tracks = TrackDAO.getAllTracksPaginated(page, RECORDS_PER_PAGE);
                 noOfRecords = TrackDAO.countAllTracks();
             } else {
-                // Use TrackDAO to search products
+                // Search with filters
                 tracks = TrackDAO.searchProducts(title, genre, minPrice, maxPrice, minRating, page, RECORDS_PER_PAGE);
-                noOfRecords = TrackDAO.countProducts(title, genre, minPrice, maxPrice);
+                noOfRecords = TrackDAO.countProducts(title, genre, minPrice, maxPrice, minRating);  // Include rating
             }
             noOfPages = (int) Math.ceil(noOfRecords * 1.0 / RECORDS_PER_PAGE);
 
         } catch (Exception e) {
             e.printStackTrace();
+            request.setAttribute("errorMessage", "Search failed. Please try again.");
+            noOfPages = 0;
         }
 
-        // Set attributes for JSP
+        // Set attributes
         request.setAttribute("trackList", tracks);
         request.setAttribute("noOfPages", noOfPages);
         request.setAttribute("currentPage", page);
+        // Forward params for JSP links
+        request.setAttribute("query", title != null ? title.trim() : "");
+        request.setAttribute("genre", genre != null ? genre : "");
+        request.setAttribute("price", priceRange != null ? priceRange : "");
+        request.setAttribute("rating", rating != null ? rating : "");
 
-        // Forward to JSP
-        RequestDispatcher rd = request.getRequestDispatcher("searchMusic.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("search-music.jsp");
         rd.forward(request, response);
     }
 }

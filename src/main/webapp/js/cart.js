@@ -1,13 +1,20 @@
-// Cart functionality for RhythmWave Music Store
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize cart buttons
+    initializeCartFromServerState();
     initializeCartButtons();
-
-    // Initialize cart modal
     initializeCartModal();
 });
 
-// Initialize cart buttons
+function initializeCartFromServerState() {
+    if (window.initialCartState) {
+        updateCartUI({
+            cartItems: [],
+            cartTotal: window.initialCartState.cartTotal,
+            itemCount: window.initialCartState.itemCount
+        });
+    }
+    loadCartState();
+}
+
 function initializeCartButtons() {
     const cartButtons = document.querySelectorAll('.cart-btn');
     cartButtons.forEach(button => {
@@ -21,9 +28,7 @@ function initializeCartButtons() {
     });
 }
 
-// Initialize cart modal
 function initializeCartModal() {
-    // Add event listeners to remove buttons in modal
     document.addEventListener('click', function(e) {
         if (e.target.closest('.cart-item-remove')) {
             const button = e.target.closest('.cart-item-remove');
@@ -32,14 +37,12 @@ function initializeCartModal() {
         }
     });
 
-    // Load initial cart state
     loadCartState();
 }
 
-// Load initial cart state from server
 async function loadCartState() {
     try {
-        const response = await fetch('${pageContext.request.contextPath}/CartServlet?action=getState', {
+        const response = await fetch(`${window.contextPath}/CartServlet?action=getState`, {
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
@@ -58,10 +61,9 @@ async function loadCartState() {
     }
 }
 
-// AJAX call to update cart
 async function updateCart(action, trackId, button) {
     try {
-        const response = await fetch(`CartServlet?action=${action}&trackId=${trackId}`, {
+        const response = await fetch(`${window.contextPath}/CartServlet?action=${action}&trackId=${trackId}`, {
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
@@ -76,55 +78,84 @@ async function updateCart(action, trackId, button) {
 
         const data = await response.json();
 
-        // Update button state if provided
         if (button) {
             if (action === 'add') {
                 button.classList.add('added');
-                button.querySelector('i').classList.replace('fa-cart-plus', 'fa-check');
-
-                // Revert after 2 seconds
-                setTimeout(() => {
-                    if (button.classList.contains('added')) {
-                        button.querySelector('i').classList.replace('fa-check', 'fa-cart-plus');
-                    }
-                }, 2000);
-            } else {
+                const icon = button.querySelector('i');
+                if (icon) {
+                    icon.classList.replace('fa-cart-plus', 'fa-check');
+                }
+            } else if (action === 'remove') {
                 button.classList.remove('added');
-                button.querySelector('i').classList.replace('fa-check', 'fa-cart-plus');
+                const icon = button.querySelector('i');
+                if (icon) {
+                    icon.classList.replace('fa-check', 'fa-cart-plus');
+                }
             }
         }
 
-        // Update UI
         updateCartUI(data);
+
     } catch (error) {
         console.error('Error updating cart:', error);
         alert('Error: ' + error.message);
     }
 }
 
-// Update cart UI elements
 function updateCartUI(data) {
-    // Update cart badge
-    const cartBadge = document.querySelector('.cart-badge');
-    if (cartBadge) {
-        cartBadge.textContent = data.itemCount;
+    const cartBadges = document.querySelectorAll('.cart-badge');
+    cartBadges.forEach(badge => {
+        badge.textContent = data.itemCount;
+        badge.style.display = data.itemCount > 0 ? 'flex' : 'none';
+
+        if (data.itemCount > 0) {
+            badge.classList.add('updated');
+            setTimeout(() => {
+                badge.classList.remove('updated');
+            }, 600);
+        }
+    });
+
+    if (data.cartItems) {
+        const cartSet = new Set(data.cartItems.map(item => item.trackId));
+        document.querySelectorAll('.cart-btn').forEach(btn => {
+            const trackId = parseInt(btn.getAttribute('data-track-id'));
+            const isAdded = cartSet.has(trackId);
+            btn.classList.toggle('added', isAdded);
+            const icon = btn.querySelector('i');
+            if (icon) {
+                if (isAdded) {
+                    if (icon.classList.contains('fa-cart-plus')) {
+                        icon.classList.replace('fa-cart-plus', 'fa-check');
+                    }
+                } else {
+                    if (icon.classList.contains('fa-check')) {
+                        icon.classList.replace('fa-check', 'fa-cart-plus');
+                    }
+                }
+            }
+        });
     }
 
-    // Update cart modal content
-    updateCartModal(data);
+    if (data.cartItems) {
+        updateCartModal(data);
+    }
 }
 
-// Update cart modal content
 function updateCartModal(data) {
     const modalBody = document.querySelector('#shoppingCartModal .modal-body');
     const cartTotal = document.querySelector('.cart-total');
 
     if (!modalBody || !cartTotal) return;
 
-    // Update total
     cartTotal.textContent = 'Rs. ' + data.cartTotal.toFixed(2);
 
-    // Update cart items
+    const modalHeaderBadge = document.querySelector('#shoppingCartModal .modal-title .cart-badge');
+    if (modalHeaderBadge) {
+        modalHeaderBadge.textContent = data.itemCount;
+        modalHeaderBadge.style.display = data.itemCount > 0 ? 'flex' : 'none';
+    }
+
     if (data.itemCount === 0) {
         modalBody.innerHTML = `
             <div class="cart-empty">
@@ -154,7 +185,6 @@ function updateCartModal(data) {
     }
 }
 
-// Helper function to escape HTML
 function escapeHtml(text) {
     const map = {
         '&': '&amp;',

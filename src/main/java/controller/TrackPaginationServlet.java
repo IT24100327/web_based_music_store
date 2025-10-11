@@ -1,5 +1,6 @@
 package controller;
 
+import dao.constants.TrackSQLConstants;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -25,41 +26,36 @@ public class TrackPaginationServlet extends HttpServlet {
         int noOfRecords = 0;
         int noOfPages = 0;
 
-        try {
+        try (Connection conn = DatabaseConnection.getConnection()) {
 
-            Connection conn = DatabaseConnection.getConnection();
+            // Fetch limited songs - use full query constant and correct param order for MySQL (LIMIT first, then OFFSET)
+            PreparedStatement ps = conn.prepareStatement(TrackSQLConstants.SELECT_TRACKS_PAGINATED);
+            ps.setInt(1, RECORDS_PER_PAGE);  // LIMIT: number of records per page
+            ps.setInt(2, (page - 1) * RECORDS_PER_PAGE);  // OFFSET: starting position
 
-            // Fetch limited songs
-            PreparedStatement ps = conn.prepareStatement(
-                    "SELECT * FROM tracks ORDER BY trackId OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-            ps.setInt(1, (page - 1) * RECORDS_PER_PAGE);
-            ps.setInt(2, RECORDS_PER_PAGE);
-
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Track track = new Track(
-                        rs.getString("title"),
-                        rs.getString("artist")
-                );
-                track.setTrackId(rs.getInt("trackId"));
-                track.setPrice(rs.getDouble("price"));
-                tracks.add(track);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Track track = new Track(
+                            rs.getString("title"),
+                            rs.getString("artist")
+                    );
+                    track.setTrackId(rs.getInt("trackId"));
+                    track.setPrice(rs.getDouble("price"));
+                    tracks.add(track);
+                }
             }
-            rs.close();
 
-            // Get total rows
-            Statement stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT COUNT(*) FROM tracks");
-            if (rs.next()) {
-                noOfRecords = rs.getInt(1);
+            // Get total rows using constant
+            try (PreparedStatement countPs = conn.prepareStatement(TrackSQLConstants.COUNT_ALL_TRACKS);
+                 ResultSet countRs = countPs.executeQuery()) {
+                if (countRs.next()) {
+                    noOfRecords = countRs.getInt(1);
+                }
             }
             noOfPages = (int) Math.ceil(noOfRecords * 1.0 / RECORDS_PER_PAGE);
 
-            rs.close();
-
-            conn.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();  // TODO: Improve error handling (e.g., log and redirect to error page)
         }
 
         request.setAttribute("trackList", tracks);

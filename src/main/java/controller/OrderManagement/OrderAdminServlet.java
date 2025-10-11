@@ -1,6 +1,6 @@
 package controller.OrderManagement;
 
-import dao.OrderDAO;
+import service.OrderService;  // Use Service instead of DAO
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,19 +17,21 @@ import java.util.LinkedList;
 @WebServlet("/manageOrders")
 public class OrderAdminServlet extends HttpServlet {
 
+    private final OrderService orderService = new OrderService();  // Delegate to Service
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
 
         LinkedList<Order> allOrders = new LinkedList<>();
         try {
-            allOrders = OrderDAO.getOrders();
+            allOrders = orderService.getOrders();  // Use Service
         } catch (SQLException e) {
             throw new RuntimeException("Database error: " + e.getMessage());
         }
 
         req.setAttribute("allOrders", allOrders);
-        RequestDispatcher rd = req.getRequestDispatcher("admin/ManageOrders.jsp");
+        RequestDispatcher rd = req.getRequestDispatcher("admin/manage-orders.jsp");
         rd.forward(req, resp);
     }
 
@@ -54,20 +56,17 @@ public class OrderAdminServlet extends HttpServlet {
 
     private void updateOrderStatus(int orderId, String status) {
         try {
-            OrderDAO.updateOrderStatus(orderId, status);
-        } catch (SQLException e) {
-            System.out.println("Order Status Update Failed. SQL Error: " + e.getMessage());
+            orderService.updateOrderStatus(orderId, status);  // Use Service
+        } catch (SQLException | IllegalArgumentException e) {
+            System.out.println("Order Status Update Failed. Error: " + e.getMessage());
         }
     }
 
     private void deleteOrder(int orderId) {
         try {
-            Order order = OrderDAO.findOrderById(orderId);
-            if (order != null) {
-                OrderDAO.removeOrder(order);
-            }
-        } catch (SQLException e) {
-            System.out.println("Order Delete Failed. SQL Error: " + e.getMessage());
+            orderService.removeOrder(orderId);  // Use Service
+        } catch (SQLException | IllegalArgumentException e) {
+            System.out.println("Order Delete Failed. Error: " + e.getMessage());
         }
     }
 }

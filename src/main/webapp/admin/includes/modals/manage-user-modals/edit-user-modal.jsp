@@ -1,0 +1,55 @@
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
+<c:set var="contextPath" value="${param.contextPath}" />
+
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editUserForm" action="${contextPath}/update-user" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="editUserId" name="userId">
+                    <div class="form-group">
+                        <label for="editFirstName">First Name</label>
+                        <input type="text" class="form-control" id="editFirstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editLastName">Last Name</label>
+                        <input type="text" class="form-control" id="editLastName" name="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail">Email</label>
+                        <input type="email" class="form-control" id="editEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editRole">Role</label>
+                        <select class="form-control" id="editRole" name="role" required onchange="toggleAdminRoleField('edit')">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="editAdminRoleGroup" style="display: none;">
+                        <label for="editAdminRole">Admin Role</label>
+                        <select class="form-control" id="editAdminRole" name="adminRole">
+                            <option value="">Select Admin Role</option>
+                            <c:forEach var="role" items="${adminRoles}">
+                                <option value="${role}">${role}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPassword">Password</label>
+                        <input type="password" class="form-control" id="editPassword" name="editPassword" placeholder="New Password (leave blank to keep unchanged)">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

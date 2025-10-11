@@ -7,22 +7,22 @@ public enum AdminRole {
     FINANCE_MANAGER("finance_manager"),
     CONTENT_MANAGER("content_manager");
 
-    private final String roleName;
+    private final String dbValue;
 
-    AdminRole(String roleName) {
-        this.roleName = roleName;
+    AdminRole(String dbValue) {
+        this.dbValue = dbValue;
     }
 
     public String getRoleName() {
-        return roleName;
+        return dbValue;
     }
 
-    public static AdminRole fromRoleName(String roleName) {
+    public static AdminRole fromRoleName(String dbValue) {
         for (AdminRole role : AdminRole.values()) {
-            if (role.roleName.equalsIgnoreCase(roleName)) {
+            if (role.dbValue.equalsIgnoreCase(dbValue)) {
                 return role;
             }
         }
-        throw new IllegalArgumentException("Invalid role name: " + roleName);
+        throw new IllegalArgumentException("Invalid role name: " + dbValue);
     }
 }

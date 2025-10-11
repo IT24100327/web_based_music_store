@@ -14,7 +14,7 @@
       </a>
 
       <c:if test="${sessionScope.USER.role != null && sessionScope.USER.role.roleName eq 'super_admin'}">
-        <a href="${pageContext.request.contextPath}/manageUsers" class="${page eq 'manageUsers' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/manage-users" class="${page eq 'manage-users' ? 'active' : ''}">
           <i class="fas fa-users-cog"></i>
           User Management
         </a>
@@ -30,13 +30,13 @@
 
       <c:if test="${sessionScope.USER.role != null && (sessionScope.USER.role.roleName eq 'super_admin' ||
        sessionScope.USER.role.roleName eq 'marketing_manager')}">
-        <a href="${pageContext.request.contextPath}/marketing" class="${page eq 'manageMarketing' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/manage-marketing" class="${page eq 'manage-marketing' ? 'active' : ''}">
           <i class="fas fa-chart-bar"></i>
           Marketing Management
         </a>
       </c:if>
 
-      <a href="${pageContext.request.contextPath}/LogoutServlet" class="${page eq 'logout' ? 'active' : ''}">
+      <a href="${pageContext.request.contextPath}/logout" class="${page eq 'logout' ? 'active' : ''}">
         <i class="fas fa-sign-out-alt"></i>
         Logout
       </a>

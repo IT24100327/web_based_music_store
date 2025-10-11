@@ -2,22 +2,17 @@ package dao;
 
 import model.Track;
 import utils.DatabaseConnection;
-
+import dao.constants.CartSQLConstants;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CartDAO {
 
-    static {
-        ensureTableExists();
-    }
-
     public static void addToCart(int userId, int trackId) throws SQLException {
         try (Connection conn = DatabaseConnection.getConnection()) {
             // Check if item already exists in cart
-            String checkSql = "SELECT * FROM carts WHERE user_id = ? AND track_id = ?";
-            PreparedStatement checkStmt = conn.prepareStatement(checkSql);
+            PreparedStatement checkStmt = conn.prepareStatement(CartSQLConstants.CHECK_CART_ITEM);
             checkStmt.setInt(1, userId);
             checkStmt.setInt(2, trackId);
 
@@ -25,15 +20,13 @@ public class CartDAO {
 
             if (rs.next()) {
                 // Item exists, update quantity
-                String updateSql = "UPDATE carts SET quantity = quantity + 1 WHERE user_id = ? AND track_id = ?";
-                PreparedStatement updateStmt = conn.prepareStatement(updateSql);
+                PreparedStatement updateStmt = conn.prepareStatement(CartSQLConstants.UPDATE_CART_QUANTITY);
                 updateStmt.setInt(1, userId);
                 updateStmt.setInt(2, trackId);
                 updateStmt.executeUpdate();
             } else {
                 // Item doesn't exist, insert new
-                String insertSql = "INSERT INTO carts (user_id, track_id, quantity) VALUES (?, ?, 1)";
-                PreparedStatement insertStmt = conn.prepareStatement(insertSql);
+                PreparedStatement insertStmt = conn.prepareStatement(CartSQLConstants.INSERT_CART_ITEM);
                 insertStmt.setInt(1, userId);
                 insertStmt.setInt(2, trackId);
                 insertStmt.executeUpdate();
@@ -42,9 +35,9 @@ public class CartDAO {
     }
 
     public static void removeFromCart(int userId, int trackId) throws SQLException {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "DELETE FROM carts WHERE user_id = ? AND track_id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CartSQLConstants.DELETE_CART_ITEM)) {
+
             stmt.setInt(1, userId);
             stmt.setInt(2, trackId);
             stmt.executeUpdate();
@@ -53,12 +46,9 @@ public class CartDAO {
 
     public static List<Track> getCartItems(int userId) throws SQLException {
         List<Track> cartItems = new ArrayList<>();
-        String sql = "SELECT t.*, c.quantity FROM carts c " +
-                "JOIN tracks t ON c.track_id = t.trackId " +
-                "WHERE c.user_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(CartSQLConstants.SELECT_CART_ITEMS)) {
 
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
@@ -79,19 +69,17 @@ public class CartDAO {
     }
 
     public static void clearCart(int userId) throws SQLException {
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "DELETE FROM carts WHERE user_id = ?";
-            PreparedStatement stmt = conn.prepareStatement(sql);
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CartSQLConstants.CLEAR_CART)) {
+
             stmt.setInt(1, userId);
             stmt.executeUpdate();
         }
     }
 
     public static int getCartItemCount(int userId) throws SQLException {
-        String sql = "SELECT COUNT(*) as item_count FROM carts WHERE user_id = ?";
-
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(CartSQLConstants.COUNT_CART_ITEMS)) {
 
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
@@ -101,29 +89,5 @@ public class CartDAO {
             }
         }
         return 0;
-    }
-
-    private static void ensureTableExists() {
-        try (Connection con = DatabaseConnection.getConnection();
-             Statement stmt = con.createStatement()) {
-
-            // Create carts table with proper structure
-            stmt.executeUpdate(
-                    "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'carts') " +
-                            "CREATE TABLE carts (" +
-                            "id INT IDENTITY(1,1) PRIMARY KEY, " +
-                            "user_id INT NOT NULL, " +
-                            "track_id INT NOT NULL, " +
-                            "quantity INT NOT NULL DEFAULT 1, " +
-                            "added_date DATETIME DEFAULT GETDATE(), " +
-                            "FOREIGN KEY (user_id) REFERENCES users(userId) ON DELETE CASCADE, " +
-                            "FOREIGN KEY (track_id) REFERENCES tracks(trackId) ON DELETE CASCADE, " +
-                            "UNIQUE(user_id, track_id)" +
-                            ")"
-            );
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

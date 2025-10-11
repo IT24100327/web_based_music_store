@@ -1,8 +1,9 @@
 package dao;
 
+import factory.AdvertisementFactory;
 import model.Advertisement;
 import utils.DatabaseConnection;
-
+import dao.constants.AdvertisementSQLConstants;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
@@ -10,21 +11,16 @@ import java.util.LinkedList;
 
 public class AdvertisementDAO {
 
-    static {
-        ensureTableExists();
-    }
-
     public static LinkedList<Advertisement> getAdvertisements() throws SQLException {
         LinkedList<Advertisement> allAds = new LinkedList<>();
-        String sql = "SELECT * FROM advertisements";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(AdvertisementSQLConstants.SELECT_ALL_ADVERTISEMENTS)) {
 
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                allAds.add(createAdvertisementFromResultSet(rs));
+                allAds.add(AdvertisementFactory.createAdvertisementFromResultSet(rs));
             }
         }
 
@@ -33,10 +29,9 @@ public class AdvertisementDAO {
 
     public static LinkedList<Advertisement> getActiveAdvertisements() throws SQLException {
         LinkedList<Advertisement> activeAds = new LinkedList<>();
-        String sql = "SELECT * FROM advertisements WHERE active = 1 AND startDate <= ? AND endDate >= ?";
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(AdvertisementSQLConstants.SELECT_ACTIVE_ADVERTISEMENTS)) {
 
             LocalDate now = LocalDate.now();
             pstmt.setDate(1, Date.valueOf(now));
@@ -45,7 +40,7 @@ public class AdvertisementDAO {
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                activeAds.add(createAdvertisementFromResultSet(rs));
+                activeAds.add(AdvertisementFactory.createAdvertisementFromResultSet(rs));
             }
         }
 
@@ -54,9 +49,9 @@ public class AdvertisementDAO {
 
     public static void addAdvertisement(Advertisement ad) throws IOException, SQLException {
         if (ad != null) {
-            try (Connection con = DatabaseConnection.getConnection()) {
-                String sql = "INSERT INTO advertisements (title, content, imageData, imageUrl, startDate, endDate, active) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            try (Connection con = DatabaseConnection.getConnection();
+                 PreparedStatement pstmt = con.prepareStatement(
+                         AdvertisementSQLConstants.INSERT_ADVERTISEMENT, Statement.RETURN_GENERATED_KEYS)) {
 
                 pstmt.setString(1, ad.getTitle());
                 pstmt.setString(2, ad.getContent());
@@ -81,19 +76,16 @@ public class AdvertisementDAO {
         }
     }
 
-    public static void updateAdvertisement(int adId, String title, String content, byte[] imageData, String imageUrl, LocalDate startDate, LocalDate endDate, boolean active) throws IOException, SQLException {
-        // Initialize StringBuilder for dynamic SQL query
-        StringBuilder sql = new StringBuilder("UPDATE advertisements SET title = ?, content = ?, imageUrl = ?, startDate = ?, endDate = ?, active = ?");
+    public static void updateAdvertisement(int adId, String title, String content, byte[] imageData,
+                                           String imageUrl, LocalDate startDate, LocalDate endDate,
+                                           boolean active) throws IOException, SQLException {
 
-        int paramIndex = 7;
-
-        if (imageData != null) {
-            sql.append(", imageData = ?");
-        }
-        sql.append(" WHERE adId = ?");
+        String sql = imageData != null ?
+                AdvertisementSQLConstants.UPDATE_ADVERTISEMENT_WITH_IMAGE :
+                AdvertisementSQLConstants.UPDATE_ADVERTISEMENT_WITHOUT_IMAGE;
 
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql.toString())) {
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
 
             pstmt.setString(1, title);
             pstmt.setString(2, content);
@@ -102,12 +94,12 @@ public class AdvertisementDAO {
             pstmt.setDate(5, Date.valueOf(endDate));
             pstmt.setBoolean(6, active);
 
-            // Set imageData parameter only if it is not null
+            int paramIndex = 7;
+
             if (imageData != null) {
                 pstmt.setBytes(paramIndex++, imageData);
             }
 
-            // Set adId parameter
             pstmt.setInt(paramIndex, adId);
 
             int affectedRows = pstmt.executeUpdate();
@@ -119,10 +111,8 @@ public class AdvertisementDAO {
     }
 
     public static void deleteAdvertisement(int adId) throws IOException, SQLException {
-        String sql = "DELETE FROM advertisements WHERE adId = ?";
-
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(AdvertisementSQLConstants.DELETE_ADVERTISEMENT)) {
 
             pstmt.setInt(1, adId);
             int affectedRows = pstmt.executeUpdate();
@@ -134,53 +124,17 @@ public class AdvertisementDAO {
     }
 
     public static Advertisement findAdvertisementById(int adId) throws SQLException {
-        String sql = "SELECT * FROM advertisements WHERE adId = ?";
-
         try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
+             PreparedStatement pstmt = con.prepareStatement(AdvertisementSQLConstants.SELECT_ADVERTISEMENT_BY_ID)) {
 
             pstmt.setInt(1, adId);
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return createAdvertisementFromResultSet(rs);
+                    return AdvertisementFactory.createAdvertisementFromResultSet(rs);
                 }
             }
         }
         return null;
-    }
-
-    private static Advertisement createAdvertisementFromResultSet(ResultSet rs) throws SQLException {
-        return new Advertisement(
-                rs.getInt("adId"),
-                rs.getString("title"),
-                rs.getString("content"),
-                rs.getBytes("imageData"),
-                rs.getString("imageUrl"),
-                rs.getDate("startDate").toLocalDate(),
-                rs.getDate("endDate").toLocalDate(),
-                rs.getBoolean("active")
-        );
-    }
-
-    private static void ensureTableExists() {
-        try (Connection con = DatabaseConnection.getConnection();
-             Statement stmt = con.createStatement()) {
-            stmt.executeUpdate(
-                    "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'advertisements') " +
-                            "CREATE TABLE advertisements (" +
-                            "adId INT IDENTITY(1,1) PRIMARY KEY, " +
-                            "title VARCHAR(100), " +
-                            "content VARCHAR(255), " +
-                            "imageData VARBINARY(MAX), " +
-                            "imageUrl VARCHAR(255), " +
-                            "startDate DATE, " +
-                            "endDate DATE, " +
-                            "active BIT" +
-                            ")"
-            );
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

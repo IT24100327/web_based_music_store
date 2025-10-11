@@ -5,13 +5,13 @@ import java.util.List;
 
 public class Order {
     private int orderId;
-    private int userId;                 // Who placed the order
-    private List<Integer> trackIds;     // Purchased tracks (FK to Track)
+    private int userId;
+    private List<Integer> trackIds;
     private double totalAmount;
-    private String status;              // PENDING, PAID, CANCELLED, COMPLETED
+    private String status;
     private LocalDateTime orderDate;
-    private String paymentMethod;       // e.g., CARD, COD, WALLET
-    private String transactionId;       // Payment gateway ref
+    private String paymentMethod;
+    private String transactionId;
 
     public Order () {};
 

@@ -9,6 +9,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.Advertisement;
 import model.Promotion;
+import service.AdvertisementService;
+import service.PromotionService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +24,8 @@ import java.util.LinkedList;
         maxRequestSize = 1024 * 1024 * 50)    // 50MB
 public class MarketingServlet extends HttpServlet {
 
+    private final AdvertisementService adService = new AdvertisementService();
+    private final PromotionService promoService = new PromotionService();
     private static final String[] ALLOWED_EXTENSIONS = {".png", ".jpg", ".jpeg"};
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -47,9 +51,8 @@ public class MarketingServlet extends HttpServlet {
                     double updateDiscount = Double.parseDouble(request.getParameter("discount"));
                     LocalDate updateStartDate = LocalDate.parse(request.getParameter("startDate"));
                     LocalDate updateEndDate = LocalDate.parse(request.getParameter("endDate"));
-                    int usageCount = Integer.parseInt(request.getParameter("usageCount"));
                     String updateDescription = request.getParameter("description");
-                    updatePromotion(promotionId, updateCode, updateDiscount, updateStartDate, updateEndDate, usageCount, updateDescription);
+                    updatePromotion(promotionId, updateCode, updateDiscount, updateStartDate, updateEndDate, updateDescription);
                     break;
                 case "delete":
                     int deletePromotionId = Integer.parseInt(request.getParameter("promotionId"));
@@ -72,15 +75,15 @@ public class MarketingServlet extends HttpServlet {
         LinkedList<Promotion> allPromotions = new LinkedList<>();
         LinkedList<Advertisement> allAdvertisements = new LinkedList<>();
         try {
-            allPromotions = PromotionDAO.getPromotions();
-            allAdvertisements = AdvertisementDAO.getAdvertisements();
+            allPromotions = promoService.getPromotions();  // Use Service
+            allAdvertisements = adService.getAdvertisements();  // Use Service
         } catch (SQLException e) {
             throw new RuntimeException("Database error: " + e.getMessage());
         }
 
         req.setAttribute("allPromotions", allPromotions);
         req.setAttribute("allAdvertisements", allAdvertisements);
-        RequestDispatcher rd = req.getRequestDispatcher("admin/ManageMarketing.jsp");
+        RequestDispatcher rd = req.getRequestDispatcher("admin/manage-marketing.jsp");
         rd.forward(req, resp);
     }
 
@@ -116,25 +119,23 @@ public class MarketingServlet extends HttpServlet {
 
     private void addPromotion(String code, double discount, LocalDate startDate, LocalDate endDate, String description) {
         try {
-            Promotion promotion = new Promotion(code, discount, startDate, endDate, 0, description);
-            PromotionDAO.addPromotion(promotion);
-        } catch (SQLException | IOException e) {
+            promoService.addPromotion(code, discount, startDate, endDate, description);  // Use Service
+        } catch (SQLException | IOException | IllegalArgumentException e) {
             System.out.println("SQL Issue! Promotion not Added! " + e.getMessage());
         }
     }
 
-    private void updatePromotion(int promotionId, String code, double discount, LocalDate startDate, LocalDate endDate, int usageCount, String description) {
+    private void updatePromotion(int promotionId, String code, double discount, LocalDate startDate, LocalDate endDate, String description) {
         try {
-            PromotionDAO.updatePromotion(promotionId, code, discount, startDate, endDate, usageCount, description);
-        } catch (SQLException | IOException e) {
+            promoService.updatePromotion(promotionId, code, discount, startDate, endDate, description);  // Use Service
+        } catch (SQLException | IOException | IllegalArgumentException e) {
             System.out.println("Promotion Update Failed. SQL Error: " + e.getMessage());
         }
     }
 
     private void deletePromotion(int promotionId) {
         try {
-            Promotion promo = PromotionDAO.findPromotionById(promotionId);
-            PromotionDAO.removePromotion(promo);
+            promoService.removePromotion(promotionId);  // Use Service
         } catch (SQLException | IOException e) {
             System.out.println("Promotion Delete Failed. SQL Error: " + e.getMessage());
         }
@@ -142,7 +143,7 @@ public class MarketingServlet extends HttpServlet {
 
     private void trackPromotion(String code, HttpServletResponse response) throws IOException {
         try {
-            int usage = PromotionDAO.trackUsage(code);
+            int usage = promoService.trackUsage(code);  // Use Service
             response.getWriter().println("Usage count for promo " + code + ": " + usage);
         } catch (SQLException e) {
             System.out.println("Tracking Failed. SQL Error: " + e.getMessage());
@@ -152,24 +153,23 @@ public class MarketingServlet extends HttpServlet {
 
     private void addAdvertisement(String title, String content, byte[] imageData, String imageUrl, LocalDate startDate, LocalDate endDate, boolean active) {
         try {
-            Advertisement ad = new Advertisement(title, content, imageData, imageUrl, startDate, endDate, active);
-            AdvertisementDAO.addAdvertisement(ad);
-        } catch (SQLException | IOException e) {
+            adService.addAdvertisement(title, content, imageData, imageUrl, startDate, endDate, active);  // Use Service
+        } catch (SQLException | IOException | IllegalArgumentException e) {
             System.out.println("SQL Issue! Advertisement not Added! " + e.getMessage());
         }
     }
 
     private void updateAdvertisement(int adId, String title, String content, byte[] imageData, String imageUrl, LocalDate startDate, LocalDate endDate, boolean active) {
         try {
-            AdvertisementDAO.updateAdvertisement(adId, title, content, imageData, imageUrl, startDate, endDate, active);
-        } catch (SQLException | IOException e) {
+            adService.updateAdvertisement(adId, title, content, imageData, imageUrl, startDate, endDate, active);  // Use Service
+        } catch (SQLException | IOException | IllegalArgumentException e) {
             System.out.println("Advertisement Update Failed. SQL Error: " + e.getMessage());
         }
     }
 
     private void deleteAdvertisement(int adId) {
         try {
-            AdvertisementDAO.deleteAdvertisement(adId);
+            adService.deleteAdvertisement(adId);  // Use Service
         } catch (SQLException | IOException e) {
             System.out.println("Advertisement Delete Failed. SQL Error: " + e.getMessage());
         }

@@ -8,9 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RhythmWave Music Store</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/index.css">
 </head>
@@ -107,9 +105,16 @@
 <jsp:include page="includes/footer.jsp" />
 
 <!-- Shopping Cart Modal -->
-<jsp:include page="includes/modals/shoppingCartModal.jsp" />
+<jsp:include page="includes/modals/shopping-cart-modal.jsp" />
 
 <!-- Bootstrap JS -->
+<script>
+    window.contextPath = '${pageContext.request.contextPath}';
+    window.initialCartState = {
+        itemCount: ${sessionScope.cartItems != null ? sessionScope.cartItems.size() : 0},
+        cartTotal: ${sessionScope.cartTotal != null ? sessionScope.cartTotal : 0}
+    };
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/music.js"></script>
 <script src="${pageContext.request.contextPath}/js/cart.js"></script>

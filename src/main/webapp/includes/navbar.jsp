@@ -50,10 +50,15 @@
         </c:when>
         <c:otherwise>
           <div class="d-flex">
-            <a href="${pageContext.request.contextPath}/LogoutServlet" class="btn btn-primary me-2">Logout</a>
-            <button type="button" class="btn btn-outline-light position-relative me-2" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
-              <i class="fas fa-shopping-cart me-2"></i>
-              <span class="badge badge-light cart-badge"></span>
+            <a href="${pageContext.request.contextPath}/logout" class="btn btn-primary me-2">Logout</a>
+
+            <button type="button" class="btn btn-outline-light position-relative me-3" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
+              <i class="fas fa-shopping-cart"></i>
+              <c:set var="cartItemCount" value="${sessionScope.cartItems != null ? sessionScope.cartItems.size() : 0}"/>
+              <span class="cart-badge"
+                    style="display: ${cartItemCount > 0 ? 'flex' : 'none'};">
+                  ${cartItemCount}
+              </span>
             </button>
 
             <c:choose>
