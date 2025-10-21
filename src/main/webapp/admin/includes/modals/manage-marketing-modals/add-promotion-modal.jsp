@@ -1,8 +1,9 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
-<c:set var="contextPath" value="${param.contextPath}" />
+<c:set var="contextPath" value="${param.contextPath}"/>
 
-<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">

@@ -6,5 +6,6 @@
 @import "modules/_modal.css";
 @import "modules/_search.css";
 @import "modules/_components.css";
+@import "modules/_posts.css";
 @import "animations.css";
-@import "modules/_responsive.css";  /* Last for overrides */
+@import "modules/_responsive.css";

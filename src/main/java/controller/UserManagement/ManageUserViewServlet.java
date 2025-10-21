@@ -10,6 +10,7 @@ import model.User;
 import model.enums.AdminRole;
 import model.enums.UserType;
 import service.UserService;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -40,7 +41,7 @@ public class ManageUserViewServlet extends HttpServlet {
 
         // Set admin roles for JSP dropdowns (only for admin type)
         req.setAttribute("adminRoles", Arrays.stream(AdminRole.values())
-                .map(AdminRole::getRoleName)
+                .map(AdminRole::name)
                 .collect(Collectors.toList()));
 
         req.setAttribute("allUsers", allUsers);

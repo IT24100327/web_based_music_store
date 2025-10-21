@@ -2,6 +2,7 @@ package service.validators.UserValidation;
 
 import model.Artist;
 import model.User;
+
 import java.util.List;
 
 public class ArtistUserValidator implements UserValidatorStrategy {
@@ -11,13 +12,14 @@ public class ArtistUserValidator implements UserValidatorStrategy {
 
     @Override
     public void validate(User user) {
+        // First, run all standard user validations (name, email, etc.)
         standardValidator.validate(user);
 
         if (!(user instanceof Artist artist)) {
             throw new IllegalArgumentException("ArtistUserValidator can only validate Artist users");
         }
 
-        // Validate bio
+        // Validate bio (this rule is always enforced for artists)
         String bio = artist.getBio();
         if (bio == null || bio.trim().isEmpty()) {
             throw new IllegalArgumentException("Artist bio cannot be null or empty");
@@ -26,30 +28,12 @@ public class ArtistUserValidator implements UserValidatorStrategy {
             throw new IllegalArgumentException("Bio cannot exceed " + MAX_BIO_LENGTH + " characters");
         }
 
-        // Validate specialized genres
+        // Validate specialized genres ONLY if the list exists (is not null).
+        // This allows the validator to work for updates where genres are not being modified.
         List<String> specializedGenres = artist.getSpecializedGenres();
-        if (specializedGenres == null || specializedGenres.isEmpty()) {
-            throw new IllegalArgumentException("Artist must have at least 1 specialized genre(s)");
-        }
-        for (String genre : specializedGenres) {
-            if (genre == null || genre.trim().isEmpty() || genre.length() > 50) {
-                throw new IllegalArgumentException("Invalid specialized genre: " + genre);
-            }
-        }
-    }
-
-    public void validateDetails(String bio, List<String> specializedGenres) {
-        if (bio != null) {
-            if (bio.trim().isEmpty()) {
-                throw new IllegalArgumentException("Bio cannot be empty");
-            }
-            if (bio.length() > MAX_BIO_LENGTH) {
-                throw new IllegalArgumentException("Bio cannot exceed " + MAX_BIO_LENGTH + " characters");
-            }
-        }
         if (specializedGenres != null) {
             if (specializedGenres.isEmpty()) {
-                throw new IllegalArgumentException("Must have at least 1 specialized genre");
+                throw new IllegalArgumentException("Artist must have at least 1 specialized genre(s)");
             }
             for (String genre : specializedGenres) {
                 if (genre == null || genre.trim().isEmpty() || genre.length() > 50) {

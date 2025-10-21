@@ -40,6 +40,6 @@ public class AdminUserValidator implements UserValidatorStrategy {
     }
 
     private boolean isValidAdminRole(AdminRole role) {
-        return AdminRole.fromRoleName(role.getRoleName()) != null; // Fixed: Handles null safely if fromRoleName does
+        return AdminRole.valueOf(role.name()) != null; // Fixed: Handles null safely if fromRoleName does
     }
 }

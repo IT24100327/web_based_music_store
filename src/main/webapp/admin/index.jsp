@@ -16,14 +16,14 @@
 <body>
 <div class="admin-container">
     <!-- Sidebar Navigation -->
-    <jsp:include page="includes/admin_nav_bar.jsp" />
+    <jsp:include page="includes/admin_nav_bar.jsp"/>
 
     <!-- Main Content Area -->
     <main class="admin-main">
         <header class="admin-header">
             <h1>RhythmWave Admin Dashboard</h1>
             <div class="user-info">
-                <div class="user-avatar"><c:out value="${fn:substring(sessionScope.USER.firstName, 0, 1)}" /></div>
+                <div class="user-avatar"><c:out value="${fn:substring(sessionScope.USER.firstName, 0, 1)}"/></div>
                 <div>
                     <div>${sessionScope.USER.firstName} ${sessionScope.USER.lastName}</div>
                     <div class="text-muted">${sessionScope.USER.email}</div>
@@ -94,24 +94,40 @@
         <!-- Dashboard Cards -->
         <div class="dashboard-grid">
 
-            <c:if test="${sessionScope.USER.role.roleName eq 'super_admin'}">
+            <c:if test="${sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
 
-            <!-- User Management Card -->
-            <div class="dashboard-card card-user">
-                <div class="card-icon">
-                    <i class="fas fa-users-cog"></i>
+                <!-- User Management Card -->
+                <div class="dashboard-card card-user">
+                    <div class="card-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h3 class="card-title">User Management</h3>
+                    <p class="card-description">Manage users, roles, and permissions</p>
+                    <a href="<%=request.getContextPath()%>/manage-users" class="card-link">
+                        Manage Users <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
-                <h3 class="card-title">User Management</h3>
-                <p class="card-description">Manage users, roles, and permissions</p>
-                <a href="<%=request.getContextPath()%>/manage-users" class="card-link">
-                    Manage Users <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
 
             </c:if>
 
-            <c:if test="${sessionScope.USER.role.roleName eq 'marketing_manager'
-            or sessionScope.USER.role.roleName eq 'super_admin'}">
+            <c:if test="${sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
+
+                <!-- Artist Management Card -->
+                <div class="dashboard-card card-user">
+                    <div class="card-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <h3 class="card-title">Artist Management</h3>
+                    <p class="card-description">Manage artists, create, update & remove</p>
+                    <a href="<%=request.getContextPath()%>/manage-artists" class="card-link">
+                        Manage Artists <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+            </c:if>
+
+            <c:if test="${sessionScope.USER.role.name() eq 'MARKETING_MANAGER'
+            or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
 
                 <!-- Marketing Management Card -->
                 <div class="dashboard-card card-user">
@@ -127,25 +143,25 @@
 
             </c:if>
 
-            <c:if test="${sessionScope.USER.role.roleName eq 'finance_manager'
-            or sessionScope.USER.role.roleName eq 'super_admin'}">
+            <c:if test="${sessionScope.USER.role.name() eq 'FINANCE_MANAGER'
+            or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
 
-            <!-- Content Management Card -->
-            <div class="dashboard-card">
-                <div class="card-icon">
-                    <i class="fas fa-music"></i>
+                <!-- Content Management Card -->
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h3 class="card-title">Content Management</h3>
+                    <p class="card-description">Manage songs, albums, and playlists</p>
+                    <a href="#" class="card-link">
+                        Manage Content <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
-                <h3 class="card-title">Content Management</h3>
-                <p class="card-description">Manage songs, albums, and playlists</p>
-                <a href="#" class="card-link">
-                    Manage Content <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
 
             </c:if>
 
-            <c:if test="${sessionScope.USER.role.roleName eq 'finance_manager'
-            or sessionScope.USER.role.roleName eq 'super_admin'}">
+            <c:if test="${sessionScope.USER.role.name() eq 'FINANCE_MANAGER'
+            or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
 
                 <!-- Content Management Card -->
                 <div class="dashboard-card">

@@ -1,6 +1,6 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
-<c:set var="contextPath" value="${param.contextPath}" />
+<c:set var="contextPath" value="${param.contextPath}"/>
 
 <div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

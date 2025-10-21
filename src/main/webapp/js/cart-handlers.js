@@ -20,7 +20,7 @@ function initializeCartButtons() {
 }
 
 function initializeCartModal() {
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         if (e.target.closest('.cart-item-remove')) {
             const button = e.target.closest('.cart-item-remove');
             const trackId = button.getAttribute('data-track-id');

@@ -1,7 +1,8 @@
 package dao.constants.ms;
 
 public final class CartSQLConstants {
-    private CartSQLConstants() {}
+    private CartSQLConstants() {
+    }
 
     // Cart queries
     public static final String CHECK_CART_ITEM = "SELECT * FROM carts WHERE user_id = ? AND track_id = ?";

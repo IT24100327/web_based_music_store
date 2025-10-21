@@ -1,6 +1,6 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
-<c:set var="contextPath" value="${param.contextPath}" />
+<c:set var="contextPath" value="${param.contextPath}"/>
 
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -26,7 +26,8 @@
                     </div>
                     <div class="form-group">
                         <label for="editRole">Role</label>
-                        <select class="form-control" id="editRole" name="role" required onchange="toggleAdminRoleField('edit')">
+                        <select class="form-control" id="editRole" name="role" required
+                                onchange="toggleAdminRoleField('edit')">
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
                         </select>
@@ -42,7 +43,8 @@
                     </div>
                     <div class="form-group">
                         <label for="editPassword">Password</label>
-                        <input type="password" class="form-control" id="editPassword" name="editPassword" placeholder="New Password (leave blank to keep unchanged)">
+                        <input type="password" class="form-control" id="editPassword" name="editPassword"
+                               placeholder="New Password (leave blank to keep unchanged)">
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -1,4 +1,5 @@
 package service.validators.AdvertisementValidation;
+
 import model.Advertisement;
 
 class BasicAdvertisementValidator implements AdvertisementValidatorStrategy {

@@ -5,7 +5,8 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Your Shopping Cart <span class="cart-badge"> <c:out value="${fn:length(sessionScope.cartItems)}" /></span></h5>
+                <h5 class="modal-title">Your Shopping Cart <span class="cart-badge"> <c:out
+                        value="${fn:length(sessionScope.cartItems)}"/></span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -22,11 +23,20 @@
                     <c:otherwise>
                         <c:forEach var="track" items="${sessionScope.cartItems}">
                             <div class="cart-item">
-                                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
-                                     alt="Album Cover" class="cart-item-img">
+                                <c:choose>
+                                    <c:when test="${not empty track.coverArtData}">
+                                        <img src="${pageContext.request.contextPath}/cover-art?trackId=${track.trackId}"
+                                             class="compact-album-cover" alt="Cover for ${track.title}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <%-- Fallback placeholder image --%>
+                                        <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+                                             class="compact-album-cover" alt="Album Cover">
+                                    </c:otherwise>
+                                </c:choose>
                                 <div class="cart-item-details">
                                     <div class="cart-item-title">${track.title}</div>
-                                    <div class="cart-item-artist">by ${track.artist}</div>
+                                    <div class="cart-item-artist">by ${track.artistName}</div>
                                     <div class="cart-item-price">Rs. ${track.price}</div>
                                 </div>
 

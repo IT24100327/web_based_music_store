@@ -1,15 +1,17 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
-<c:set var="contextPath" value="${param.contextPath}" />
+<c:set var="contextPath" value="${param.contextPath}"/>
 
-<div class="modal fade" id="addAdvertisementModal" tabindex="-1" aria-labelledby="addAdvertisementModalLabel" aria-hidden="true">
+<div class="modal fade" id="addAdvertisementModal" tabindex="-1" aria-labelledby="addAdvertisementModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addAdvertisementModalLabel">Add New Advertisement</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="addAdvertisementForm" action="${contextPath}/add-advertisement" method="POST" enctype="multipart/form-data">
+            <form id="addAdvertisementForm" action="${contextPath}/add-advertisement" method="POST"
+                  enctype="multipart/form-data">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="ad_add">
                     <div class="form-group">
@@ -22,7 +24,8 @@
                     </div>
                     <div class="form-group">
                         <label for="addAdImage" class="form-label">Image</label>
-                        <input type="file" class="form-control" id="addAdImage" name="imageFile" accept="image/png,image/jpeg,image/jpg">
+                        <input type="file" class="form-control" id="addAdImage" name="imageFile"
+                               accept="image/png,image/jpeg,image/jpg">
                     </div>
                     <div class="form-group">
                         <label for="addAdStartDate">Start Date</label>

@@ -1,28 +1,33 @@
 package controller.UserManagement;
 
+import factory.UserFactory;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Admin;
+import model.User;
 import model.enums.AdminRole;
 import model.enums.UserType;
 import service.UserService;
+
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 @WebServlet("/update-user")
 public class UpdateUserServlet extends HttpServlet {
 
     private final UserService userService = new UserService();
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String userIdStr = request.getParameter("userId");
         if (userIdStr == null || userIdStr.trim().isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/manage-users?error=User ID is missing");
             return;
         }
+
         try {
             int userId = Integer.parseInt(userIdStr);
             String firstName = request.getParameter("firstName");
@@ -30,52 +35,31 @@ public class UpdateUserServlet extends HttpServlet {
             String email = request.getParameter("email");
             String newPassword = request.getParameter("editPassword");
             String roleStr = request.getParameter("role");
-            String adminRole = request.getParameter("adminRole");
+            String adminRoleStr = request.getParameter("adminRole");
+            UserType userType = UserType.valueOf(roleStr.toUpperCase());
 
-            try {
-                UserType userType = UserType.valueOf(roleStr.toUpperCase());
-                updateUser(userId, firstName, lastName, email, newPassword, userType, adminRole, request, response);
-            } catch (IllegalArgumentException e) {
-                response.sendRedirect(request.getContextPath() + "/manage-users?error=Invalid role: " + roleStr);
-                return;
-            }
+            // 1. Create the appropriate User object from the request.
+            // We use a dummy password here because it's handled separately.
+            User userToUpdate = UserFactory.createUser(roleStr.toLowerCase(), firstName, lastName, email, "dummyPassword");
+            userToUpdate.setUserId(userId);
 
-        } catch (NumberFormatException e) {
-            response.sendRedirect(request.getContextPath() + "/manage-users?error=Invalid User ID format");
-            return;
-        }
-
-        response.sendRedirect(request.getContextPath() + "/manage-users");
-    }
-
-    private void updateUser(int userId, String firstName, String lastName, String email, String newPassword, UserType userType, String adminRole, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        try {
-            userService.updateUser(userId, firstName, lastName, email, userType.name().toLowerCase());
-
-            if (newPassword != null && !newPassword.isEmpty()) {
-                userService.updateUserPassword(userId, newPassword);
-            }
-
-            if (userType == UserType.ADMIN && adminRole != null && !adminRole.isEmpty()) {
-                userService.updateAdminRole(userId, AdminRole.fromRoleName(adminRole));
-            } else if (userType == UserType.USER || userType == UserType.ARTIST) {
-                // Remove admin role if downgraded
-                userService.updateAdminRole(userId, null);
-            }
-
-            // Artist-specific update example
-            if (userType == UserType.ARTIST) {
-                String bio = request.getParameter("bio");
-                String[] genres = request.getParameterValues("specializedGenres");
-                if (bio != null || genres != null) {
-                    userService.updateArtistDetails(userId, bio, List.of(genres != null ? genres : new String[0]));
+            if (userType == UserType.ADMIN && userToUpdate instanceof Admin) {
+                if (adminRoleStr != null && !adminRoleStr.isEmpty()) {
+                    ((Admin) userToUpdate).setRole(AdminRole.valueOf(adminRoleStr));
                 }
             }
 
-        } catch (SQLException | IOException e) {
-            response.sendRedirect(request.getContextPath() + "/manage-users?error=Failed to update user: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            response.sendRedirect(request.getContextPath() + "/manage-users?error=Invalid details for " + userType + ": " + e.getMessage());
+            // 2. Make a single, unified call to the UserService.
+            // A corresponding method needs to be created in UserService to handle this.
+            userService.updateUser(userToUpdate, newPassword);
+
+            response.sendRedirect(request.getContextPath() + "/manage-users?success=User updated successfully");
+
+        } catch (NumberFormatException e) {
+            response.sendRedirect(request.getContextPath() + "/manage-users?error=Invalid User ID format.");
+        } catch (IllegalArgumentException | SQLException e) {
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/manage-users?error=Update failed: " + e.getMessage());
         }
     }
 }

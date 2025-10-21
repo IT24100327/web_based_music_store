@@ -2,7 +2,8 @@
 package dao.constants;
 
 public final class TrackSQLConstants {
-    private TrackSQLConstants() {}
+    private TrackSQLConstants() {
+    }
 
     // Track queries
     public static final String SELECT_ALL_TRACKS = "SELECT * FROM tracks";

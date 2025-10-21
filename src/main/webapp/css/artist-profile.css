@@ -1,0 +1,60 @@
+@import "theme.css";
+@import "modules/_navbar.css";
+@import "modules/_components.css";
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+}
+
+.profile-header {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-light);
+}
+
+.artist-avatar {
+    color: var(--primary);
+}
+
+.artist-info h1 {
+    font-weight: 700;
+    margin: 0;
+}
+
+.artist-stats {
+    display: flex;
+    gap: 1.5rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+.profile-actions {
+    margin-left: auto;
+}
+
+.profile-section {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-light);
+}
+
+.profile-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.table .actions {
+    display: flex;
+    gap: 0.5rem;
+}

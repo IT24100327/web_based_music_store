@@ -1,11 +1,11 @@
 package controller.UserManagement;
 
+import dao.UserDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import model.User;
-import dao.UserDAO;
 import utils.PasswordUtil;
 
 import java.io.IOException;

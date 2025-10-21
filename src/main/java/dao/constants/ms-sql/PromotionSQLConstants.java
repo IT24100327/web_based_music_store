@@ -1,7 +1,8 @@
 package dao.constants.ms;
 
 public final class PromotionSQLConstants {
-    private PromotionSQLConstants() {}
+    private PromotionSQLConstants() {
+    }
 
     // Promotion queries
     public static final String SELECT_ALL_PROMOTIONS = "SELECT * FROM promotions";

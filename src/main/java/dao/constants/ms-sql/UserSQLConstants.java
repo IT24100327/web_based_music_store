@@ -1,7 +1,8 @@
 package dao.constants.ms;
 
 public final class UserSQLConstants {
-    private UserSQLConstants() {} // Prevent instantiation
+    private UserSQLConstants() {
+    } // Prevent instantiation
 
     // User queries
     public static final String SELECT_ALL_USERS = "SELECT * FROM users";
@@ -26,8 +27,6 @@ public final class UserSQLConstants {
             "INSERT INTO AdminRoles (userId, role) VALUES (?, ?) ON DUPLICATE KEY UPDATE role = ?";
     public static final String DELETE_ADMIN_ROLE = "DELETE FROM AdminRoles WHERE userId = ?";
     public static final String SELECT_ADMIN_ROLE = "SELECT role FROM AdminRoles WHERE userId = ?";
-    public static final String INSERT_DEFAULT_ADMIN_ROLE =
-            "INSERT IGNORE INTO AdminRoles (userId, role) VALUES (?, 'DEFAULT_ROLE')";
 
     // Artist queries
     public static final String INSERT_ARTIST_DETAILS =

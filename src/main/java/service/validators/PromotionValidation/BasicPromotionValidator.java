@@ -1,4 +1,5 @@
 package service.validators.PromotionValidation;
+
 import model.Promotion;
 
 class BasicPromotionValidator implements PromotionValidatorStrategy {

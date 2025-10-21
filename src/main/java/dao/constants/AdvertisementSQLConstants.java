@@ -2,7 +2,8 @@
 package dao.constants;
 
 public final class AdvertisementSQLConstants {
-    private AdvertisementSQLConstants() {}
+    private AdvertisementSQLConstants() {
+    }
 
     // Advertisement queries
     public static final String SELECT_ALL_ADVERTISEMENTS = "SELECT * FROM advertisements";

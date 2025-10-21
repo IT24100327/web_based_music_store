@@ -29,12 +29,14 @@
         <form id="loginForm" action="${pageContext.request.contextPath}/login" method="post">
             <div class="mb-3">
                 <label for="login-email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="login-email" name="email" placeholder="name@example.com" required>
+                <input type="email" class="form-control" id="login-email" name="email" placeholder="name@example.com"
+                       required>
             </div>
 
             <div class="mb-3 password-input-group">
                 <label for="login-password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="login-password" name="password" placeholder="Enter your password" required>
+                <input type="password" class="form-control" id="login-password" name="password"
+                       placeholder="Enter your password" required>
             </div>
 
             <div class="mb-3 d-flex justify-content-between align-items-center">
@@ -56,9 +58,9 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 

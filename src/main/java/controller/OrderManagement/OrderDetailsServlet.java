@@ -1,10 +1,12 @@
 package controller.OrderManagement;
 
 import dao.CartDAO;
-import service.OrderService;  // Added Service if needed for orders; primarily cart-focused
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.Track;
 import model.User;
 
@@ -28,45 +30,29 @@ public class OrderDetailsServlet extends HttpServlet {
         // Safely get cartItems from session, default to empty list if null
         @SuppressWarnings("unchecked")
         List<Track> cartItems = (List<Track>) session.getAttribute("cartItems");
+
         if (cartItems == null) {
             cartItems = new ArrayList<>();
         }
 
-        double cartTotal = (double) session.getAttribute("cartTotal");
+        double cartTotal = calculateTotal(cartItems);
 
         // If session cart is empty, load from database and recalculate total
         if (cartItems.isEmpty()) {
-            try {
-                cartItems = CartDAO.getCartItems(user.getUserId());
-                if (cartItems == null) {
-                    cartItems = new ArrayList<>();
-                }
-                // Recalculate total from loaded items
-                cartTotal = calculateTotal(cartItems);
-                // Sync back to session for consistency
-                session.setAttribute("cartItems", cartItems);
-                session.setAttribute("cartTotal", cartTotal);
-            } catch (SQLException e) {
-                System.err.println("Error loading cart from database in OrderDetailsServlet: " + e.getMessage());
-                // Fallback to empty
-                cartItems = new ArrayList<>();
-                cartTotal = 0.0;
-            }
+            cartItems = CartDAO.getCartItems(user.getUserId());
+
+            cartTotal = calculateTotal(cartItems);
+
+            session.setAttribute("cartItems", cartItems);
+            session.setAttribute("cartTotal", cartTotal);
         }
 
-        // Set correct attributes (no overwrite!)
         request.setAttribute("cartItems", cartItems);
         request.setAttribute("cartTotal", cartTotal);
 
         request.getRequestDispatcher("/order-details.jsp").forward(request, response);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Handle POST if needed (e.g., form submissions), currently empty
-    }
-
-    // Helper method to calculate total (mirrors CartServlet logic)
     private double calculateTotal(List<Track> cartItems) {
         double total = 0.0;
         if (cartItems != null) {

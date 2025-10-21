@@ -1,8 +1,10 @@
 package controller.filters;
 
 import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.User;
 import model.enums.UserType;
 
@@ -15,6 +17,13 @@ public class AdminFilter implements Filter {
                          FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
+        String path = req.getRequestURI().substring(req.getContextPath().length());
+
+        if (path.startsWith("/css/") || path.startsWith("/js/") || path.startsWith("/admin/css/")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession(false);
 

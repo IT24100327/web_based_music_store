@@ -1,6 +1,6 @@
 // Music Pagination and Track Content
 function initializePagination() {
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function (e) {
         if (e.target.closest('.music-pagination .pagination-btn[data-page]')) {
             e.preventDefault();
             handlePaginationClick(e.target.closest('.pagination-btn[data-page]'));

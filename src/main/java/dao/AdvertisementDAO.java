@@ -1,9 +1,10 @@
 package dao;
 
+import dao.constants.AdvertisementSQLConstants;
 import factory.AdvertisementFactory;
 import model.Advertisement;
 import utils.DatabaseConnection;
-import dao.constants.AdvertisementSQLConstants;
+
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;

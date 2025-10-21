@@ -1,7 +1,8 @@
 package dao.constants.ms;
 
 public final class OrderSQLConstants {
-    private OrderSQLConstants() {}
+    private OrderSQLConstants() {
+    }
 
     // Order queries
     public static final String SELECT_ALL_ORDERS = "SELECT * FROM orders ORDER BY order_date DESC";

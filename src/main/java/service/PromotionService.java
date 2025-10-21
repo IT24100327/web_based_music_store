@@ -56,7 +56,8 @@ public class PromotionService {
         tempPromotion.setPromotionId(promotionId);
         PromotionValidator validator = PromotionValidator.forType("standard");
         validator.validate(tempPromotion);
-        PromotionDAO.updatePromotion(promotionId, code, discount, startDate, endDate, description);
+
+        PromotionDAO.updatePromotion(promotionId, code, discount, startDate, endDate, current.getUsageCount(), description);
     }
 
     public void incrementUsageCount(String code) throws SQLException {

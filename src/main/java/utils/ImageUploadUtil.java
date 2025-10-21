@@ -3,6 +3,7 @@ package utils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -13,10 +14,11 @@ public class ImageUploadUtil {
 
     /**
      * Handles image upload: validates, reads bytes, and generates a simple URL.
-     * @param request The multipart request.
+     *
+     * @param request   The multipart request.
      * @param fieldName The form field name for the image (default: "imageFile").
      * @return An ImageUploadResult with bytes and URL, or null if no image.
-     * @throws IOException If read error.
+     * @throws IOException      If read error.
      * @throws ServletException If validation fails.
      */
     public ImageUploadResult handleImageUpload(HttpServletRequest request, String fieldName) throws IOException, ServletException {
@@ -75,6 +77,6 @@ public class ImageUploadUtil {
     }
 
     // Inner result class for convenience
-        public record ImageUploadResult(byte[] imageData, String imageUrl) {
+    public record ImageUploadResult(byte[] imageData, String imageUrl) {
     }
 }

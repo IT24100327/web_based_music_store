@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.OrderStatus;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,14 +10,20 @@ public class Order {
     private int userId;
     private List<Integer> trackIds;
     private double totalAmount;
-    private String status;
+    private OrderStatus status;
     private LocalDateTime orderDate;
     private String paymentMethod;
     private String transactionId;
+    private double discountAmount;
+    private double finalAmount;
+    private String promotionCode;
 
-    public Order () {};
+    public Order() {
+    }
 
-    public Order(int userId, List<Integer> trackIds, double totalAmount, String status, LocalDateTime orderDate, String paymentMethod) {
+    ;
+
+    public Order(int userId, List<Integer> trackIds, double totalAmount, OrderStatus status, LocalDateTime orderDate, String paymentMethod) {
         this.userId = userId;
         this.trackIds = trackIds;
         this.totalAmount = totalAmount;
@@ -56,11 +64,11 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 
@@ -86,5 +94,29 @@ public class Order {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(double discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public double getFinalAmount() {
+        return finalAmount;
+    }
+
+    public void setFinalAmount(double finalAmount) {
+        this.finalAmount = finalAmount;
+    }
+
+    public String getPromotionCode() {
+        return promotionCode;
+    }
+
+    public void setPromotionCode(String promotionCode) {
+        this.promotionCode = promotionCode;
     }
 }

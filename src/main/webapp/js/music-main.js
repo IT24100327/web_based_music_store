@@ -1,5 +1,5 @@
 // Music Main Entry Point
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     initializeViewControls();
     initializePagination();
     initializePlayButtons();

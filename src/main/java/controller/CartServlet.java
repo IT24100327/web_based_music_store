@@ -1,19 +1,25 @@
 package controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dao.CartDAO;
 import dao.TrackDAO;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.Track;
 import model.User;
+import utils.json.LocalDateAdapter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import com.google.gson.Gson;
 
 @WebServlet(name = "CartServlet", value = "/CartServlet")
 public class CartServlet extends HttpServlet {
@@ -23,7 +29,10 @@ public class CartServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        Gson gson = new Gson();
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
 
         try {
             String action = request.getParameter("action");
@@ -127,13 +136,8 @@ public class CartServlet extends HttpServlet {
 
         // If user is logged in and session cart is empty, try to load from database
         if (user != null && (cartItems == null || cartItems.isEmpty())) {
-            try {
-                cartItems = CartDAO.getCartItems(user.getUserId());
-                session.setAttribute("cartItems", cartItems);
-            } catch (SQLException e) {
-                System.err.println("Error loading cart from database: " + e.getMessage());
-                cartItems = new ArrayList<>();
-            }
+            cartItems = CartDAO.getCartItems(user.getUserId());
+            session.setAttribute("cartItems", cartItems);
         } else if (cartItems == null) {
             cartItems = new ArrayList<>();
         }
@@ -154,7 +158,6 @@ public class CartServlet extends HttpServlet {
         if (!exists) {
             cartItems.add(track);
 
-            // If user is logged in, save to database
             if (user != null) {
                 CartDAO.addToCart(user.getUserId(), track.getTrackId());
             }
@@ -204,9 +207,17 @@ public class CartServlet extends HttpServlet {
         }
 
         // Add getters for JSON serialization
-        public List<Track> getCartItems() { return cartItems; }
-        public double getCartTotal() { return cartTotal; }
-        public int getItemCount() { return itemCount; }
+        public List<Track> getCartItems() {
+            return cartItems;
+        }
+
+        public double getCartTotal() {
+            return cartTotal;
+        }
+
+        public int getItemCount() {
+            return itemCount;
+        }
     }
 
     // Inner class for error response
@@ -217,6 +228,8 @@ public class CartServlet extends HttpServlet {
             this.error = error;
         }
 
-        public String getError() { return error; }
+        public String getError() {
+            return error;
+        }
     }
 }

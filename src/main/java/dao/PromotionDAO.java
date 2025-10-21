@@ -1,9 +1,10 @@
 package dao;
 
+import dao.constants.PromotionSQLConstants;
 import factory.PromotionFactory;
 import model.Promotion;
 import utils.DatabaseConnection;
-import dao.constants.PromotionSQLConstants;
+
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
@@ -105,7 +106,7 @@ public class PromotionDAO {
     }
 
     public static void updatePromotion(int promotionId, String code, double discount,
-                                       LocalDate startDate, LocalDate endDate, String description)
+                                       LocalDate startDate, LocalDate endDate, int usageCount, String description)
             throws IOException, SQLException {
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(PromotionSQLConstants.UPDATE_PROMOTION)) {
@@ -114,8 +115,9 @@ public class PromotionDAO {
             pstmt.setDouble(2, discount);
             pstmt.setDate(3, Date.valueOf(startDate));
             pstmt.setDate(4, Date.valueOf(endDate));
-            pstmt.setString(5, description);
-            pstmt.setInt(6, promotionId);
+            pstmt.setInt(5, usageCount); // Add this line
+            pstmt.setString(6, description); // Changed from 5 to 6
+            pstmt.setInt(7, promotionId); // Changed from 6 to 7
 
             int affectedRows = pstmt.executeUpdate();
 
@@ -157,4 +159,19 @@ public class PromotionDAO {
         }
         return 0;
     }
+
+    public static Promotion findValidByCode(String code) throws SQLException {
+        String sql = "SELECT promotionId, code, discount, startDate, endDate, usageCount, description FROM promotions WHERE UPPER(code) = UPPER(?) AND startDate <= CURDATE() AND endDate >= CURDATE()";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, code);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return PromotionFactory.createPromotionFromResultSet(rs);
+                }
+            }
+        }
+        return null;
+    }
+
 }

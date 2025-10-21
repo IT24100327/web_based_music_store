@@ -14,14 +14,14 @@ public class PromotionFactory {
     }
 
     public static Promotion createPromotionFromResultSet(ResultSet rs) throws SQLException {
-        return new Promotion(
-                rs.getInt("promotionId"),
-                rs.getString("code"),
-                rs.getDouble("discount"),
-                rs.getDate("startDate").toLocalDate(),
-                rs.getDate("endDate").toLocalDate(),
-                rs.getInt("usageCount"),
-                rs.getString("description")
-        );
+        Promotion promotion = new Promotion();
+        promotion.setPromotionId(rs.getInt("promotionId"));
+        promotion.setCode(rs.getString("code"));
+        promotion.setDiscount(rs.getDouble("discount"));
+        promotion.setStartDate(rs.getDate("startDate").toLocalDate());
+        promotion.setEndDate(rs.getDate("endDate").toLocalDate());
+        promotion.setUsageCount(rs.getInt("usageCount")); // Make sure this line exists
+        promotion.setDescription(rs.getString("description"));
+        return promotion;
     }
 }

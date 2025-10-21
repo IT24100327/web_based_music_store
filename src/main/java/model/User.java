@@ -1,9 +1,9 @@
 package model;
 
+import model.enums.UserType;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import model.enums.UserType;
 
 public abstract class User {
     protected int userId;
@@ -53,6 +53,7 @@ public abstract class User {
 
     // Abstract methods - must be implemented by subclasses
     public abstract UserType getUserType();
+
     public abstract boolean isAdmin();
 
     // Common getters and setters
@@ -94,5 +95,9 @@ public abstract class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 }

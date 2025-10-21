@@ -3,8 +3,11 @@ package controller.filters;
 import dao.CartDAO;
 import dao.UserDAO;
 import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.Track;
 import model.User;
 
@@ -20,6 +23,13 @@ public class AuthFilter implements Filter {
                          FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
+        String path = req.getRequestURI().substring(req.getContextPath().length());
+
+        if (path.startsWith("/css/") || path.startsWith("/js/") || path.startsWith("/admin/css/")) {
+            chain.doFilter(request, response); // Bypass the filter
+            return; // Stop further processing by this filter
+        }
+
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession(false);
 

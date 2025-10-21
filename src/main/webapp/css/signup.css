@@ -24,7 +24,7 @@ body {
     padding: 2.5rem;
     width: 100%;
     max-width: 500px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
 .auth-header {
@@ -157,4 +157,9 @@ body {
 .terms-text {
     margin-left: 1.8rem;
     margin-top: 0.5rem;
+}
+
+.text-muted {
+    --bs-text-opacity: 1;
+    color: var(--text-secondary) !important;
 }

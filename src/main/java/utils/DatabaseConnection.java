@@ -1,14 +1,11 @@
 package utils;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class DatabaseConnection {
-    private static String DB_URL = "jdbc:mysql://localhost:3306/music_db?useSSL=false&serverTimezone=UTC";
+    private static String DB_URL = "jdbc:mysql://localhost:3306/music_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC";
     private static String DB_USER = "root";
     private static String DB_PASSWORD = "1234";
 

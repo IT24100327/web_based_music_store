@@ -30,7 +30,8 @@
             <div class="col-md-8">
                 <form action="${pageContext.request.contextPath}/search" method="get" class="search-form">
                     <div class="input-group input-group-lg mb-4">
-                        <input type="text" class="form-control" name="query" placeholder="Search artists, albums, or songs..." value="${param.query}">
+                        <input type="text" class="form-control" name="query"
+                               placeholder="Search artists, albums, or songs..." value="${param.query}">
                         <button class="btn" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
@@ -98,7 +99,8 @@
 
                 <div class="filter-buttons">
                     <button type="submit" class="btn btn-primary">Apply Filters</button>
-                    <a href="${pageContext.request.contextPath}/search?query=${param.query}" class="btn btn-outline-secondary">Clear Filters</a>
+                    <a href="${pageContext.request.contextPath}/search?query=${param.query}"
+                       class="btn btn-outline-secondary">Clear Filters</a>
                 </div>
             </form>
         </aside>
@@ -117,13 +119,21 @@
                         <c:forEach var="track" items="${requestScope.trackList}">
                             <div class="compact-music-card">
                                 <div class="album-cover-container">
-                                    <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-                                         class="compact-album-cover" alt="Album Cover">
+                                    <c:choose>
+                                        <c:when test="${not empty track.coverArtData}">
+                                            <img src="${pageContext.request.contextPath}/cover-art?trackId=${track.trackId}"
+                                                 class="compact-album-cover" alt="Cover for ${track.title}">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
+                                                 class="compact-album-cover" alt="Album Cover">
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                                 <div class="compact-card-content">
                                     <div class="compact-card-text">
                                         <div class="compact-card-title">${track.title}</div>
-                                        <div class="compact-card-artist">${track.artist}</div>
+                                        <div class="compact-card-artist">${track.artistName}</div>
                                     </div>
                                     <div class="compact-card-footer">
                                         <span class="price-tag-sm">Rs. ${track.price}</span>
@@ -147,7 +157,8 @@
                     <c:if test="${requestScope.noOfPages > 1}">
                         <nav class="search-pagination">
                             <c:if test="${requestScope.currentPage > 1}">
-                                <a class="pagination-btn" href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${requestScope.currentPage - 1}">
+                                <a class="pagination-btn"
+                                   href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${requestScope.currentPage - 1}">
                                     <i class="fas fa-chevron-left"></i>
                                 </a>
                             </c:if>
@@ -160,7 +171,8 @@
                             </div>
 
                             <c:if test="${requestScope.currentPage < requestScope.noOfPages}">
-                                <a class="pagination-btn" href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${requestScope.currentPage + 1}">
+                                <a class="pagination-btn"
+                                   href="${pageContext.request.contextPath}/search?query=${param.query}&genre=${param.genre}&price=${param.price}&rating=${param.rating}&page=${requestScope.currentPage + 1}">
                                     <i class="fas fa-chevron-right"></i>
                                 </a>
                             </c:if>
@@ -180,10 +192,10 @@
 </div>
 
 <!-- Footer -->
-<jsp:include page="/includes/footer.jsp" />
+<jsp:include page="/includes/footer.jsp"/>
 
 <!-- Shopping Cart Modal -->
-<jsp:include page="/includes/modals/shopping-cart-modal.jsp" />
+<jsp:include page="/includes/modals/shopping-cart-modal.jsp"/>
 
 <script>
     window.contextPath = '${pageContext.request.contextPath}';
@@ -195,13 +207,18 @@
 </script>
 
 <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Define contextPath for the scripts to use
+    window.contextPath = '${pageContext.request.contextPath}';
+</script>
 <script src="${pageContext.request.contextPath}/js/cart-utils.js"></script>
 <script src="${pageContext.request.contextPath}/js/cart-handlers.js"></script>
 <script src="${pageContext.request.contextPath}/js/cart-main.js"></script>
 <script src="${pageContext.request.contextPath}/js/music-pagination.js"></script>
 <script src="${pageContext.request.contextPath}/js/music-handlers.js"></script>
 <script src="${pageContext.request.contextPath}/js/music-main.js"></script>
+
 
 </body>
 </html>

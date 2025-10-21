@@ -26,3 +26,5 @@
         </div>
     </div>
 </footer>
+
+<audio id="global-audio-player" style="display: none;"></audio>

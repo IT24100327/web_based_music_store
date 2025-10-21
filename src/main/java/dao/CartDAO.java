@@ -1,9 +1,14 @@
 package dao;
 
+import dao.constants.CartSQLConstants;
+import factory.TrackFactory;
 import model.Track;
 import utils.DatabaseConnection;
-import dao.constants.CartSQLConstants;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +49,7 @@ public class CartDAO {
         }
     }
 
-    public static List<Track> getCartItems(int userId) throws SQLException {
+    public static List<Track> getCartItems(int userId) {
         List<Track> cartItems = new ArrayList<>();
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -54,26 +59,25 @@ public class CartDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Track track = new Track(
-                        rs.getInt("trackId"),
-                        rs.getString("title"),
-                        rs.getString("artist"),
-                        rs.getDouble("price"),
-                        rs.getString("genre"),
-                        rs.getDouble("rating")
-                );
+                Track track = TrackFactory.createTrackFromResultSet(rs);
                 cartItems.add(track);
             }
+        } catch (SQLException e) {
+            System.out.println("Cannot get Cart Items Because Database Error!!");
         }
         return cartItems;
     }
 
-    public static void clearCart(int userId) throws SQLException {
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(CartSQLConstants.CLEAR_CART)) {
-
+    public static void clearCart(int userId, Connection conn) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(CartSQLConstants.CLEAR_CART)) {
             stmt.setInt(1, userId);
             stmt.executeUpdate();
+        }
+    }
+
+    public static void clearCart(int userId) throws SQLException {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            clearCart(userId, conn);
         }
     }
 

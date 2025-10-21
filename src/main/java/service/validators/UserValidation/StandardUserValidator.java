@@ -1,6 +1,7 @@
 package service.validators.UserValidation;
 
 import model.User;
+
 import java.util.List;
 import java.util.regex.Pattern;
 

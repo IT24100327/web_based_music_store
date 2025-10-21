@@ -1,14 +1,14 @@
 package factory;
 
+import dao.UserDAO;
 import model.Admin;
 import model.Artist;
 import model.StandardUser;
 import model.User;
 import model.enums.UserType;
-import dao.UserDAO;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 public class UserFactory {
 
@@ -34,7 +34,8 @@ public class UserFactory {
         String email = rs.getString("email");
         String password = rs.getString("password");
         String roleStr = rs.getString("role");
-        UserType userType = UserType.fromDbValue(roleStr);
+
+        UserType userType = UserType.valueOf(roleStr);
 
         User user = switch (userType) {
             case ADMIN -> {
@@ -42,12 +43,19 @@ public class UserFactory {
                 admin.setRole(UserDAO.getAdminRole(userId));
                 yield admin;
             }
+            // Update the createUserFromResultSet method for ARTIST case
             case ARTIST -> {
                 Artist artist = new Artist(userId, firstName, lastName, email, password);
-                artist.setSpecializedGenres(UserDAO.getArtistSpecializedGenres(userId));
-                artist.setBio(UserDAO.getArtistBio(userId));
+                // Load artist details
+                Artist artistDetails = UserDAO.getArtistDetails(userId);
+                if (artistDetails != null) {
+                    artist.setStageName(artistDetails.getStageName());
+                    artist.setBio(artistDetails.getBio());
+                    artist.setTrackCount(artistDetails.getTrackCount());
+                }
                 yield artist;
             }
+
             default -> new StandardUser(userId, firstName, lastName, email, password);
         };
 

@@ -1,4 +1,5 @@
 package service.validators.OrderValidation;
+
 import model.Order;
 
 public class OrderValidator {
@@ -12,9 +13,13 @@ public class OrderValidator {
         this.strategy = strategy;
     }
 
-    // For future extensibility (e.g., AdminOrderValidator for status updates)
     public static OrderValidator forType(String type) {
-        // Default for now; extend with if ("admin".equals(type)) { new AdminOrderValidator(); }
+        if ("admin".equals(type)) {
+            OrderValidator validator = new OrderValidator();
+            validator.setStrategy(new AdminOrderValidator());
+            return validator;
+        }
+        // Default is the BasicOrderValidator for customer-initiated orders
         return new OrderValidator();
     }
 }

@@ -229,3 +229,147 @@ tr:hover {
 .text-muted {
     color: var(--text-secondary) !important;
 }
+
+/* Artist Profile Styles */
+.artist-profile-card {
+    background: rgba(42, 42, 42, 0.5);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid #333;
+}
+
+.artist-avatar {
+    color: var(--primary);
+}
+
+.artist-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* Artist Details Styles */
+.artist-details .section-title {
+    color: var(--primary);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #333;
+}
+
+.detail-item {
+    display: flex;
+    margin-bottom: 0.75rem;
+    align-items: flex-start;
+}
+
+.detail-item label {
+    min-width: 120px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-right: 1rem;
+}
+
+.detail-item span, .detail-item a {
+    color: var(--text-primary);
+    word-break: break-word;
+}
+
+.bio-content {
+    background: rgba(42, 42, 42, 0.3);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border-left: 3px solid var(--primary);
+}
+
+/* Recent Activity Styles */
+.recent-activity {
+    border-top: 1px solid #333;
+    padding-top: 1rem;
+}
+
+.activity-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid #333;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 30px;
+    height: 30px;
+    background: rgba(187, 134, 252, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    color: var(--primary);
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-text {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.activity-time {
+    font-size: 0.8rem;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.verification-badge {
+    margin: 1rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .detail-item {
+        flex-direction: column;
+    }
+
+    .detail-item label {
+        min-width: auto;
+        margin-bottom: 0.25rem;
+    }
+
+    .artist-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

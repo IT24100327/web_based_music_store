@@ -110,11 +110,11 @@ function updateCartModal(data) {
         `
         : data.cartItems.map(item => `
             <div class="cart-item">
-                <img src="https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
-                     alt="Album Cover" class="cart-item-img">
+                <img src="${item.coverArtData ? `${window.contextPath}/cover-art?trackId=${item.trackId}` : 'https://images.unsplash.com/photo-1571330735066-03aaa9429d89?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'}"
+                     alt="Cover for ${escapeHtml(item.title)}" class="cart-item-img">
                 <div class="cart-item-details">
                     <div class="cart-item-title">${escapeHtml(item.title)}</div>
-                    <div class="cart-item-artist">by ${escapeHtml(item.artist)}</div>
+                    <div class="cart-item-artist">by ${escapeHtml(item.artistName)}</div>
                     <div class="cart-item-price">Rs. ${item.price.toFixed(2)}</div>
                 </div>
                 <button class="cart-item-remove" data-track-id="${item.trackId}">
@@ -132,7 +132,9 @@ function escapeHtml(text) {
         '"': '&quot;',
         "'": '&#039;'
     };
-    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    return text.replace(/[&<>"']/g, function (m) {
+        return map[m];
+    });
 }
 
 function handleCartError(error, userMessage = 'Cart operation failed') {

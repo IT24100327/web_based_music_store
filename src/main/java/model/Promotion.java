@@ -30,6 +30,10 @@ public class Promotion {
         this.description = description;
     }
 
+    public Promotion() {
+
+    }
+
     // Getters and Setters
     public int getPromotionId() {
         return promotionId;

@@ -11,7 +11,8 @@ public class StandardUser extends User {
         super(userId, firstName, lastName, email, password);
     }
 
-    public StandardUser() {}
+    public StandardUser() {
+    }
 
     @Override
     public UserType getUserType() {

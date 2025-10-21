@@ -51,6 +51,15 @@
                     <!-- No add button for orders, as they are user-generated -->
                 </div>
             </div>
+
+            <%--Search--%>
+            <div class="mb-4">
+                <form action="${pageContext.request.contextPath}/manageOrders" method="GET" class="d-flex gap-2">
+                    <input type="text" name="searchQuery" class="form-control"
+                           placeholder="Search by Order ID, User ID, or Status..." value="${param.searchQuery}">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
             <table>
                 <thead>
                 <tr>
@@ -81,10 +90,16 @@
                                 <td>${order.paymentMethod}</td>
                                 <td>${order.transactionId}</td>
                                 <td class="actions">
-                                    <button class="btn btn-edit btn-sm" onclick="openEditOrderModal('${order.orderId}', '${order.status}')">
+                                    <a href="${pageContext.request.contextPath}/admin/orderDetails?orderId=${order.orderId}"
+                                       class="btn btn-info btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <button class="btn btn-edit btn-sm"
+                                            onclick="openEditOrderModal('${order.orderId}', '${order.status}')">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-delete btn-sm" onclick="openDeleteOrderModal('${order.orderId}', 'Order #${order.orderId}')">
+                                    <button class="btn btn-delete btn-sm"
+                                            onclick="openDeleteOrderModal('${order.orderId}', 'Order #${order.orderId}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>

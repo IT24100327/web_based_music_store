@@ -47,7 +47,8 @@
         <aside class="ad-sidebar ad-left">
             <c:forEach var="ad" items="${activeAds}" varStatus="status" begin="0" end="1">
                 <a href="" class="ad-banner">
-                    <img src="${pageContext.request.contextPath}/image?adId=${ad.adId}" alt="${ad.title}" class="ad-image">
+                    <img src="${pageContext.request.contextPath}/image?adId=${ad.adId}" alt="${ad.title}"
+                         class="ad-image">
                 </a>
             </c:forEach>
         </aside>
@@ -65,25 +66,57 @@
                 </button>
             </div>
         </div>
-        <c:import url="/includes/track-cards.jsp" />
+        <c:import url="/includes/track-cards.jsp"/>
     </div>
 
     <c:if test="${not empty activeAds and fn:length(activeAds) >= 3}">
         <aside class="ad-sidebar ad-right">
             <c:forEach var="ad" items="${activeAds}" varStatus="status" begin="2" end="3">
                 <a href="" class="ad-banner">
-                    <img src="${pageContext.request.contextPath}/image?adId=${ad.adId}" alt="${ad.title}" class="ad-image">
+                    <img src="${pageContext.request.contextPath}/image?adId=${ad.adId}" alt="${ad.title}"
+                         class="ad-image">
                 </a>
             </c:forEach>
         </aside>
     </c:if>
 </div>
 
+<section class="recent-posts-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>From the Community</h2>
+            <a href="${pageContext.request.contextPath}/community" class="btn btn-outline-primary">View All Posts</a>
+        </div>
+        <div class="posts-grid">
+            <c:forEach items="${recentPosts}" var="post">
+                <div class="post-card">
+                    <div class="post-header">
+                        <h3><a href="#">${fn:escapeXml(post.title)}</a></h3>
+                        <span class="post-author">by ${fn:escapeXml(post.authorName)}</span>
+                    </div>
+                    <div class="post-content">
+                            <%-- Create a short description by truncating --%>
+                        <c:set var="description" value="${fn:escapeXml(post.description)}" />
+                        <p>
+                                ${fn:substring(description, 0, 100)}
+                            <c:if test="${fn:length(description) > 100}">...</c:if>
+                        </p>
+                    </div>
+                    <div class="post-footer">
+                            <%-- You can add date or other info here --%>
+                        <span class="post-date">Posted on ${post.createdAt}</span>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
+    </div>
+</section>
+
 <!-- Footer -->
-<jsp:include page="includes/footer.jsp" />
+<jsp:include page="includes/footer.jsp"/>
 
 <!-- Shopping Cart Modal -->
-<jsp:include page="includes/modals/shopping-cart-modal.jsp" />
+<jsp:include page="includes/modals/shopping-cart-modal.jsp"/>
 
 <!-- Bootstrap JS -->
 <script>

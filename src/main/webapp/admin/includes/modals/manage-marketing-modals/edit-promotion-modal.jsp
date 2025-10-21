@@ -1,8 +1,9 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
-<c:set var="contextPath" value="${param.contextPath}" />
+<c:set var="contextPath" value="${param.contextPath}"/>
 
-<div class="modal fade" id="editPromotionModal" tabindex="-1" aria-labelledby="editPromotionModalLabel" aria-hidden="true">
+<div class="modal fade" id="editPromotionModal" tabindex="-1" aria-labelledby="editPromotionModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -19,7 +20,8 @@
                     </div>
                     <div class="form-group">
                         <label for="editDiscount">Discount</label>
-                        <input type="number" class="form-control" id="editDiscount" name="discount" step="0.01" required>
+                        <input type="number" class="form-control" id="editDiscount" name="discount" step="0.01"
+                               required>
                     </div>
                     <div class="form-group">
                         <label for="editStartDate">Start Date</label>

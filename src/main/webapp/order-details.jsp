@@ -1,89 +1,104 @@
+<%-- /webapp/order-details.jsp --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RhythmWave - Order Details</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/index.css">
+    <title>Checkout | Your Music Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/theme.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/order-details.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css">
+    <script>
+        // Pass context path to JavaScript
+        window.contextPath = "${pageContext.request.contextPath}";
+    </script>
 </head>
 <body>
-<jsp:include page="/includes/navbar.jsp" />
 
-<div class="order-container">
-    <div class="order-header">
-        <h1><i class="fas fa-shopping-cart me-2"></i>Order Details</h1>
-        <p>Review your selected tracks before proceeding to checkout</p>
-    </div>
+<jsp:include page="/includes/navbar.jsp"/>
 
+<main class="order-container">
     <c:choose>
-        <c:when test="${empty cartItems or fn:length(cartItems) == 0}">
-            <div class="empty-cart">
-                <i class="fas fa-shopping-cart"></i>
-                <h3>Your cart is empty</h3>
-                <p>Add some tracks to get started!</p>
-                <a href="${pageContext.request.contextPath}/index" class="btn btn-primary">Continue Shopping</a>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <div class="cart-items-section">
-                <h3>Cart Items</h3>
-                <c:forEach var="track" items="${cartItems}">
-                    <div class="cart-item">
-                        <div class="item-image">
-                            <i class="fas fa-music"></i>
-                        </div>
-                        <div class="item-details">
-                            <h5>${track.title}</h5>
-                            <p>by ${track.artist}</p>
-                        </div>
-                        <div class="item-price">Rs. ${track.price}</div>
-                    </div>
-                </c:forEach>
-            </div>
+        <c:when test="${not empty cartItems}">
+            <section class="order-details-section">
+                <div class="order-details-header">
+                    <h1>Review Your Order</h1>
+                    <p>Confirm the items in your cart before proceeding to checkout.</p>
+                </div>
 
-            <div class="order-summary">
+                <div class="cart-items-list">
+                    <c:forEach var="item" items="${cartItems}">
+                        <div class="cart-item">
+                            <img src="${pageContext.request.contextPath}/cover-art?trackId=${item.trackId}"
+                                 alt="Cover for <c:out value='${item.title}'/>" class="item-image">
+                            <div class="item-details">
+                                <h5><c:out value="${item.title}"/></h5>
+                                <p>by <c:out value="${item.artistName}"/></p>
+                            </div>
+                            <div class="item-price">
+                                Rs. <fmt:formatNumber value="${item.price}" type="number" minFractionDigits="2" maxFractionDigits="2"/>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </section>
+
+            <aside class="order-summary-card" data-subtotal="${cartTotal}">
                 <h3>Order Summary</h3>
-                <c:set var="totalAmount" value="${cartTotal}" />
-                <div class="summary-row">
-                    <span>Subtotal</span>
-                    <span>Rs. ${totalAmount}</span>
+
+                <div class="promo-section">
+                    <label for="promoCodeField" class="form-label">Gift card or discount code</label>
+                    <div class="promo-input-group">
+                        <input type="text" id="promoCodeField" class="form-control" placeholder="Enter code">
+                        <button class="btn btn-outline-light" type="button" id="applyPromoBtn">Apply</button>
+                    </div>
+                    <div id="promoFeedback" class="promo-feedback"></div>
                 </div>
-                <div class="summary-row">
-                    <span>Shipping</span>
-                    <span>Free</span>
+
+                <div class="summary-details">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="summarySubtotal">Rs. <fmt:formatNumber value="${cartTotal}" type="number" minFractionDigits="2" maxFractionDigits="2"/></span>
+                    </div>
+                    <div class="summary-row" id="summaryDiscountRow" style="display: none;">
+                        <span>Discount</span>
+                        <span id="summaryDiscount"></span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="summaryTotal">Rs. <fmt:formatNumber value="${cartTotal}" type="number" minFractionDigits="2" maxFractionDigits="2"/></span>
+                    </div>
                 </div>
-                <div class="summary-row total">
-                    <span>Total</span>
-                    <span>Rs. ${totalAmount}</span>
-                </div>
-                <div class="d-grid gap-2 mt-3">
-                    <form action="${pageContext.request.contextPath}/order" method="post">
-                        <input type="hidden" name="paymentMethod" value="CARD">
-                        <input type="hidden" name="transactionId" value="TX12345">
-                        <button type="submit" class="btn btn-primary btn-checkout w-100">Place Order</button>
-                    </form>
-                    <a href="${pageContext.request.contextPath}/index" class="btn btn-outline-light">Continue Shopping</a>
-                </div>
+
+                <form id="orderForm" action="${pageContext.request.contextPath}/order" method="POST">
+                    <input type="hidden" id="promoCodeInput" name="promoCode" value="">
+                    <button type="submit" class="btn btn-checkout w-100">
+                        Proceed to Checkout <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </form>
+            </aside>
+        </c:when>
+
+        <c:otherwise>
+            <div class="empty-cart-container" style="grid-column: 1 / -1;">
+                <i class="fas fa-shopping-cart"></i>
+                <h1>Your Cart is Empty</h1>
+                <p>Looks like you haven't added any music yet. Let's find something great!</p>
+                <a href="${pageContext.request.contextPath}/" class="btn btn-primary">Browse Music</a>
             </div>
         </c:otherwise>
     </c:choose>
-</div>
+</main>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add any client-side functionality here if needed
-    });
-</script>
+<jsp:include page="/includes/footer.jsp"/>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/order-details.js"></script>
+
 </body>
 </html>
