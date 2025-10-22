@@ -8,9 +8,9 @@ import model.Post;
 import model.User;
 import model.enums.UserType;
 import service.PostService;
-
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 )
 public class EditPostServlet extends HttpServlet {
 
-    private static final String UPLOAD_DIR = "uploads/posts";
     private final PostService postService = new PostService();
 
     /**
@@ -50,7 +49,6 @@ public class EditPostServlet extends HttpServlet {
 
             request.setAttribute("post", post);
             request.getRequestDispatcher("/community/create-edit-post.jsp").forward(request, response);
-
         } catch (NumberFormatException | SQLException e) {
             e.printStackTrace();
             // Redirect if postId is invalid or a DB error occurs
@@ -83,12 +81,10 @@ public class EditPostServlet extends HttpServlet {
             postToUpdate.setTitle(request.getParameter("title"));
             postToUpdate.setDescription(request.getParameter("description"));
 
-            // File upload logic can be added here if you want to allow changing images
+            // File upload logic handles new/updated images
             handleFileUploads(request, postToUpdate);
-
             // The service handles permission checks and business rules (like status reset)
             postService.updatePost(postToUpdate, user);
-
             // Redirect based on user role
             if (user.getUserType() == UserType.ADMIN) {
                 response.sendRedirect(request.getContextPath() + "/admin/manage-posts");
@@ -107,39 +103,28 @@ public class EditPostServlet extends HttpServlet {
         }
     }
 
-    // You can reuse the same file upload helper method from CreatePostServlet
     private void handleFileUploads(HttpServletRequest request, Post post) throws IOException, ServletException {
-        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
+        Part part1 = request.getPart("image1");
+        if (part1 != null && part1.getSize() > 0) {
+            try (InputStream is = part1.getInputStream()) {
+                post.setImage1Data(is.readAllBytes());
+                post.setImage1Type(part1.getContentType());
+            }
         }
 
-        List<Part> fileParts = request.getParts().stream()
-                .filter(part -> "image1".equals(part.getName()) || "image2".equals(part.getName()) || "image3".equals(part.getName()))
-                .filter(part -> part.getSize() > 0)
-                .collect(Collectors.toList());
-
-        if (fileParts.size() > 0) {
-            Part part1 = request.getPart("image1");
-            if(part1 != null && part1.getSize() > 0) {
-                String fileName1 = System.currentTimeMillis() + "_1_" + part1.getSubmittedFileName();
-                part1.write(uploadPath + File.separator + fileName1);
-                 post.setImage1Path(UPLOAD_DIR + "/" + fileName1);
+        Part part2 = request.getPart("image2");
+        if (part2 != null && part2.getSize() > 0) {
+            try (InputStream is = part2.getInputStream()) {
+                post.setImage2Data(is.readAllBytes());
+                post.setImage2Type(part2.getContentType());
             }
+        }
 
-            Part part2 = request.getPart("image2");
-            if(part2 != null && part2.getSize() > 0) {
-                String fileName2 = System.currentTimeMillis() + "_2_" + part2.getSubmittedFileName();
-                part2.write(uploadPath + File.separator + fileName2);
-                post.setImage1Path(UPLOAD_DIR + "/" + fileName2);
-            }
-
-            Part part3 = request.getPart("image3");
-            if(part3 != null && part3.getSize() > 0) {
-                String fileName3 = System.currentTimeMillis() + "_3_" + part3.getSubmittedFileName();
-                part3.write(uploadPath + File.separator + fileName3);
-                post.setImage1Path(UPLOAD_DIR + "/" + fileName3);
+        Part part3 = request.getPart("image3");
+        if (part3 != null && part3.getSize() > 0) {
+            try (InputStream is = part3.getInputStream()) {
+                post.setImage3Data(is.readAllBytes());
+                post.setImage3Type(part3.getContentType());
             }
         }
     }

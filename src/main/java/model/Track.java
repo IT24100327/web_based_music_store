@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.TrackStatus;
+
 import java.time.LocalDate;
 
 public class Track {
@@ -10,12 +12,13 @@ public class Track {
     private double rating;
     private int artistId;
     private String artistName;
-    private byte[] snippetData;      // Replaces snippetPath
-    private byte[] fullTrackData;    // Replaces fullTrackPath
-    private byte[] coverArtData;     // Replaces coverArtUrl
-    private String coverArtType;     // New field for MIME type
+    private byte[] snippetData;
+    private byte[] fullTrackData;
+    private byte[] coverArtData;
+    private String coverArtType;
     private int duration;
     private LocalDate releaseDate;
+    private TrackStatus status;
 
     public Track() {
     }
@@ -77,6 +80,14 @@ public class Track {
 
     public int getArtistId() {
         return artistId;
+    }
+
+    public TrackStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TrackStatus status) {
+        this.status = status;
     }
 
     public void setArtistId(int artistId) {

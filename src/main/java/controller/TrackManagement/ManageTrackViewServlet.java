@@ -12,18 +12,19 @@ import model.Track;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.List;
 
 @WebServlet("/manage-tracks")
 public class ManageTrackViewServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        LinkedList<Track> allTracks = new LinkedList<>();
-
+        List<Track> allTracks = new LinkedList<>(); // Use List interface
         try {
-            allTracks = TrackDAO.getAllTracks();  // Delegate to Service
+            // UPDATED: Call the new method to get ALL tracks for the admin
+            allTracks = TrackDAO.getAllTracksForAdmin();
         } catch (SQLException e) {
-            req.setAttribute("error", "Failed to fetch users: " + e.getMessage());
+            req.setAttribute("error", "Failed to fetch tracks: " + e.getMessage());
         }
 
         req.setAttribute("allTracks", allTracks);

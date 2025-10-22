@@ -8,9 +8,12 @@ public class Post {
     private String authorName;
     private String title;
     private String description;
-    private String image1Path;
-    private String image2Path;
-    private String image3Path;
+    private byte[] image1Data;
+    private String image1Type;
+    private byte[] image2Data;
+    private String image2Type;
+    private byte[] image3Data;
+    private String image3Type;
     private String status; // pending, approved, rejected
     private Timestamp createdAt;
     private Timestamp updatedAt;
@@ -26,20 +29,24 @@ public class Post {
 
     // Constructor for retrieving from database
     public Post(int postId, int userId, String authorName, String title, String description,
-                String image1Path, String image2Path, String image3Path,
+                byte[] image1Data, String image1Type, byte[] image2Data, String image2Type, byte[] image3Data, String image3Type,
                 String status, Timestamp createdAt, Timestamp updatedAt) {
         this.postId = postId;
         this.userId = userId;
         this.authorName = authorName;
         this.title = title;
         this.description = description;
-        this.image1Path = image1Path;
-        this.image2Path = image2Path;
-        this.image3Path = image3Path;
+        this.image1Data = image1Data;
+        this.image1Type = image1Type;
+        this.image2Data = image2Data;
+        this.image2Type = image2Type;
+        this.image3Data = image3Data;
+        this.image3Type = image3Type;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
 
     // Getters and Setters
     public int getPostId() {
@@ -82,28 +89,52 @@ public class Post {
         this.description = description;
     }
 
-    public String getImage1Path() {
-        return image1Path;
+    public byte[] getImage1Data() {
+        return image1Data;
     }
 
-    public void setImage1Path(String image1Path) {
-        this.image1Path = image1Path;
+    public void setImage1Data(byte[] image1Data) {
+        this.image1Data = image1Data;
     }
 
-    public String getImage2Path() {
-        return image2Path;
+    public String getImage1Type() {
+        return image1Type;
     }
 
-    public void setImage2Path(String image2Path) {
-        this.image2Path = image2Path;
+    public void setImage1Type(String image1Type) {
+        this.image1Type = image1Type;
     }
 
-    public String getImage3Path() {
-        return image3Path;
+    public byte[] getImage2Data() {
+        return image2Data;
     }
 
-    public void setImage3Path(String image3Path) {
-        this.image3Path = image3Path;
+    public void setImage2Data(byte[] image2Data) {
+        this.image2Data = image2Data;
+    }
+
+    public String getImage2Type() {
+        return image2Type;
+    }
+
+    public void setImage2Type(String image2Type) {
+        this.image2Type = image2Type;
+    }
+
+    public byte[] getImage3Data() {
+        return image3Data;
+    }
+
+    public void setImage3Data(byte[] image3Data) {
+        this.image3Data = image3Data;
+    }
+
+    public String getImage3Type() {
+        return image3Type;
+    }
+
+    public void setImage3Type(String image3Type) {
+        this.image3Type = image3Type;
     }
 
     public String getStatus() {

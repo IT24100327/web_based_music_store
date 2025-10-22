@@ -35,51 +35,70 @@
             <div class="alert alert-success">${param.success}</div>
         </c:if>
 
-        <div class="table-container">
-            <div class="table-header">
-                <h3>My Uploaded Tracks</h3>
-                <div class="table-actions">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTrackModal">
-                        <i class="fas fa-plus"></i> Upload New Track
-                    </button>
-                </div>
-            </div>
-            <table>
+        <div class="table-responsive">
+            <table class="table table-dark"> <%-- Make sure table-dark is here --%>
                 <thead>
                 <tr>
                     <th>ID</th>
                     <th>Title</th>
-                    <th>Price</th>
+                    <th>Artist</th>
                     <th>Genre</th>
-                    <th>Release Date</th>
-                    <th>Actions</th>
+                    <th>Price</th>
+                    <th>Status</th> <%-- New Column --%>
+                    <th style="width: 25%;">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="track" items="${requestScope.allTracks}">
+                <c:forEach var="track" items="${allTracks}">
                     <tr>
                         <td>${track.trackId}</td>
-                        <td><strong>${track.title}</strong></td>
-                        <td>Rs. ${track.price}</td>
+                        <td>${track.title}</td>
+                        <td>${track.artistName}</td>
                         <td>${track.genre}</td>
-                        <td>${track.releaseDate}</td>
+                        <td>Rs. <fmt:formatNumber value="${track.price}" type="currency" currencySymbol=""/></td>
+                        <td>
+                                <%-- Display Status Badge --%>
+                            <c:choose>
+                                <c:when test="${track.status == 'APPROVED'}">
+                                    <span class="status-badge status-active">Approved</span>
+                                </c:when>
+                                <c:when test="${track.status == 'REJECTED'}">
+                                    <span class="status-badge status-inactive">Rejected</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="status-badge status-pending">Pending</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td class="actions">
-                            <button class="btn btn-edit btn-sm"
-                                    onclick="openEditTrackModal(${track.trackId}, '${track.title}', ${track.price}, '${track.genre}', ${track.duration}, '${track.releaseDate}')">
+                                <%-- Conditional Approve/Reject Buttons --%>
+                            <c:if test="${track.status == 'PENDING'}">
+                                <form action="${pageContext.request.contextPath}/admin/update-track-status" method="post" style="display: inline;">
+                                    <input type="hidden" name="trackId" value="${track.trackId}">
+                                    <input type="hidden" name="action" value="approve">
+                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                </form>
+                                <form action="${pageContext.request.contextPath}/admin/update-track-status" method="post" style="display: inline;">
+                                    <input type="hidden" name="trackId" value="${track.trackId}">
+                                    <input type="hidden" name="action" value="reject">
+                                    <button type="submit" class="btn btn-warning btn-sm">Reject</button>
+                                </form>
+                            </c:if>
+
+                                <%-- Existing Edit/Delete Buttons --%>
+                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editTrackModal"
+                                    data-track-id="${track.trackId}" data-title="${track.title}" data-price="${track.price}"
+                                    data-genre="${track.genre}" data-artist-id="${track.artistId}" data-duration="${track.duration}"
+                                    data-release-date="${track.releaseDate}">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
-                            <button class="btn btn-delete btn-sm"
-                                    onclick="openDeleteTrackModal(${track.trackId}, '${track.title}')">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
+                            <form action="${pageContext.request.contextPath}/artist/delete-track" method="post" onsubmit="return confirm('Are you sure you want to delete this track?');">
+                                <input type="hidden" name="trackId" value="${track.trackId}">
+                                <button type="submit" class="btn btn-delete btn-sm"><i class="fas fa-trash"></i> Delete</button>
+                            </form>
                         </td>
                     </tr>
                 </c:forEach>
-                <c:if test="${empty requestScope.artistTracks}">
-                    <tr>
-                        <td colspan="6" class="text-center text-muted">You haven't uploaded any tracks yet.</td>
-                    </tr>
-                </c:if>
                 </tbody>
             </table>
         </div>

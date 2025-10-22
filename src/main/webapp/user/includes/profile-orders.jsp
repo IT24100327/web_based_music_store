@@ -10,6 +10,7 @@
             <th>Total</th>
             <th>Status</th>
             <th>Transaction ID</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -20,11 +21,17 @@
         </c:if>
         <c:forEach var="order" items="${userOrders}">
             <tr>
-                <td>#${order.orderId}</td>
+                <td>${order.orderId}</td>
                 <td>${order.orderDate}</td>
-                <td>Rs. ${order.totalAmount}</td>
+                <td>Rs. ${order.finalAmount}</td>
                 <td>${order.status}</td>
                 <td>${order.transactionId}</td>
+                <td>
+                        <%-- Add this link --%>
+                    <a href="${pageContext.request.contextPath}/SupportTicketServlet?action=showCreateForm&orderId=${order.orderId}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-headset"></i> Get Support
+                    </a>
+                </td>
             </tr>
         </c:forEach>
         </tbody>

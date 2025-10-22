@@ -33,6 +33,15 @@
                             <i class="fas fa-download me-2"></i>Download
                         </a>
                     </div>
+                    <div class="track-actions">
+                            <%-- Add these links --%>
+                        <a href="${pageContext.request.contextPath}/SupportTicketServlet?action=showCreateForm&trackId=${track.trackId}" class="btn btn-sm btn-secondary">
+                            <i class="fas fa-headset"></i> Report Issue
+                        </a>
+                        <a href="${pageContext.request.contextPath}/FeedbackServlet?action=showFeedbackForm&trackId=${track.trackId}" class="btn btn-sm btn-info">
+                            <i class="fas fa-comment-dots"></i> Leave Feedback
+                        </a>
+                    </div>
                 </c:forEach>
             </div>
         </c:when>

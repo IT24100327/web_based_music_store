@@ -10,6 +10,7 @@ import service.PostService;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +24,6 @@ import java.util.stream.Collectors;
 )
 public class CreatePostServlet extends HttpServlet {
 
-    private static final String UPLOAD_DIR = "uploads/posts";
     private final PostService postService = new PostService();
 
     /**
@@ -63,7 +63,7 @@ public class CreatePostServlet extends HttpServlet {
 
         Post post = new Post(user.getUserId(), user.getFullName(), title, description);
         try {
-            // Handle file uploads and set paths on the post object
+            // Handle file uploads and set bytes/types on the post object
             handleFileUploads(request, post);
             // Use the service to handle business logic and save the post
             postService.createPost(post, user);
@@ -82,43 +82,32 @@ public class CreatePostServlet extends HttpServlet {
             request.getRequestDispatcher("/community/create-edit-post.jsp").forward(request, response);
         }
     }
+
     /**
-     * A helper method to process uploaded files from a multipart request.
+     * A helper method to process uploaded files into byte arrays.
      */
     private void handleFileUploads(HttpServletRequest request, Post post) throws IOException, ServletException {
-        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
+        Part part1 = request.getPart("image1");
+        if (part1 != null && part1.getSize() > 0) {
+            try (InputStream is = part1.getInputStream()) {
+                post.setImage1Data(is.readAllBytes());
+                post.setImage1Type(part1.getContentType());
+            }
         }
 
-        // Get all parts that are file inputs
-        List<Part> fileParts = request.getParts().stream()
-                .filter(part -> "image1".equals(part.getName()) || "image2".equals(part.getName()) || "image3".equals(part.getName()))
-                .filter(part -> part.getSize() > 0)
-                .collect(Collectors.toList());
-        if (fileParts.size() > 0) {
-            Part part1 = request.getPart("image1");
-            if(part1 != null && part1.getSize() > 0) {
-                String fileName1 = System.currentTimeMillis() + "_1_" + part1.getSubmittedFileName();
-                part1.write(uploadPath + File.separator + fileName1);
-                post.setImage1Path(UPLOAD_DIR + "/" + fileName1);
+        Part part2 = request.getPart("image2");
+        if (part2 != null && part2.getSize() > 0) {
+            try (InputStream is = part2.getInputStream()) {
+                post.setImage2Data(is.readAllBytes());
+                post.setImage2Type(part2.getContentType());
             }
         }
-        if (fileParts.size() > 1) {
-            Part part2 = request.getPart("image2");
-            if(part2 != null && part2.getSize() > 0) {
-                String fileName2 = System.currentTimeMillis() + "_2_" + part2.getSubmittedFileName();
-                part2.write(uploadPath + File.separator + fileName2);
-                post.setImage2Path(UPLOAD_DIR + "/" + fileName2);
-            }
-        }
-        if (fileParts.size() > 2) {
-            Part part3 = request.getPart("image3");
-            if(part3 != null && part3.getSize() > 0) {
-                String fileName3 = System.currentTimeMillis() + "_3_" + part3.getSubmittedFileName();
-                part3.write(uploadPath + File.separator + fileName3);
-                post.setImage3Path(UPLOAD_DIR + "/" + fileName3);
+
+        Part part3 = request.getPart("image3");
+        if (part3 != null && part3.getSize() > 0) {
+            try (InputStream is = part3.getInputStream()) {
+                post.setImage3Data(is.readAllBytes());
+                post.setImage3Type(part3.getContentType());
             }
         }
     }

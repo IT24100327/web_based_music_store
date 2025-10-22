@@ -15,10 +15,8 @@
 </head>
 <body>
 <div class="admin-container">
-    <!-- Sidebar Navigation -->
     <jsp:include page="includes/admin_nav_bar.jsp"/>
 
-    <!-- Main Content Area -->
     <main class="admin-main">
         <header class="admin-header">
             <h1>RhythmWave Admin Dashboard</h1>
@@ -31,7 +29,6 @@
             </div>
         </header>
 
-        <!-- Welcome Section -->
         <section class="welcome-section">
             <div class="welcome-icon">
                 <i class="fas fa-music"></i>
@@ -42,48 +39,37 @@
             </div>
         </section>
 
-        <!-- Stats Section -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-users"></i>
-                </div>
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
                 <div class="stat-content">
                     <h3></h3>
                     <p>Total Users</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-users"></i>
-                </div>
+                <div class="stat-icon"><i class="fas fa-microphone-alt"></i></div>
                 <div class="stat-content">
                     <h3></h3>
                     <p>Total Artists</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-tag"></i>
-                </div>
+                <div class="stat-icon"><i class="fas fa-tags"></i></div>
                 <div class="stat-content">
                     <h3></h3>
                     <p>Active Promotions</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-ad"></i>
-                </div>
+                <div class="stat-icon"><i class="fas fa-ad"></i></div>
                 <div class="stat-content">
                     <h3></h3>
                     <p>Running Ads</p>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
                 <div class="stat-content">
                     <h3></h3>
                     <p>Total Revenue</p>
@@ -91,107 +77,91 @@
             </div>
         </div>
 
-        <!-- Dashboard Cards -->
         <div class="dashboard-grid">
 
+            <%-- Super Admin Access --%>
             <c:if test="${sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
-
-                <!-- User Management Card -->
-                <div class="dashboard-card card-user">
-                    <div class="card-icon">
-                        <i class="fas fa-users-cog"></i>
-                    </div>
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="fas fa-users-cog"></i></div>
                     <h3 class="card-title">User Management</h3>
-                    <p class="card-description">Manage users, roles, and permissions</p>
-                    <a href="<%=request.getContextPath()%>/manage-users" class="card-link">
-                        Manage Users <i class="fas fa-arrow-right"></i>
-                    </a>
+                    <p class="card-description">Oversee all user accounts, roles, and permissions.</p>
+                    <a href="<%=request.getContextPath()%>/manage-users" class="card-link">Manage Users <i class="fas fa-arrow-right"></i></a>
                 </div>
-
-            </c:if>
-
-            <c:if test="${sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
-
-                <!-- Artist Management Card -->
-                <div class="dashboard-card card-user">
-                    <div class="card-icon">
-                        <i class="fas fa-users-cog"></i>
-                    </div>
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="fas fa-microphone-alt"></i></div>
                     <h3 class="card-title">Artist Management</h3>
-                    <p class="card-description">Manage artists, create, update & remove</p>
-                    <a href="<%=request.getContextPath()%>/manage-artists" class="card-link">
-                        Manage Artists <i class="fas fa-arrow-right"></i>
-                    </a>
+                    <p class="card-description">Add, edit, and manage artist profiles and content.</p>
+                    <a href="<%=request.getContextPath()%>/manage-artists" class="card-link">Manage Artists <i class="fas fa-arrow-right"></i></a>
                 </div>
-
             </c:if>
 
-            <c:if test="${sessionScope.USER.role.name() eq 'MARKETING_MANAGER'
-            or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
-
-                <!-- Marketing Management Card -->
-                <div class="dashboard-card card-user">
-                    <div class="card-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
+            <%-- Marketing Access --%>
+            <c:if test="${sessionScope.USER.role.name() eq 'MARKETING_MANAGER' or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="fas fa-bullhorn"></i></div>
                     <h3 class="card-title">Marketing Management</h3>
-                    <p class="card-description">Create promotions and advertisements</p>
-                    <a href="<%=request.getContextPath()%>/manage-marketing" class="card-link">
-                        Manage Marketing <i class="fas fa-arrow-right"></i>
-                    </a>
+                    <p class="card-description">Launch ad campaigns and manage promotional codes.</p>
+                    <a href="<%=request.getContextPath()%>/manage-marketing" class="card-link">Manage Marketing <i class="fas fa-arrow-right"></i></a>
                 </div>
-
             </c:if>
 
-            <c:if test="${sessionScope.USER.role.name() eq 'FINANCE_MANAGER'
-            or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
-
-                <!-- Content Management Card -->
+            <%-- Content Manager Access --%>
+            <c:if test="${sessionScope.USER.role.name() eq 'CONTENT_MANAGER' or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
                 <div class="dashboard-card">
-                    <div class="card-icon">
-                        <i class="fas fa-music"></i>
-                    </div>
-                    <h3 class="card-title">Content Management</h3>
-                    <p class="card-description">Manage songs, albums, and playlists</p>
-                    <a href="#" class="card-link">
-                        Manage Content <i class="fas fa-arrow-right"></i>
-                    </a>
+                    <div class="card-icon"><i class="fas fa-music"></i></div>
+                    <h3 class="card-title">Track Management</h3>
+                    <p class="card-description">Approve, reject, and manage all uploaded tracks.</p>
+                    <a href="${pageContext.request.contextPath}/manage-tracks" class="card-link">Manage Tracks <i class="fas fa-arrow-right"></i></a>
                 </div>
-
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="fas fa-comments"></i></div>
+                    <h3 class="card-title">Community Management</h3>
+                    <p class="card-description">Review and approve user-submitted community posts.</p>
+                    <a href="${pageContext.request.contextPath}/admin/manage-posts" class="card-link">Manage Posts <i class="fas fa-arrow-right"></i></a>
+                </div>
             </c:if>
 
-            <c:if test="${sessionScope.USER.role.name() eq 'FINANCE_MANAGER'
-            or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
-
-                <!-- Content Management Card -->
+            <%-- Finance Manager Access --%>
+            <c:if test="${sessionScope.USER.role.name() eq 'FINANCE_MANAGER' or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
                 <div class="dashboard-card">
-                    <div class="card-icon">
-                        <i class="fa-solid fa-list"></i>
-                    </div>
+                    <div class="card-icon"><i class="fas fa-receipt"></i></div>
                     <h3 class="card-title">Order Management</h3>
-                    <p class="card-description">Manage Orders, Payments, and Analytics</p>
-                    <a href="${pageContext.request.contextPath}/manageOrders" class="card-link">
-                        Manage Orders <i class="fas fa-arrow-right"></i>
-                    </a>
+                    <p class="card-description">View and process all customer orders and transactions.</p>
+                    <a href="${pageContext.request.contextPath}/manage-orders" class="card-link">Manage Orders <i class="fas fa-arrow-right"></i></a>
                 </div>
-
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="fas fa-credit-card"></i></div>
+                    <h3 class="card-title">Payment Management</h3>
+                    <p class="card-description">Track all payments and review financial analytics.</p>
+                    <a href="${pageContext.request.contextPath}/manage-payments" class="card-link">Manage Payments <i class="fas fa-arrow-right"></i></a>
+                </div>
             </c:if>
 
-            <!-- Settings Card -->
-            <div class="dashboard-card">
-                <div class="card-icon">
-                    <i class="fas fa-cog"></i>
+            <%-- Support & Feedback (Assuming accessible by Marketing/Super Admin) --%>
+            <c:if test="${sessionScope.USER.role.name() eq 'MARKETING_MANAGER' or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="fas fa-comment-dots"></i></div>
+                    <h3 class="card-title">Feedback Management</h3>
+                    <p class="card-description">Review and respond to user feedback submissions.</p>
+                    <a href="${pageContext.request.contextPath}/admin/manage-feedback" class="card-link">Manage Feedback <i class="fas fa-arrow-right"></i></a>
                 </div>
-                <h3 class="card-title">Settings</h3>
-                <p class="card-description">Configure system settings</p>
-                <a href="#" class="card-link">
-                    Open Settings <i class="fas fa-arrow-right"></i>
-                </a>
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="fas fa-headset"></i></div>
+                    <h3 class="card-title">Support Management</h3>
+                    <p class="card-description">Address and resolve all user support requests.</p>
+                    <a href="${pageContext.request.contextPath}/admin/manage-support-tickets" class="card-link">Manage Support <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </c:if>
+
+            <div class="dashboard-card">
+                <div class="card-icon"><i class="fas fa-cog"></i></div>
+                <p class="card-description">Configure your personal admin settings.</p>
+                <a href="#" class="card-link">Open Settings <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
 
         <footer class="admin-footer">
-            &copy; 2023 RhythmWave | Admin Panel
+            &copy; 2025 RhythmWave | Admin Panel
         </footer>
     </main>
 </div>

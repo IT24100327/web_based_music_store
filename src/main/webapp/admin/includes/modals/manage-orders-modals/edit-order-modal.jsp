@@ -9,7 +9,7 @@
                 <h5 class="modal-title" id="editOrderModalLabel">Edit Order Status</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="editOrderForm" action="${contextPath}/manageOrders" method="POST">
+            <form id="editOrderForm" action="${contextPath}/manage-orders" method="POST">
                 <div class="modal-body">
                     <input type="hidden" id="editOrderId" name="orderId">
                     <input type="hidden" name="action" value="update_status">

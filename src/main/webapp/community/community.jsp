@@ -11,21 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/index.css">
-<%--    <link rel="stylesheet" href="${pageContext.request.contextPath}/community/community-styles.css">--%>
-
-    <style>
-        /* Ensure community page has proper spacing */
-        .community-main {
-            min-height: calc(100vh - 200px);
-            padding-bottom: 2rem;
-        }
-
-        /* Make sure images don't overflow */
-        .post-images img {
-            max-width: 100%;
-            height: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/community/community-styles.css">
 </head>
 
 <body>
@@ -57,19 +43,55 @@
                     <h3><a href="${pageContext.request.contextPath}/community/post/${post.postId}">${fn:escapeXml(post.title)}</a></h3>
                     <span class="post-author">by ${fn:escapeXml(post.authorName)}</span>
                 </div>
+
+                    <%-- Image Slideshow Logic --%>
+                <c:set var="imageCount" value="${(not empty post.image1Data ? 1 : 0) + (not empty post.image2Data ? 1 : 0) + (not empty post.image3Data ? 1 : 0)}" />
+                <c:if test="${imageCount > 0}">
+                    <div class="post-images">
+                        <div id="carouselPost${post.postId}" class="carousel slide">
+                                <%-- Show controls only if there is more than one image --%>
+                            <c:if test="${imageCount > 1}">
+                                <div class="carousel-indicators">
+                                    <c:if test="${not empty post.image1Data}"><button type="button" data-bs-target="#carouselPost${post.postId}" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button></c:if>
+                                    <c:if test="${not empty post.image2Data}"><button type="button" data-bs-target="#carouselPost${post.postId}" data-bs-slide-to="1" aria-label="Slide 2"></button></c:if>
+                                    <c:if test="${not empty post.image3Data}"><button type="button" data-bs-target="#carouselPost${post.postId}" data-bs-slide-to="2" aria-label="Slide 3"></button></c:if>
+                                </div>
+                            </c:if>
+
+                            <div class="carousel-inner">
+                                <c:if test="${not empty post.image1Data}">
+                                    <div class="carousel-item active">
+                                        <img src="${pageContext.request.contextPath}/post-image?postId=${post.postId}&index=1" class="d-block w-100" alt="Post Image 1">
+                                    </div>
+                                </c:if>
+                                <c:if test="${not empty post.image2Data}">
+                                    <div class="carousel-item ${empty post.image1Data ? 'active' : ''}">
+                                        <img src="${pageContext.request.contextPath}/post-image?postId=${post.postId}&index=2" class="d-block w-100" alt="Post Image 2">
+                                    </div>
+                                </c:if>
+                                <c:if test="${not empty post.image3Data}">
+                                    <div class="carousel-item ${empty post.image1Data && empty post.image2Data ? 'active' : ''}">
+                                        <img src="${pageContext.request.contextPath}/post-image?postId=${post.postId}&index=3" class="d-block w-100" alt="Post Image 3">
+                                    </div>
+                                </c:if>
+                            </div>
+
+                            <c:if test="${imageCount > 1}">
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselPost${post.postId}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselPost${post.postId}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </c:if>
+                        </div>
+                    </div>
+                </c:if>
+
                 <div class="post-content">
                     <p>${fn:escapeXml(post.description)}</p>
-                </div>
-                <div class="post-images">
-                    <c:if test="${not empty post.image1Path}">
-                        <img src="${pageContext.request.contextPath}/${post.image1Path}" alt="Post image 1" loading="lazy">
-                    </c:if>
-                    <c:if test="${not empty post.image2Path}">
-                        <img src="${pageContext.request.contextPath}/${post.image2Path}" alt="Post image 2" loading="lazy">
-                    </c:if>
-                    <c:if test="${not empty post.image3Path}">
-                        <img src="${pageContext.request.contextPath}/${post.image3Path}" alt="Post image 3" loading="lazy">
-                    </c:if>
                 </div>
                 <div class="post-footer">
                     <span class="post-date">Posted on: ${post.createdAt}</span>
@@ -81,7 +103,5 @@
 
 <jsp:include page="/includes/footer.jsp" />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Add Font Awesome for icons -->
-<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 </body>
 </html>

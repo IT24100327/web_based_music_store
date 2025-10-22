@@ -82,8 +82,8 @@ public class SearchServlet extends HttpServlet {
 
             if (!hasSearchParams) {
                 // Fetch all tracks with pagination
-                tracks = TrackDAO.getAllTracksPaginated(page, RECORDS_PER_PAGE);
-                noOfRecords = TrackDAO.countAllTracks();
+                tracks = TrackDAO.getApprovedTracksPaginated(page, RECORDS_PER_PAGE);
+                noOfRecords = TrackDAO.countApprovedTracks();
             } else {
                 // Search with filters
                 tracks = TrackDAO.searchProducts(title, genre, minPrice, maxPrice, minRating, page, RECORDS_PER_PAGE);

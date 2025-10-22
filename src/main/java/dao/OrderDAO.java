@@ -113,12 +113,13 @@ public class OrderDAO {
         return false;
     }
 
-    public static void addPurchasedTracks(int userId, List<Integer> trackIds, Connection con) throws SQLException {
-        String sql = "INSERT INTO purchased_tracks (user_id, track_id) VALUES (?, ?)";
+    public static void addPurchasedTracks(int userId, int orderId, List<Integer> trackIds, Connection con) throws SQLException {
+        String sql = "INSERT INTO purchased_tracks (user_id, order_id, track_id) VALUES (?, ?, ?)";
         try (PreparedStatement pstmt = con.prepareStatement(sql)) {
             for (Integer trackId : trackIds) {
                 pstmt.setInt(1, userId);
-                pstmt.setInt(2, trackId);
+                pstmt.setInt(2, orderId); // Pass the order ID
+                pstmt.setInt(3, trackId);
                 pstmt.addBatch();
             }
             pstmt.executeBatch();
@@ -142,6 +143,19 @@ public class OrderDAO {
         }
     }
 
+
+    public static void updateOrderStatus(int orderId, OrderStatus status, Connection con) throws SQLException {
+        try (PreparedStatement pstmt = con.prepareStatement(OrderSQLConstants.UPDATE_ORDER_STATUS)) {
+            pstmt.setString(1, status.name());
+            pstmt.setInt(2, orderId);
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Updating order status failed, no rows affected for orderId: " + orderId);
+            }
+        }
+    }
+
     public static List<Order> getOrdersByUserId(int userId) throws SQLException {
         List<Order> userOrders = new LinkedList<>();
         String sql = "SELECT * FROM orders WHERE user_id = ? ORDER BY order_date DESC";
@@ -157,6 +171,15 @@ public class OrderDAO {
         return userOrders;
     }
 
+    public static void updateOrderPaymentDetails(int orderId, String paymentMethod, String transactionId, Connection con) throws SQLException {
+        try (PreparedStatement pstmt = con.prepareStatement(OrderSQLConstants.UPDATE_ORDER_PAYMENT_DETAILS)) {
+            pstmt.setString(1, paymentMethod);
+            pstmt.setString(2, transactionId);
+            pstmt.setInt(3, orderId);
+            pstmt.executeUpdate();
+        }
+    }
+
     public static List<Track> getTracksByOrderId(int orderId) throws SQLException {
         List<Track> tracks = new ArrayList<>();
         String sql = "SELECT t.*, u.firstName, u.lastName, ad.stage_name " +
@@ -164,7 +187,7 @@ public class OrderDAO {
                 "JOIN users u ON t.artist_id = u.userId " +
                 "LEFT JOIN artist_details ad ON t.artist_id = ad.user_id " +
                 "JOIN purchased_tracks pt ON t.trackId = pt.track_id " +
-                "WHERE pt.user_id = (SELECT user_id FROM orders WHERE order_id = ?)";
+                "WHERE pt.order_id = ?"; //
 
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {

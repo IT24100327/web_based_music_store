@@ -1,4 +1,3 @@
-// src/main/java/model/Payment.java
 package model;
 
 import java.time.LocalDateTime;
@@ -13,13 +12,23 @@ public class Payment {
     private String status;
 
     public Payment() {
+        this.paymentDate = LocalDateTime.now();
     }
 
     public Payment(int paymentId, int orderId, double amount, LocalDateTime paymentDate, String paymentMethod, String transactionId, String status) {
         this.paymentId = paymentId;
         this.orderId = orderId;
         this.amount = amount;
-        this.paymentDate = paymentDate;
+        this.paymentDate = paymentDate != null ? paymentDate : LocalDateTime.now();
+        this.paymentMethod = paymentMethod;
+        this.transactionId = transactionId;
+        this.status = status;
+    }
+
+    public Payment(int orderId, double amount, String paymentMethod, String transactionId, String status) {
+        this.orderId = orderId;
+        this.amount = amount;
+        this.paymentDate = LocalDateTime.now();
         this.paymentMethod = paymentMethod;
         this.transactionId = transactionId;
         this.status = status;
@@ -79,5 +88,18 @@ public class Payment {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "paymentId=" + paymentId +
+                ", orderId=" + orderId +
+                ", amount=" + amount +
+                ", paymentDate=" + paymentDate +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", transactionId='" + transactionId + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

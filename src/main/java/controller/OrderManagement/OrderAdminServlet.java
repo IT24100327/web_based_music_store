@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@WebServlet("/manageOrders")
+@WebServlet("/manage-orders")
 public class OrderAdminServlet extends HttpServlet {
 
     private final OrderService orderService = new OrderService();  // Delegate to Service
@@ -59,7 +59,7 @@ public class OrderAdminServlet extends HttpServlet {
                 break;
         }
 
-        response.sendRedirect(request.getContextPath() + "/manageOrders");
+        response.sendRedirect(request.getContextPath() + "/manage-orders");
     }
 
     private void updateOrderStatus(int orderId, OrderStatus status) {

@@ -9,56 +9,55 @@
     <div class="sidebar-nav">
         <c:if test="${sessionScope.USER != null}">
             <a href="${pageContext.request.contextPath}/admin/index.jsp" class="${empty page ? 'active' : ''}">
-                <i class="fas fa-tachometer-alt"></i>
-                Dashboard
+                <i class="fas fa-tachometer-alt"></i> Dashboard
             </a>
 
+            <%-- Super Admin Links --%>
             <c:if test="${sessionScope.USER.role != null && sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
-                <a href="${pageContext.request.contextPath}/manage-users"
-                   class="${page eq 'manage-users' ? 'active' : ''}">
-                    <i class="fas fa-users-cog"></i>
-                    User Management
+                <a href="${pageContext.request.contextPath}/manage-users" class="${page eq 'manage-users' ? 'active' : ''}">
+                    <i class="fas fa-users-cog"></i> User Management
+                </a>
+                <a href="${pageContext.request.contextPath}/manage-artists" class="${page eq 'manage-artists' ? 'active' : ''}">
+                    <i class="fas fa-microphone-alt"></i> Artist Management
                 </a>
             </c:if>
 
-            <c:if test="${sessionScope.USER.role != null && sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
-                <a href="${pageContext.request.contextPath}/manage-artists"
-                   class="${page eq 'manage-artists' ? 'active' : ''}">
-                    <i class="fas fa-users-cog"></i>
-                    Artist Management
+            <%-- Content Manager Links --%>
+            <c:if test="${sessionScope.USER.role != null && (sessionScope.USER.role.name() eq 'SUPER_ADMIN' || sessionScope.USER.role.name() eq 'CONTENT_MANAGER')}">
+                <a href="${pageContext.request.contextPath}/manage-tracks" class="${page eq 'manage-tracks' ? 'active' : ''}">
+                    <i class="fas fa-music"></i> Track Management
+                </a>
+                <a href="${pageContext.request.contextPath}/admin/manage-posts" class="${page eq 'manage-posts' ? 'active' : ''}">
+                    <i class="fas fa-comments"></i> Community
+                    </a>
+            </c:if>
+
+            <%-- Finance Manager Links --%>
+            <c:if test="${sessionScope.USER.role != null && (sessionScope.USER.role.name() eq 'SUPER_ADMIN' || sessionScope.USER.role.name() eq 'FINANCE_MANAGER')}">
+                <a href="${pageContext.request.contextPath}/manage-orders" class="${page eq 'manage-orders' ? 'active' : ''}">
+                    <i class="fas fa-receipt"></i> Order Management
+                </a>
+                <a href="${pageContext.request.contextPath}/manage-payments" class="${page eq 'manage-payments' ? 'active' : ''}">
+                    <i class="fas fa-credit-card"></i> Payment Management
                 </a>
             </c:if>
 
-            <c:if test="${sessionScope.USER.role != null && (sessionScope.USER.role.name() eq 'SUPER_ADMIN' ||
-       sessionScope.USER.role.name() eq 'FINANCE_MANAGER')}">
-                <a href="${pageContext.request.contextPath}/manageOrders"
-                   class="${page eq 'manageOrders' ? 'active' : ''}">
-                    <i class="fas fa-users-cog"></i>
-                    Order Management
+            <%-- Marketing Manager Links --%>
+            <c:if test="${sessionScope.USER.role != null && (sessionScope.USER.role.name() eq 'SUPER_ADMIN' || sessionScope.USER.role.name() eq 'MARKETING_MANAGER')}">
+                <a href="${pageContext.request.contextPath}/manage-marketing" class="${page eq 'manage-marketing' ? 'active' : ''}">
+                    <i class="fas fa-bullhorn"></i> Marketing
+                    </a>
+                <a href="${pageContext.request.contextPath}/admin/manage-feedback" class="${page eq 'manage-feedback' ? 'active' : ''}">
+                    <i class="fas fa-comment-dots"></i> Feedback
+                    </a>
+                <a href="${pageContext.request.contextPath}/admin/manage-support-tickets" class="${page eq 'manage-support-tickets' ? 'active' : ''}">
+                    <i class="fas fa-headset"></i> Support
                 </a>
             </c:if>
 
-            <c:if test="${sessionScope.USER.role != null && (sessionScope.USER.role.name() eq 'SUPER_ADMIN' ||
-       sessionScope.USER.role.name eq 'MARKETING_MANAGER')}">
-                <a href="${pageContext.request.contextPath}/manage-marketing"
-                   class="${page eq 'manage-marketing' ? 'active' : ''}">
-                    <i class="fas fa-chart-bar"></i>
-                    Marketing Management
-                </a>
-            </c:if>
-
-            <c:if test="${sessionScope.USER.role != null && (sessionScope.USER.role.name() eq 'SUPER_ADMIN' ||
-       sessionScope.USER.role.name eq 'CONTENT_MANAGER')}">
-                <a href="${pageContext.request.contextPath}/admin/manage-posts"
-                   class="${page eq 'manage-posts' ? 'active' : ''}">
-                    <i class="fas fa-chart-bar"></i>
-                    Community Management
-                </a>
-            </c:if>
-
-            <a href="${pageContext.request.contextPath}/logout" class="${page eq 'logout' ? 'active' : ''}">
-                <i class="fas fa-sign-out-alt"></i>
-                Logout
+            <%-- Logout --%>
+            <a href="${pageContext.request.contextPath}/logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
             </a>
         </c:if>
     </div>

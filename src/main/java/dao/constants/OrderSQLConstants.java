@@ -12,4 +12,5 @@ public final class OrderSQLConstants {
     public static final String DELETE_ORDER = "DELETE FROM orders WHERE order_id = ?";
     public static final String SELECT_ORDER_BY_ID = "SELECT * FROM orders WHERE order_id = ?";
     public static final String UPDATE_ORDER_STATUS = "UPDATE orders SET status = ? WHERE order_id = ?";
+    public static final String UPDATE_ORDER_PAYMENT_DETAILS = "UPDATE orders SET payment_method = ?, transaction_id = ? WHERE order_id = ?";
 }

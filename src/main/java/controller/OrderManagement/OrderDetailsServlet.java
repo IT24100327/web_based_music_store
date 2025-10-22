@@ -17,39 +17,31 @@ import java.util.List;
 
 @WebServlet(name = "OrderDetailsServlet", value = "/orderDetails")
 public class OrderDetailsServlet extends HttpServlet {
+    // REPLACE the contents of the doGet method in OrderDetailsServlet.java with this:
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        User user = (User) session.getAttribute("USER");
-
-        if (user == null) {
+        if (session == null || session.getAttribute("USER") == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
-        // Safely get cartItems from session, default to empty list if null
-        @SuppressWarnings("unchecked")
-        List<Track> cartItems = (List<Track>) session.getAttribute("cartItems");
-
-        if (cartItems == null) {
-            cartItems = new ArrayList<>();
-        }
-
+        User user = (User) session.getAttribute("USER");
+        List<Track> cartItems = CartDAO.getCartItems(user.getUserId());
         double cartTotal = calculateTotal(cartItems);
 
-        // If session cart is empty, load from database and recalculate total
+        session.setAttribute("cartItems", cartItems);
+        session.setAttribute("cartTotal", cartTotal);
+
+        // FIX: Redirect if cart is empty
         if (cartItems.isEmpty()) {
-            cartItems = CartDAO.getCartItems(user.getUserId());
-
-            cartTotal = calculateTotal(cartItems);
-
-            session.setAttribute("cartItems", cartItems);
-            session.setAttribute("cartTotal", cartTotal);
+            response.sendRedirect(request.getContextPath() + "/?message=Your cart is empty.");
+            return;
         }
 
         request.setAttribute("cartItems", cartItems);
         request.setAttribute("cartTotal", cartTotal);
-
         request.getRequestDispatcher("/order-details.jsp").forward(request, response);
     }
 

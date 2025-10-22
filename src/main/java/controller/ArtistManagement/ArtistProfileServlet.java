@@ -19,7 +19,6 @@ public class ArtistProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         User user = (User) request.getSession().getAttribute("USER");
-
         // Security check: Ensure the user is an artist
         if (user == null || !(user instanceof Artist)) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You must be logged in as an artist to view this page.");
@@ -27,9 +26,13 @@ public class ArtistProfileServlet extends HttpServlet {
         }
 
         Artist artist = (Artist) user;
+        String view = request.getParameter("view");
+        if (view == null || view.trim().isEmpty()) {
+            view = "dashboard"; // Default to the dashboard view
+        }
 
         try {
-            // Fetch tracks for the logged-in artist
+            // Fetch tracks for the logged-in artist, which are needed for dashboard and my-tracks views
             List<Track> artistTracks = TrackDAO.getTracksByArtistId(artist.getUserId());
             request.setAttribute("artistTracks", artistTracks);
         } catch (SQLException e) {
@@ -37,6 +40,7 @@ public class ArtistProfileServlet extends HttpServlet {
             request.setAttribute("error", "Failed to load your tracks: " + e.getMessage());
         }
 
+        request.setAttribute("view", view); // Pass the current view to the JSP
         request.getRequestDispatcher("/artist/profile.jsp").forward(request, response);
     }
 }

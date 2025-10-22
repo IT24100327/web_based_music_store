@@ -1,155 +1,341 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${sessionScope.USER.stageName} - Artist Profile</title>
+    <title>Artist Profile - ${sessionScope.USER.stageName}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/theme.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/index.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/admin-styles.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/artist-profile.css">
     <style>
-        .text-muted {
-            color: var(--text-secondary) !important;
+        .profile-content {
+            display: none;
+        }
+        .profile-content.active {
+            display: block;
         }
     </style>
 </head>
 <body>
-<jsp:include page="/includes/navbar.jsp"/>
 
-<div class="container my-5">
-    <%-- Profile Header Section (No changes here) --%>
-    <div class="profile-header">
-        <div class="artist-avatar">
-            <i class="fas fa-user-circle fa-6x"></i>
+<div class="admin-container">
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <h2>Artist Panel</h2>
         </div>
-        <div class="artist-info">
-            <h1>${sessionScope.USER.stageName}</h1>
-            <p class="text-muted">${sessionScope.USER.firstName} ${sessionScope.USER.lastName}</p>
-            <div class="artist-stats">
-                <span><i class="fas fa-music"></i> ${fn:length(artistTracks)} Tracks</span>
+        <nav class="sidebar-nav">
+            <a href="${pageContext.request.contextPath}/artist/profile?view=dashboard" class="${view == 'dashboard' ? 'active' : ''}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="${pageContext.request.contextPath}/artist/profile?view=my-tracks" class="${view == 'my-tracks' ? 'active' : ''}">
+                <i class="fas fa-music"></i> My Tracks
+            </a>
+            <a href="${pageContext.request.contextPath}/artist/profile?view=settings" class="${view == 'settings' ? 'active' : ''}">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+            <hr style="border-color: var(--border-light);">
+            <a href="${pageContext.request.contextPath}/index">
+                <i class="fas fa-home"></i> Back to Main Site
+            </a>
+            <a href="${pageContext.request.contextPath}/logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1>Welcome, ${sessionScope.USER.stageName}</h1>
+            <div class="user-info">
+                <span>${sessionScope.USER.email}</span>
+                <div class="user-avatar">${sessionScope.USER.firstName.charAt(0)}${sessionScope.USER.lastName.charAt(0)}</div>
+            </div>
+        </header>
+
+        <c:if test="${not empty param.success}">
+            <div class="alert alert-success" role="alert">
+                    ${param.success}
+            </div>
+        </c:if>
+        <c:if test="${not empty param.error}">
+            <div class="alert alert-danger" role="alert">
+                    ${param.error}
+            </div>
+        </c:if>
+
+        <div id="dashboard" class="profile-content ${view == 'dashboard' ? 'active' : ''}">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-music"></i></div>
+                    <div class="stat-content">
+                        <h3>${artistTracks.size()}</h3>
+                        <p>Total Tracks</p>
+                    </div>
+                </div>
+            </div>
+            <div class="welcome-section">
+                <div class="welcome-icon"><i class="fas fa-rocket"></i></div>
+                <div class="welcome-content">
+                    <h2>Ready to create?</h2>
+                    <p>Manage your music, update your profile, and see your stats all in one place.</p>
+                </div>
             </div>
         </div>
-        <div class="profile-actions">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                <i class="fas fa-edit"></i> Edit Profile
-            </button>
+
+        <div id="my-tracks" class="profile-content ${view == 'my-tracks' ? 'active' : ''}">
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Your Music Collection</h3>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTrackModal">
+                        <i class="fas fa-plus"></i> Add New Track
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-dark">
+                        <thead>
+                        <tr>
+                            <th>Cover Art</th>
+                            <th>Title</th>
+                            <th>Genre</th>
+                            <th>Price</th>
+                            <th>Release Date</th>
+                            <th>Status</th> <%-- NEW --%>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="track" items="${artistTracks}">
+                            <tr>
+                                <td>
+                                    <img src="${pageContext.request.contextPath}/cover-art?trackId=${track.trackId}" alt="${track.title}" class="preview-img">
+                                </td>
+                                <td>${track.title}</td>
+                                <td>${track.genre}</td>
+                                <td>Rs. <fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${track.price}"/></td>
+                                <td>${track.releaseDate}</td>
+                                    <%-- NEW: Status Badge Display --%>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${track.status == 'APPROVED'}">
+                                            <span class="status-badge status-active">Approved</span>
+                                        </c:when>
+                                        <c:when test="${track.status == 'REJECTED'}">
+                                            <span class="status-badge status-inactive">Rejected</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="status-badge status-pending">Pending</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td class="actions">
+                                    <button class="btn btn-primary btn-sm play-btn-sm" data-track-id="${track.trackId}">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editTrackModal"
+                                            data-track-id="${track.trackId}"
+                                            data-title="${track.title}"
+                                            data-price="${track.price}"
+                                            data-genre="${track.genre}"
+                                            data-duration="${track.duration}"
+                                            data-release-date="${track.releaseDate}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <form action="${pageContext.request.contextPath}/artist/delete-track" method="post" onsubmit="return confirm('Are you sure you want to delete this track?');">
+                                        <input type="hidden" name="trackId" value="${track.trackId}">
+                                        <button type="submit" class="btn btn-delete btn-sm"><i class="fas fa-trash"></i> Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <%-- About Me Section (No changes here) --%>
-    <div class="profile-section">
-        <h2>About Me</h2>
-        <p>${not empty sessionScope.USER.bio ? sessionScope.USER.bio : 'No biography provided. Click Edit Profile to add one!'}</p>
-    </div>
+        <div id="settings" class="profile-content ${view == 'settings' ? 'active' : ''}">
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Profile Settings</h3>
+                </div>
+                <form action="${pageContext.request.contextPath}/artist/update-profile" method="post">
+                    <input type="hidden" name="userId" value="${sessionScope.USER.userId}">
 
-    <%-- My Tracks Section --%>
-    <div class="profile-section">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>My Tracks</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTrackModal">
-                <i class="fas fa-plus"></i> Upload New Track
-            </button>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" value="${sessionScope.USER.firstName}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" value="${sessionScope.USER.lastName}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" value="${sessionScope.USER.email}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stageName">Stage Name</label>
+                        <input type="text" class="form-control" id="stageName" name="stageName" value="${sessionScope.USER.stageName}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio">Artist Bio</label>
+                        <textarea class="form-control" id="bio" name="bio" rows="4" required>${sessionScope.USER.bio}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editPassword">New Password (optional)</label>
+                        <input type="password" class="form-control" id="editPassword" name="editPassword" placeholder="Leave blank to keep current password">
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <table class="table table-dark table-hover">
-            <thead>
-            <tr>
-                <th style="width: 60px;"></th>
-                <th>Title</th>
-                <th>Price</th>
-                <th>Genre</th>
-                <th>Release Date</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach var="track" items="${artistTracks}">
-                <tr>
-                    <td>
+    </main>
+</div>
 
-                        <c:choose>
-                            <c:when test="${not empty track.coverArtData}">
-                                <img src="${pageContext.request.contextPath}/cover-art?trackId=${track.trackId}"
-                                     alt="Cover"
-                                     style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
-                            </c:when>
-                            <c:otherwise>
-                                <div style="width: 40px; height: 40px; background-color: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="fas fa-music text-muted"></i>
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
-                            <%-- MODIFICATION END --%>
-                    </td>
-                    <td><strong>${track.title}</strong></td>
-                    <td>Rs. ${track.price}</td>
-                    <td>${track.genre}</td>
-                    <td>${track.releaseDate}</td>
-                    <td class="actions">
-                            <%-- MODIFICATION START: Conditionally enable/disable the play button --%>
-                        <c:choose>
-                            <c:when test="${not empty track.fullTrackData}">
-                                <button class="btn btn-info btn-sm play-btn-sm" data-track-id="${track.trackId}">
-                                    <i class="fas fa-play"></i>
-                                </button>
-                            </c:when>
-                            <c:otherwise>
-                                <button class="btn btn-info btn-sm play-btn-sm" disabled
-                                        title="No audio file uploaded for this track">
-                                    <i class="fas fa-play"></i>
-                                </button>
-                            </c:otherwise>
-                        </c:choose>
-                            <%-- MODIFICATION END --%>
-
-                        <button class="btn btn-edit btn-sm"
-                                onclick="openEditTrackModal('${track.trackId}', '${track.title}', '${track.price}', '${track.genre}', '${track.duration}', '${track.releaseDate}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-delete btn-sm"
-                                onclick="openDeleteTrackModal('${track.trackId}', '${track.title}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            </c:forEach>
-            <c:if test="${empty artistTracks}">
-                <tr>
-                    <td colspan="6" class="text-center text-muted">You haven't uploaded any tracks yet.</td>
-                </tr>
-            </c:if>
-            </tbody>
-        </table>
+<div class="modal fade" id="addTrackModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="${pageContext.request.contextPath}/artist/add-track" method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Track</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="add-title">Title</label>
+                        <input type="text" class="form-control" id="add-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-price">Price (Rs.)</label>
+                        <input type="number" step="0.01" class="form-control" id="add-price" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-genre">Genre</label>
+                        <input type="text" class="form-control" id="add-genre" name="genre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-duration">Duration (seconds)</label>
+                        <input type="number" class="form-control" id="add-duration" name="duration" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-release_date">Release Date</label>
+                        <input type="date" class="form-control" id="add-release_date" name="release_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-audioFile">Audio File (MP3)</label>
+                        <input type="file" class="form-control" id="add-audioFile" name="audioFile" accept=".mp3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-coverArtFile">Cover Art (JPG/PNG)</label>
+                        <input type="file" class="form-control" id="add-coverArtFile" name="coverArtFile" accept="image/*" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Track</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<jsp:include page="/includes/footer.jsp"/>
+<div class="modal fade" id="editTrackModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="${pageContext.request.contextPath}/artist/update-track" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="trackId" id="edit-trackId">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Track</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit-title">Title</label>
+                        <input type="text" class="form-control" id="edit-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-price">Price (Rs.)</label>
+                        <input type="number" step="0.01" class="form-control" id="edit-price" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-genre">Genre</label>
+                        <input type="text" class="form-control" id="edit-genre" name="genre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-duration">Duration (seconds)</label>
+                        <input type="number" class="form-control" id="edit-duration" name="duration" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-release_date">Release Date</label>
+                        <input type="date" class="form-control" id="edit-release_date" name="release_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-audioFile">New Audio File (Optional)</label>
+                        <input type="file" class="form-control" id="edit-audioFile" name="audioFile" accept=".mp3">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-coverArtFile">New Cover Art (Optional)</label>
+                        <input type="file" class="form-control" id="edit-coverArtFile" name="coverArtFile" accept="image/*">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-<%-- Modals --%>
-<jsp:include page="/artist/modals/edit-profile-modal.jsp"/>
-<jsp:include page="/admin/includes/modals/manage-track-modals/add-track-modal.jsp"/>
-<jsp:include page="/admin/includes/modals/manage-track-modals/edit-track-modal.jsp"/>
-<jsp:include page="/admin/includes/modals/manage-track-modals/delete-track-modal.jsp"/>
+<audio id="global-audio-player" preload="auto"></audio>
 
-<script>
-    // Define contextPath for the scripts to use
-    window.contextPath = '${pageContext.request.contextPath}';
-</script>
-<script src="${pageContext.request.contextPath}/js/cart-utils.js"></script>
-<script src="${pageContext.request.contextPath}/js/cart-handlers.js"></script>
-<script src="${pageContext.request.contextPath}/js/cart-main.js"></script>
-<script src="${pageContext.request.contextPath}/js/music-pagination.js"></script>
-<script src="${pageContext.request.contextPath}/js/music-handlers.js"></script>
-<script src="${pageContext.request.contextPath}/js/music-main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<%-- Streaming and Modal JavaScript (No changes needed here) --%>
+<script>
+    window.contextPath = "${pageContext.request.contextPath}";
+</script>
+<script src="${pageContext.request.contextPath}/js/music-handlers.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        initializePlayButtons();
+    });
+</script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var editTrackModal = document.getElementById('editTrackModal');
+        editTrackModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var modal = this;
+            modal.querySelector('#edit-trackId').value = button.getAttribute('data-track-id');
+            modal.querySelector('#edit-title').value = button.getAttribute('data-title');
+            modal.querySelector('#edit-price').value = button.getAttribute('data-price');
+            modal.querySelector('#edit-genre').value = button.getAttribute('data-genre');
+            modal.querySelector('#edit-duration').value = button.getAttribute('data-duration');
+            modal.querySelector('#edit-release_date').value = button.getAttribute('data-release-date');
+        });
+    });
+</script>
 
 </body>
 </html>

@@ -149,10 +149,9 @@ body {
    POSTS STYLES
    ========================================================================== */
 .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
     padding: 0 16px;
+    column-gap: 1.5rem;
+    column-count: 3; /* Default for large screens */
 }
 
 .post-card {
@@ -164,6 +163,10 @@ body {
     flex-direction: column;
     transition: transform 0.2s ease, border-color 0.2s ease;
     box-shadow: var(--shadow-sm);
+    /* Added for masonry layout */
+    width: 100%;
+    margin-bottom: 1.5rem;
+    break-inside: avoid;
 }
 
 .post-card:hover {
@@ -443,10 +446,15 @@ body {
 /* ==========================================================================
    RESPONSIVE STYLES
    ========================================================================== */
+@media (max-width: 992px) {
+    .posts-grid {
+        column-count: 2;
+    }
+}
+
 @media (max-width: 768px) {
     .posts-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        column-count: 1;
         padding: 0 12px;
     }
 

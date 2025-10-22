@@ -254,4 +254,46 @@ body {
         margin-top: 8px;
         font-size: 1.1rem;
     }
+
+    /* APPEND this CSS to the end of /webapp/css/order-details.css */
+
+    /* Payment Form Styling */
+    .payment-form-section {
+        border-top: 1px solid var(--border-light);
+        margin-top: 2rem;
+        padding-top: 2rem;
+    }
+
+    .payment-form-section h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    .payment-method-options {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        background-color: var(--dark-bg);
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-light);
+    }
+
+    .payment-method-options .form-check-label {
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .payment-method-options .form-check-input {
+        cursor: pointer;
+    }
+
+    .form-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
 }

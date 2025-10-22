@@ -9,7 +9,7 @@
                 <h5 class="modal-title" id="deleteOrderModalLabel">Delete Order</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="deleteOrderForm" action="${contextPath}/manageOrders" method="POST">
+            <form id="deleteOrderForm" action="${contextPath}/manage-orders" method="POST">
                 <div class="modal-body">
                     <input type="hidden" id="deleteOrderId" name="orderId">
                     <input type="hidden" name="action" value="delete">

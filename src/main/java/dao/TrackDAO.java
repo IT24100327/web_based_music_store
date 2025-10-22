@@ -3,6 +3,7 @@ package dao;
 import dao.constants.TrackSQLConstants;
 import factory.TrackFactory;
 import model.Track;
+import model.enums.TrackStatus;
 import utils.DatabaseConnection;
 
 import java.sql.*;
@@ -14,10 +15,47 @@ public class TrackDAO {
 
     private static final String SELECT_BASE = "SELECT t.*, u.firstName, u.lastName, ad.stage_name FROM tracks t JOIN users u ON t.artist_id = u.userId LEFT JOIN artist_details ad ON t.artist_id = ad.user_id";
 
-    public static LinkedList<Track> getAllTracks() throws SQLException {
-        LinkedList<Track> tracks = new LinkedList<>();
-        String sql = SELECT_BASE; // Use the base query
+    /**
+     * Fetches ONLY APPROVED tracks for the public-facing pages with pagination.
+     */
+    public static List<Track> getApprovedTracksPaginated(int page, int pageSize) throws SQLException {
+        List<Track> tracks = new ArrayList<>();
+        String sql = SELECT_BASE + " WHERE t.status = 'APPROVED' ORDER BY t.trackId LIMIT ? OFFSET ?";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
 
+            pstmt.setInt(1, pageSize);
+            pstmt.setInt(2, (page - 1) * pageSize);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    tracks.add(TrackFactory.createTrackFromResultSet(rs));
+                }
+            }
+        }
+        return tracks;
+    }
+
+    /**
+     * Counts ONLY APPROVED tracks for public pagination.
+     */
+    public static int countApprovedTracks() throws SQLException {
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = con.prepareStatement("SELECT COUNT(*) FROM tracks WHERE status = 'APPROVED'");
+             ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Fetches ALL tracks regardless of status for the admin panel.
+     */
+    public static List<Track> getAllTracksForAdmin() throws SQLException {
+        List<Track> tracks = new LinkedList<>();
+        String sql = SELECT_BASE + " ORDER BY t.trackId DESC";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
@@ -29,41 +67,10 @@ public class TrackDAO {
         return tracks;
     }
 
-    public static List<Track> getAllTracksPaginated(int page, int pageSize) throws SQLException {
-        List<Track> tracks = new ArrayList<>();
-        String sql = SELECT_BASE + " ORDER BY t.trackId LIMIT ? OFFSET ?";
-
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-            pstmt.setInt(1, pageSize);  // LIMIT
-            pstmt.setInt(2, (page - 1) * pageSize);  // OFFSET
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    tracks.add(TrackFactory.createTrackFromResultSet(rs));
-                }
-            }
-        }
-        return tracks;
-    }
-
-    public static int countAllTracks() throws SQLException {
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(TrackSQLConstants.COUNT_ALL_TRACKS);
-             ResultSet rs = pstmt.executeQuery()) {
-
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        }
-        return 0;
-    }
-
     public static void addTrack(Track track) throws SQLException {
         if (track == null) return;
+        // The `status` column has a DEFAULT of 'PENDING', so we don't need to specify it on insert.
         String sql = "INSERT INTO tracks (title, price, genre, rating, artist_id, full_track_data, cover_art_data, cover_art_type, duration, release_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -87,6 +94,16 @@ public class TrackDAO {
         }
     }
 
+    public static void updateTrackStatus(int trackId, TrackStatus status) throws SQLException {
+        String sql = "UPDATE tracks SET status = ? WHERE trackId = ?";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, status.name());
+            pstmt.setInt(2, trackId);
+            pstmt.executeUpdate();
+        }
+    }
+
     public static void removeTrack(int trackId) throws SQLException {
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(TrackSQLConstants.DELETE_TRACK)) {
@@ -96,10 +113,9 @@ public class TrackDAO {
     }
 
     public static Track findTrackById(int trackId) throws SQLException {
-        String sql = SELECT_BASE + " WHERE t.trackId = ?"; // Use base query and add condition
+        String sql = SELECT_BASE + " WHERE t.trackId = ?";
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
-
             pstmt.setInt(1, trackId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -112,12 +128,10 @@ public class TrackDAO {
 
     public static void updateTrack(Track track) throws SQLException {
         if (track == null) return;
-        // Build SQL dynamically based on whether new file data is present
         String sql = "UPDATE tracks SET title = ?, price = ?, genre = ?, rating = ?, artist_id = ?, duration = ?, release_date = ? " +
                 (track.getFullTrackData() != null ? ", full_track_data = ? " : "") +
                 (track.getCoverArtData() != null ? ", cover_art_data = ?, cover_art_type = ? " : "") +
                 "WHERE trackId = ?";
-
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
 
@@ -129,7 +143,6 @@ public class TrackDAO {
             pstmt.setInt(paramIndex++, track.getArtistId());
             pstmt.setInt(paramIndex++, track.getDuration());
             pstmt.setDate(paramIndex++, track.getReleaseDate() != null ? Date.valueOf(track.getReleaseDate()) : null);
-
             if (track.getFullTrackData() != null) {
                 pstmt.setBytes(paramIndex++, track.getFullTrackData());
             }
@@ -143,13 +156,11 @@ public class TrackDAO {
         }
     }
 
-    /**
-     * Searches for tracks based on various filters with pagination.
-     */
+    // Unchanged methods below...
     public static List<Track> searchProducts(String title, String genre, Double minPrice, Double maxPrice, Double rating, int page, int pageSize) {
         List<Track> list = new ArrayList<>();
-        // Start with the base query that already includes joins
-        StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE 1=1");
+        // IMPORTANT: Add status filter to public search
+        StringBuilder sql = new StringBuilder(SELECT_BASE + " WHERE t.status = 'APPROVED'");
         List<Object> params = new ArrayList<>();
 
         if (title != null && !title.trim().isEmpty()) {
@@ -195,57 +206,10 @@ public class TrackDAO {
         return list;
     }
 
-    public static List<Track> getTracksByArtistId(int artistId) throws SQLException {
-        List<Track> tracks = new LinkedList<>();
-        String sql = SELECT_BASE + " WHERE t.artist_id = ?";
-
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-            pstmt.setInt(1, artistId);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    tracks.add(TrackFactory.createTrackFromResultSet(rs));
-                }
-            }
-        }
-        return tracks;
-    }
-
-    public static List<Track> getPurchasedTracksByUserId(int userId) throws SQLException {
-        List<Track> purchasedTracks = new ArrayList<>();
-
-        String sql = "SELECT t.*, u.firstName, u.lastName, ad.stage_name " +
-                "FROM purchased_tracks pt " +
-                "JOIN tracks t ON pt.track_id = t.trackId " +
-                "JOIN users u ON t.artist_id = u.userId " +
-                "LEFT JOIN artist_details ad ON u.userId = ad.user_id " +
-                "WHERE pt.user_id = ? " +
-                "ORDER BY pt.purchase_date DESC";
-
-        try (Connection con = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-            pstmt.setInt(1, userId);
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    purchasedTracks.add(TrackFactory.createTrackFromResultSet(rs));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-
-        return purchasedTracks;
-    }
-
     public static int countProducts(String title, String genre, Double minPrice, Double maxPrice, Double minRating) {
-        // This query does not need joins, which is more efficient for just counting.
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM tracks WHERE 1=1");
+        // IMPORTANT: Add status filter to public search count
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM tracks WHERE status = 'APPROVED'");
         List<Object> params = new ArrayList<>();
-
         if (title != null && !title.trim().isEmpty()) {
             sql.append(" AND title LIKE ?");
             params.add("%" + title.trim() + "%");
@@ -281,5 +245,47 @@ public class TrackDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static List<Track> getTracksByArtistId(int artistId) throws SQLException {
+        List<Track> tracks = new LinkedList<>();
+        String sql = SELECT_BASE + " WHERE t.artist_id = ?";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setInt(1, artistId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    tracks.add(TrackFactory.createTrackFromResultSet(rs));
+                }
+            }
+        }
+        return tracks;
+    }
+
+    public static List<Track> getPurchasedTracksByUserId(int userId) throws SQLException {
+        List<Track> purchasedTracks = new ArrayList<>();
+        String sql = "SELECT t.*, u.firstName, u.lastName, ad.stage_name " +
+                "FROM purchased_tracks pt " +
+                "JOIN tracks t ON pt.track_id = t.trackId " +
+                "JOIN users u ON t.artist_id = u.userId " +
+                "LEFT JOIN artist_details ad ON u.userId = ad.user_id " +
+                "WHERE pt.user_id = ? " +
+                "ORDER BY pt.purchase_date DESC";
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    purchasedTracks.add(TrackFactory.createTrackFromResultSet(rs));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        return purchasedTracks;
     }
 }

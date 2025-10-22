@@ -16,7 +16,7 @@
 <div class="admin-container">
     <!-- Sidebar Navigation -->
     <jsp:include page="includes/admin_nav_bar.jsp">
-        <jsp:param name="page" value="manageOrders"/>
+        <jsp:param name="page" value="manage-orders"/>
     </jsp:include>
 
     <!-- Main Content Area -->
@@ -54,7 +54,7 @@
 
             <%--Search--%>
             <div class="mb-4">
-                <form action="${pageContext.request.contextPath}/manageOrders" method="GET" class="d-flex gap-2">
+                <form action="${pageContext.request.contextPath}/manage-orders" method="GET" class="d-flex gap-2">
                     <input type="text" name="searchQuery" class="form-control"
                            placeholder="Search by Order ID, User ID, or Status..." value="${param.searchQuery}">
                     <button type="submit" class="btn btn-primary">Search</button>

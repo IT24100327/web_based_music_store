@@ -20,7 +20,6 @@ public class DeletePostServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("USER") : null;
-
         if (user == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You must be logged in to perform this action.");
             return;
@@ -28,20 +27,13 @@ public class DeletePostServlet extends HttpServlet {
 
         String redirectPath = (user.getUserType() == UserType.ADMIN)
                 ? request.getContextPath() + "/admin/manage-posts"
-                : request.getContextPath() + "/my-posts";
-
+                : request.getContextPath() + "/profile?view=my-posts";
         try {
             int postId = Integer.parseInt(request.getParameter("postId"));
-
-            // Get the web application's real path to pass to the service for file deletion
-            String webRootPath = getServletContext().getRealPath("");
-
             // The service layer handles the permission check and deletion logic
-            postService.deletePost(postId, user, webRootPath);
-
+            postService.deletePost(postId, user);
             // Optional: Add a success flash message to the session
             session.setAttribute("successMessage", "Post deleted successfully.");
-
         } catch (NumberFormatException e) {
             session.setAttribute("errorMessage", "Invalid Post ID provided.");
         } catch (IllegalAccessException e) {

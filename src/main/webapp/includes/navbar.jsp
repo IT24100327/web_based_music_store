@@ -24,6 +24,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="${pageContext.request.contextPath}/community">Community</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/SupportTicketServlet">Support</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/FeedbackServlet">Feedback</a>
+                </li>
             </ul>
 
             <c:if test="${!(param.searchBox eq 'noShow')}">

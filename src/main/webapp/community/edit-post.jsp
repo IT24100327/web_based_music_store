@@ -41,10 +41,10 @@
                 <textarea id="description" name="description" rows="6" required>${post.description}</textarea>
             </div>
 
-            <c:if test="${not empty post.image1Path}">
+            <c:if test="${not empty post.image1Data}">
                 <div class="current-image">
                     <p>Current Image 1:</p>
-                    <img src="${pageContext.request.contextPath}/${post.image1Path}" alt="Current image 1" style="max-width: 200px;">
+                    <img src="${pageContext.request.contextPath}/post-image?postId=${post.postId}&index=1" alt="Post Image" style="max-width: 200px;">
                 </div>
             </c:if>
             <div class="form-group">
@@ -52,10 +52,10 @@
                 <input type="file" id="image1" name="image1" accept="image/*">
             </div>
 
-            <c:if test="${not empty post.image2Path}">
+            <c:if test="${not empty post.image2Data}">
                 <div class="current-image">
                     <p>Current Image 2:</p>
-                    <img src="${pageContext.request.contextPath}/${post.image2Path}" alt="Current image 2" style="max-width: 200px;">
+                    <img src="${pageContext.request.contextPath}/post-image?postId=${post.postId}&index=2" alt="Post Image" style="max-width: 200px;">
                 </div>
             </c:if>
             <div class="form-group">
@@ -63,10 +63,10 @@
                 <input type="file" id="image2" name="image2" accept="image/*">
             </div>
 
-            <c:if test="${not empty post.image3Path}">
+            <c:if test="${not empty post.image3Data}">
                 <div class="current-image">
                     <p>Current Image 3:</p>
-                    <img src="${pageContext.request.contextPath}/${post.image3Path}" alt="Current image 3" style="max-width: 200px;">
+                    <img src="${pageContext.request.contextPath}/post-image?postId=${post.postId}&index=3" alt="Post Image" style="max-width: 200px;">
                 </div>
             </c:if>
             <div class="form-group">

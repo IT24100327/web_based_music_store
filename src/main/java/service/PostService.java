@@ -1,12 +1,10 @@
 package service;
-
 import dao.PostDAO;
 import model.Post;
 import model.User;
 import model.enums.UserType;
 import java.sql.SQLException;
 import java.util.List;
-
 public class PostService {
 
     /**
@@ -50,7 +48,8 @@ public class PostService {
      * @param user The user creating the post.
      */
     public void createPost(Post post, User user) throws SQLException {
-        // Business Rule: Admins posts are auto-approved. Others are pending.
+        // Business Rule: Admins posts are auto-approved.
+        // Others are pending.
         if (user.getUserType() == UserType.ADMIN) {
             post.setStatus("approved");
         } else {
@@ -89,11 +88,10 @@ public class PostService {
      * Handles deleting a post, checking for permissions.
      * @param postId The ID of the post to delete.
      * @param user The user attempting the deletion.
-     * @param webRootPath The absolute path of the web application for file deletion.
      * @throws SQLException
      * @throws IllegalAccessException If the user does not have permission.
      */
-    public void deletePost(int postId, User user, String webRootPath) throws SQLException, IllegalAccessException {
+    public void deletePost(int postId, User user) throws SQLException, IllegalAccessException {
         Post post = PostDAO.getPostById(postId);
         if (post == null) {
             throw new IllegalArgumentException("Post not found.");
@@ -104,11 +102,12 @@ public class PostService {
             throw new IllegalAccessException("You do not have permission to delete this post.");
         }
 
-        PostDAO.deletePostAndFiles(postId, webRootPath);
+        PostDAO.deletePost(postId);
     }
 
     /**
-     * Updates a post's status. (For Admins)
+     * Updates a post's status.
+     * (For Admins)
      * @param postId The post ID.
      * @param status The new status ("approved", "rejected").
      */
