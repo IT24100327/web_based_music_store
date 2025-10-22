@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Admin;
 import model.User;
 import model.enums.AdminRole;
 import model.enums.UserType;
@@ -18,17 +19,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@WebServlet("/manage-users")
-public class ManageUserViewServlet extends HttpServlet {
+@WebServlet("/manage-admins")
+public class ManageAdminViewServlet extends HttpServlet {
 
     private final UserService userService = new UserService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<User> allUsers = new LinkedList<>();
+        List<Admin> allAdmins = new LinkedList<>();
 
         try {
-            allUsers = userService.getUsers();
+            allAdmins = userService.getAdmins();
         } catch (SQLException e) {
             req.setAttribute("error", "Failed to fetch users: " + e.getMessage());
         }
@@ -44,9 +45,9 @@ public class ManageUserViewServlet extends HttpServlet {
                 .map(AdminRole::name)
                 .collect(Collectors.toList()));
 
-        req.setAttribute("allUsers", allUsers);
+        req.setAttribute("allAdmins", allAdmins);
 
-        RequestDispatcher rd = req.getRequestDispatcher("/admin/manage-users.jsp");
+        RequestDispatcher rd = req.getRequestDispatcher("/admin/manage-admins.jsp");
         rd.forward(req, resp);
     }
 }

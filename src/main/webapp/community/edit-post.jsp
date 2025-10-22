@@ -14,7 +14,7 @@
 <body>
 
 <jsp:include page="/includes/navbar.jsp">
-    <jsp:param name="page" value="index"/>
+    <jsp:param name="page" value="community"/>
     <jsp:param name="user" value="${sessionScope.USER}"/>
 </jsp:include>
 

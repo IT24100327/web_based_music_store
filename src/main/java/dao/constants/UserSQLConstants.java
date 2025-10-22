@@ -6,6 +6,7 @@ public final class UserSQLConstants {
 
     // User queries
     public static final String SELECT_ALL_USERS = "SELECT * FROM users";
+    public static final String SELECT_ALL_USERS_BY_TYPE = "SELECT * FROM users WHERE role = ?";
     public static final String INSERT_USER =
             "INSERT INTO users (role, firstName, lastName, email, password) VALUES (?, ?, ?, ?, ?)";
     public static final String DELETE_USER = "DELETE FROM users WHERE userId = ?";

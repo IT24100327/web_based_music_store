@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Admin - User Management</title>
+    <title>Hotel Admin - Admin Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/index.css">
@@ -16,7 +16,7 @@
 <div class="admin-container">
     <!-- Sidebar Navigation -->
     <jsp:include page="includes/admin_nav_bar.jsp">
-        <jsp:param name="page" value="manage-users"/>
+        <jsp:param name="page" value="manage-admins"/>
     </jsp:include>
 
     <!-- Main Content Area -->
@@ -40,10 +40,10 @@
         <!-- Users Table -->
         <div class="table-container">
             <div class="table-header">
-                <h3>All Users</h3>
+                <h3>All Administrators</h3>
                 <div class="table-actions">
                     <button class="btn btn-primary" onclick="openAddUserModal()">
-                        <i class="fas fa-plus"></i> Add User
+                        <i class="fas fa-plus"></i> Add Administrator
                     </button>
                 </div>
             </div>
@@ -51,57 +51,42 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Email</th>
                     <th>User</th>
+                    <th>Email</th>
                     <th>Role</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="user" items="${requestScope.allUsers}">
+                <c:forEach var="admin" items="${requestScope.allAdmins}">
                     <tr>
-                        <td><c:out value="${user.userId}"/></td>
+                        <td><c:out value="${admin.userId}"/></td>
                         <td>
-                            <div><strong><c:out value="${user.firstName} ${user.lastName}"/></strong></div>
+                            <div><strong><c:out value="${admin.firstName} ${admin.lastName}"/></strong></div>
                         </td>
-                        <td><c:out value="${user.email}"/></td>
+                        <td><c:out value="${admin.email}"/></td>
                         <td>
-              <span class="status-badge ${user.isAdmin() ? 'status-active' : 'status-inactive'}">
-                <c:choose>
-                    <c:when test="${user.isAdmin()}">
-                        <c:choose>
-                            <c:when test="${user.isAdmin()}">
-                                Admin
-                                <c:if test="${not empty user.role}">
-                                    (${user.role.name()})
+                            <span class="status-badge ${admin.isAdmin() ? 'status-active' : 'status-inactive'}">
+                                <c:if test="${not empty admin.role}">
+                                    ${admin.role.name()}
                                 </c:if>
-                            </c:when>
-                            <c:otherwise>
-                                User
-                            </c:otherwise>
-                        </c:choose>
-                    </c:when>
-                    <c:otherwise>
-                        <c:out value="User"/>
-                    </c:otherwise>
-                </c:choose>
-              </span>
+                            </span>
                         </td>
                         <td>
                             <span class="status-badge status-active">Active</span>
                         </td>
                         <td class="actions">
                             <button class="btn btn-edit btn-sm"
-                                    onclick="openEditModal('<c:out value="${user.userId}"/>', '<c:out
-                                            value="${user.firstName}"/>', '<c:out value="${user.lastName}"/>', '<c:out
-                                            value="${user.email}"/>', '<c:out value="${user.isAdmin()}"/>', '<c:out
-                                            value="${user.isAdmin() && user.role != null ? user.role.name() : ''}"/>')">
+                                    onclick="openEditModal('<c:out value="${admin.userId}"/>', '<c:out
+                                            value="${admin.firstName}"/>', '<c:out value="${admin.lastName}"/>', '<c:out
+                                            value="${admin.email}"/>', '<c:out value="${admin.isAdmin()}"/>', '<c:out
+                                            value="${admin.isAdmin() && admin.role != null ? admin.role.name() : ''}"/>')">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
                             <button class="btn btn-delete btn-sm"
-                                    onclick="openDeleteModal('<c:out value="${user.userId}"/>', '<c:out
-                                            value="${user.firstName} ${user.lastName}"/>')">
+                                    onclick="openDeleteModal('<c:out value="${admin.userId}"/>', '<c:out
+                                            value="${admin.firstName} ${admin.lastName}"/>')">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </td>

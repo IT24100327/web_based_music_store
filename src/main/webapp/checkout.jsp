@@ -1,7 +1,6 @@
-<%-- /webapp/payment-success.jsp --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,6 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/theme.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/index.css">
     <style>
         .success-container {
             max-width: 800px;
@@ -301,7 +301,7 @@
     </div>
 
     <div class="action-buttons">
-        <a href="${pageContext.request.contextPath}/my-orders" class="btn-primary-custom">
+        <a href="${pageContext.request.contextPath}/profile" class="btn-primary-custom">
             <i class="fas fa-list me-2"></i>View All Orders
         </a>
         <a href="${pageContext.request.contextPath}/" class="btn-secondary-custom">

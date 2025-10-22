@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Admin Dashboard</title>
+    <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/index.css">
@@ -81,18 +81,28 @@
 
             <%-- Super Admin Access --%>
             <c:if test="${sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
+
+                <div class="dashboard-card">
+                    <div class="card-icon"><i class="fas fa-users-cog"></i></div>
+                    <h3 class="card-title">Admin Management</h3>
+                    <p class="card-description">Oversee all admin accounts, roles, and permissions.</p>
+                    <a href="<%=request.getContextPath()%>/manage-admins" class="card-link">Manage Admins <i class="fas fa-arrow-right"></i></a>
+                </div>
+
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="fas fa-users-cog"></i></div>
                     <h3 class="card-title">User Management</h3>
                     <p class="card-description">Oversee all user accounts, roles, and permissions.</p>
                     <a href="<%=request.getContextPath()%>/manage-users" class="card-link">Manage Users <i class="fas fa-arrow-right"></i></a>
                 </div>
+
                 <div class="dashboard-card">
                     <div class="card-icon"><i class="fas fa-microphone-alt"></i></div>
                     <h3 class="card-title">Artist Management</h3>
                     <p class="card-description">Add, edit, and manage artist profiles and content.</p>
                     <a href="<%=request.getContextPath()%>/manage-artists" class="card-link">Manage Artists <i class="fas fa-arrow-right"></i></a>
                 </div>
+
             </c:if>
 
             <%-- Marketing Access --%>

@@ -53,13 +53,13 @@ public class ProcessPaymentController extends HttpServlet {
 
         if (paymentMethod == null || paymentMethod.trim().isEmpty()) {
             request.setAttribute("error", "Please select a payment method");
-            request.getRequestDispatcher("/payment.jsp").forward(request, response);
+            request.getRequestDispatcher("/order-details.jsp").forward(request, response);
             return;
         }
 
         if (!validatePaymentDetails(request, paymentMethod)) {
             request.setAttribute("error", "Please fill in all required payment details correctly");
-            request.getRequestDispatcher("/payment.jsp").forward(request, response);
+            request.getRequestDispatcher("/order-details.jsp").forward(request, response);
             return;
         }
 
@@ -71,7 +71,7 @@ public class ProcessPaymentController extends HttpServlet {
             List<Track> cartItems = CartDAO.getCartItems(user.getUserId());
             if (cartItems.isEmpty()) {
                 request.setAttribute("error", "Your cart is empty");
-                request.getRequestDispatcher("/payment.jsp").forward(request, response);
+                request.getRequestDispatcher("/order-details.jsp").forward(request, response);
                 return;
             }
 
@@ -100,7 +100,7 @@ public class ProcessPaymentController extends HttpServlet {
             } else {
                 con.rollback(); // Rollback transaction on payment failure
                 request.setAttribute("error", "Payment failed. Please try again.");
-                request.getRequestDispatcher("/payment.jsp").forward(request, response);
+                request.getRequestDispatcher("/order-details.jsp").forward(request, response);
             }
 
         } catch (SQLException e) {

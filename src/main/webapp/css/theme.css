@@ -2,28 +2,28 @@
    ENHANCED THEME VARIABLES - Spotify-Inspired Vibrant Dark Mode
    ========================================================================== */
 :root {
-    /* Vibrant Primary Palette - Energetic Green for Music Energy */
-    --primary: #8A2BE2; /* Spotify's iconic green for calls-to-action and highlights */
-    --primary-hover: #A155E7; /* Lighter green for hover states */
+    /* Vibrant Primary Palette - Energetic Purple for Music Energy */
+    --primary: #8A2BE2; /* Spotify-inspired purple for calls-to-action and highlights */
+    --primary-hover: #A155E7; /* Lighter purple for hover states */
 
     /* Background Colors - Deep Grays for Immersive Dark Mode */
     --dark-bg: #121212; /* Primary dark background, reduces eye strain */
     --card-bg: #181818; /* Slightly lighter for cards and surfaces */
     --card-hover: #282828; /* Subtle hover state for interactivity */
-    --surface: rgba(69, 21, 113, 0.08); /* Subtle green-tinted overlay for depth */
+    --surface: rgba(69, 21, 113, 0.08); /* Subtle purple-tinted overlay for depth */
 
-    /* Text Colors - High Contrast Grays for Readability */
+    /* Text Colors - High Contrast for Readability */
     --text-primary: #ffffff; /* Crisp white for main text */
     --text-secondary: #b3b3b3; /* Medium gray for secondary info */
-    --text-muted: #535353; /* Darker gray for subtle elements */
+    --text-muted: #d1d1d1; /* Brighter gray for improved legibility */
 
     /* Borders - Minimalist with Low Opacity */
     --border-light: rgba(255, 255, 255, 0.08);
     --border-medium: rgba(255, 255, 255, 0.12);
 
-    /* Shadows - Soft with Green Glow for Modern Feel */
+    /* Shadows - Soft with Purple Glow for Modern Feel */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 12px rgba(69, 21, 113, 0.15); /* Green-tinted for cohesion */
+    --shadow-md: 0 4px 12px rgba(69, 21, 113, 0.15); /* Purple-tinted for cohesion */
     --shadow-lg: 0 8px 32px rgba(69, 21, 113, 0.1);
 
     /* Gradients for Dynamic Music Vibes */

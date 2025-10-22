@@ -24,7 +24,7 @@ public class ManageArtistViewServlet extends HttpServlet {
 
         try {
             // Call the method that is now located in UserService
-            allArtists = userService.getAllArtists();
+            allArtists = userService.getArtists();
         } catch (SQLException e) {
             e.printStackTrace(); // It's better to log the error than to throw a RuntimeException
             req.setAttribute("error", "Failed to retrieve artists from the database.");

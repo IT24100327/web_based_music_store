@@ -97,7 +97,7 @@
                     </button>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-dark">
+                    <table>
                         <thead>
                         <tr>
                             <th>Cover Art</th>

@@ -40,6 +40,10 @@
                class="${param.view == 'settings' ? 'active' : ''}">
                 <i class="fas fa-cog"></i> Settings
             </a>
+            <hr style="border-color: var(--border-light);">
+            <a href="${pageContext.request.contextPath}/index">
+                <i class="fas fa-home"></i> Back to Main Site
+            </a>
             <a href="${pageContext.request.contextPath}/logout">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>

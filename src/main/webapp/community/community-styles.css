@@ -42,6 +42,62 @@
 }
 
 /* ==========================================================================
+   ANIMATION KEYFRAMES (Added from animations.css)
+   ========================================================================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(139, 92, 246, 0.8);
+    }
+}
+
+/* ==========================================================================
    BASE STYLES
    ========================================================================== */
 * {
@@ -94,7 +150,8 @@ body {
     background: var(--card-bg);
     border-color: var(--primary);
     color: var(--text-primary);
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
+    /* MODIFIED: Replaced static box-shadow with glow animation */
+    animation: glowPulse 1.5s ease-in-out infinite;
 }
 
 .form-control::placeholder {
@@ -119,6 +176,15 @@ body {
     border-bottom: 1px solid var(--border-light);
 }
 
+/* ADDED: Animations for section header elements */
+.section-header > *:first-child {
+    animation: slideInLeft 0.6s ease-out;
+}
+
+.section-header > *:last-child {
+    animation: slideInRight 0.6s ease-out;
+}
+
 .section-header h2 {
     margin: 0;
     color: var(--text-primary);
@@ -131,6 +197,8 @@ body {
     border-radius: 8px;
     margin: 0 16px 2rem;
     border: 1px solid transparent;
+    /* ADDED: Animation for alerts */
+    animation: fadeInUp 0.5s ease-out;
 }
 
 .alert-info {
@@ -167,7 +235,16 @@ body {
     width: 100%;
     margin-bottom: 1.5rem;
     break-inside: avoid;
+    /* ADDED: Animation for post cards */
+    animation: fadeInUp 0.5s ease-out;
+    animation-fill-mode: backwards; /* Prevents flicker before animation starts */
 }
+
+/* ADDED: Staggered animation delay for cards */
+.posts-grid .post-card:nth-child(3n+1) { animation-delay: 0.1s; }
+.posts-grid .post-card:nth-child(3n+2) { animation-delay: 0.2s; }
+.posts-grid .post-card:nth-child(3n) { animation-delay: 0.3s; }
+
 
 .post-card:hover {
     transform: translateY(-5px);
@@ -331,6 +408,8 @@ body {
     padding: 2.5rem;
     max-width: 800px;
     margin: 2rem auto;
+    /* ADDED: Animation for form container */
+    animation: scaleIn 0.5s ease-out;
 }
 
 .form-container h2 {
@@ -366,7 +445,7 @@ body {
 .form-group input[type="text"]:focus,
 .form-group textarea:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.1);
+    /* MODIFIED: The glowPulse animation is handled by the .form-control:focus selector */
 }
 
 .form-group textarea {

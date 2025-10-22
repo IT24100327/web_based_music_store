@@ -17,8 +17,35 @@ import java.util.List;
 
 public class UserDAO {
 
-    public static LinkedList<User> getUsers() throws SQLException {
-        LinkedList<User> allUsers = new LinkedList<>();
+    public static List<User> getUsers() throws SQLException {
+        List<User> allUsers = new LinkedList<>();
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(UserSQLConstants.SELECT_ALL_USERS_BY_TYPE)) {
+            pstmt.setString(1, "USER");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                allUsers.add(UserFactory.createUserFromResultSet(rs));
+            }
+        }
+        return allUsers;
+    }
+
+    public static List<Admin> getAdmins() throws SQLException {
+        List<Admin> allAdmins = new LinkedList<>();
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = con.prepareStatement(UserSQLConstants.SELECT_ALL_USERS_BY_TYPE)) {
+            pstmt.setString(1, "ADMIN");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Admin admin = (Admin) UserFactory.createUserFromResultSet(rs);
+                allAdmins.add(admin);
+            }
+        }
+        return allAdmins;
+    }
+
+    public static List<User> getAllUsers() throws SQLException {
+        List<User> allUsers = new LinkedList<>();
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(UserSQLConstants.SELECT_ALL_USERS)) {
             ResultSet rs = pstmt.executeQuery();
@@ -29,7 +56,7 @@ public class UserDAO {
         return allUsers;
     }
 
-    public static List<Artist> getAllArtists() throws SQLException {
+    public static List<Artist> getArtists() throws SQLException {
         List<Artist> artists = new ArrayList<>();
         try (Connection con = DatabaseConnection.getConnection();
              PreparedStatement pstmt = con.prepareStatement(UserSQLConstants.SELECT_ALL_ARTISTS)) {

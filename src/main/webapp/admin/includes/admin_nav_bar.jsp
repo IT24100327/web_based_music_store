@@ -4,7 +4,7 @@
 
 <nav class="admin-sidebar">
     <div class="sidebar-header">
-        <h2>RhythmWave Admin</h2>
+        <h2>Admin Panel</h2>
     </div>
     <div class="sidebar-nav">
         <c:if test="${sessionScope.USER != null}">
@@ -14,6 +14,9 @@
 
             <%-- Super Admin Links --%>
             <c:if test="${sessionScope.USER.role != null && sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
+                <a href="${pageContext.request.contextPath}/manage-admins" class="${page eq 'manage-admins' ? 'active' : ''}">
+                    <i class="fas fa-users-cog"></i> Admin Management
+                </a>
                 <a href="${pageContext.request.contextPath}/manage-users" class="${page eq 'manage-users' ? 'active' : ''}">
                     <i class="fas fa-users-cog"></i> User Management
                 </a>
@@ -54,10 +57,10 @@
                     <i class="fas fa-headset"></i> Support
                 </a>
             </c:if>
-
-            <%-- Logout --%>
-            <a href="${pageContext.request.contextPath}/logout">
-                <i class="fas fa-sign-out-alt"></i> Logout
+            <%--Exit & Logout --%>
+            <hr style="border-color: var(--border-light);">
+            <a href="${pageContext.request.contextPath}/index">
+                <i class="fas fa-home"></i> Back to Main Site
             </a>
         </c:if>
     </div>

@@ -27,7 +27,7 @@
             <div class="table-header">
                 <h3>All Community Posts</h3>
             </div>
-            <table class="table table-dark table-hover">
+            <table>
                 <thead>
                 <tr>
                     <th>ID</th>

@@ -22,13 +22,16 @@
                        href="${pageContext.request.contextPath}/search">Search</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/community">Community</a>
+                    <a class="nav-link ${activePage eq 'community' ? 'active' : ''}"
+                       href="${pageContext.request.contextPath}/community">Community</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/SupportTicketServlet">Support</a>
+                    <a class="nav-link ${activePage eq 'support' ? 'active' : ''}"
+                       href="${pageContext.request.contextPath}/SupportTicketServlet">Support</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/FeedbackServlet">Feedback</a>
+                    <a class="nav-link ${activePage eq 'feedback' ? 'active' : ''}"
+                       href="${pageContext.request.contextPath}/FeedbackServlet">Feedback</a>
                 </li>
             </ul>
 
@@ -84,9 +87,6 @@
                                 </c:choose>
                             </c:otherwise>
                         </c:choose>
-
-                        <a href="${pageContext.request.contextPath}/my-music" class="btn btn-outline-light btn-sm">My Music</a>
-                        <a href="${pageContext.request.contextPath}/my-orders" class="btn btn-outline-light btn-sm">My Orders</a>
 
                         <a href="${pageContext.request.contextPath}/logout"
                            class="btn btn-outline-light btn-sm">Logout</a>

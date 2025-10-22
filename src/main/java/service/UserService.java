@@ -88,12 +88,20 @@ public class UserService {
         }
     }
 
-    public List<Artist> getAllArtists() throws SQLException {
-        return UserDAO.getAllArtists();
+    public List<User> getAllUsers() throws SQLException {
+        return UserDAO.getAllUsers();
     }
 
-    public LinkedList<User> getAllUsers() throws SQLException {
+    public List<Artist> getArtists() throws SQLException {
+        return UserDAO.getArtists();
+    }
+
+    public List<User> getUsers() throws SQLException {
         return UserDAO.getUsers();
+    }
+
+    public List<Admin> getAdmins() throws SQLException {
+        return UserDAO.getAdmins();
     }
 
     public void addUser(User user) throws IOException, SQLException {
