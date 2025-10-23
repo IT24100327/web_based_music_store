@@ -231,7 +231,14 @@
                     </div>
                     <div class="form-group">
                         <label for="add-genre">Genre</label>
-                        <input type="text" class="form-control" id="add-genre" name="genre" required>
+                        <select id="add-genre">
+                            <option value="rock">Rock</option>
+                            <option value="pop">Pop</option>
+                            <option value="hiphop">Hip Hop</option>
+                            <option value="electronic">Electronic</option>
+                            <option value="jazz">Jazz</option>
+                            <option value="classical">Classical</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="add-duration">Duration (seconds)</label>

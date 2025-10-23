@@ -17,7 +17,7 @@
 <body>
 <div class="admin-container">
   <jsp:include page="includes/admin_nav_bar.jsp">
-    <jsp:param name="page" value="manage-tracks"/>
+    <jsp:param name="page" value="manage-support-tickets"/>
   </jsp:include>
 
   <main class="admin-main">

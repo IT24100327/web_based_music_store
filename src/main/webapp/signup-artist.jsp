@@ -95,7 +95,7 @@
       <input type="hidden" name="last-name" value="${param['last-name']}">
       <input type="hidden" name="email" value="${param.email}">
       <input type="hidden" name="password" value="${param.password}">
-      <input type="hidden" name="userType" value="${param.userType}">
+      <input type="hidden" name="user-type" value="${param.userType}">
 
       <div class="form-row">
         <div class="form-group">
