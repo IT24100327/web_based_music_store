@@ -51,34 +51,39 @@ public class UserService {
     /**
      * Updates a standard user or an admin's profile.
      */
+    // REPLACE the existing updateUser method in /main/java/service/UserService.java with this:
+
     public void updateUser(User user, String newPassword) throws SQLException, IOException {
         // 1. Fetch existing user data to ensure it exists.
         User existingUser = UserDAO.findUserById(user.getUserId());
         if (existingUser == null) {
             throw new IllegalArgumentException("User not found with ID: " + user.getUserId());
         }
-        // This method should not be used to update artists.
-        if (user.getUserType() == UserType.ARTIST || existingUser.getUserType() == UserType.ARTIST) {
-            throw new IllegalArgumentException("Use the updateArtist() method to modify artist profiles.");
-        }
 
-        // 2. Validate the incoming object.
+        // 2. Validate the incoming user object based on its type.
         UserValidator validator = UserValidator.forUser(user);
         validator.validate(user);
 
-        // 3. Check for email uniqueness.
+        // 3. Check for business rule violations (uniqueness constraints).
         if (!existingUser.getEmail().equalsIgnoreCase(user.getEmail()) && UserDAO.findUserByEmail(user.getEmail()) != null) {
             throw new IllegalArgumentException("Email already exists: " + user.getEmail());
         }
 
-        // 4. Persist the changes.
+        // Check stage name uniqueness ONLY if the user is an artist.
+        if (user instanceof Artist artist) {
+            if (UserDAO.isStageNameTaken(artist.getStageName(), artist.getUserId())) {
+                throw new IllegalArgumentException("Stage name is already taken: " + artist.getStageName());
+            }
+        }
+
+        // 4. Persist the changes. The UserDAO.updateUser already handles artist details correctly.
         UserDAO.updateUser(user);
 
         // 5. Handle Admin role update.
         if (user instanceof Admin admin) {
             UserDAO.updateAdminRole(admin.getUserId(), admin.getRole());
         } else if (existingUser.getUserType() == UserType.ADMIN && user.getUserType() != UserType.ADMIN) {
-            // If user's role was changed FROM Admin, remove their entry.
+            // If user's role was changed FROM Admin, remove their admin role entry.
             UserDAO.updateAdminRole(user.getUserId(), null);
         }
 

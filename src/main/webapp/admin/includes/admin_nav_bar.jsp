@@ -53,10 +53,14 @@
                 <a href="${pageContext.request.contextPath}/admin/manage-feedback" class="${page eq 'manage-feedback' ? 'active' : ''}">
                     <i class="fas fa-comment-dots"></i> Feedback
                     </a>
+            </c:if>
+
+            <c:if test="${sessionScope.USER.role != null && (sessionScope.USER.role.name() eq 'SUPER_ADMIN' || sessionScope.USER.role.name() eq 'SUPPORT_MANAGER')}">
                 <a href="${pageContext.request.contextPath}/admin/manage-support-tickets" class="${page eq 'manage-support-tickets' ? 'active' : ''}">
                     <i class="fas fa-headset"></i> Support
                 </a>
             </c:if>
+
             <%--Exit & Logout --%>
             <hr style="border-color: var(--border-light);">
             <a href="${pageContext.request.contextPath}/index">

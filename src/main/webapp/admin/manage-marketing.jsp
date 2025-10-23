@@ -48,7 +48,7 @@
             <div class="table-header">
                 <h3>Manage Promotions</h3>
                 <div class="table-actions">
-                    <button class="btn btn-primary" onclick="openAddPromotionModal()">
+                    <button class="btn btn-secondary" onclick="openAddPromotionModal()">
                         <i class="fas fa-plus"></i> Add Promotion
                     </button>
                 </div>
@@ -110,7 +110,7 @@
             <div class="table-header">
                 <h3>Manage Advertisements</h3>
                 <div class="table-actions">
-                    <button class="btn btn-primary" onclick="openAddAdvertisementModal()">
+                    <button class="btn btn-secondary" onclick="openAddAdvertisementModal()">
                         <i class="fas fa-plus"></i> Add Advertisement
                     </button>
                 </div>

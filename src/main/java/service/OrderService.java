@@ -1,3 +1,5 @@
+// /main/java/service/OrderService.java
+
 package service;
 
 import dao.CartDAO;
@@ -30,11 +32,9 @@ public class OrderService {
         double serverCalculatedTotal = cartTracks.stream()
                 .mapToDouble(Track::getPrice)
                 .sum();
-
         double discountAmount = 0.0;
         double finalAmount = serverCalculatedTotal;
         Promotion promo = null;
-
         if (promoCode != null && !promoCode.trim().isEmpty()) {
             promo = PromotionDAO.findValidByCode(promoCode);
             if (promo != null) {
@@ -52,12 +52,10 @@ public class OrderService {
         order.setDiscountAmount(discountAmount);
         order.setFinalAmount(finalAmount);
         order.setPromotionCode(promoCode);
-        order.setStatus(OrderStatus.PENDING); // Correct initial status
+        order.setStatus(OrderStatus.PENDING);
         order.setOrderDate(LocalDateTime.now());
-
         // The DAO method will use the passed connection 'con'
         OrderDAO.addOrder(order, con);
-
         if (promo != null) {
             PromotionDAO.incrementUsageCount(promo.getCode());
         }
@@ -107,9 +105,9 @@ public class OrderService {
 
     private boolean isValidStatusTransition(OrderStatus current, OrderStatus next) {
         if (current == next) return true;
-
         return switch (current) {
-            case PENDING -> next == OrderStatus.COMPLETED || next == OrderStatus.CANCELLED;
+            case PENDING -> next == OrderStatus.COMPLETED ||
+                    next == OrderStatus.CANCELLED;
             case COMPLETED -> next == OrderStatus.REFUNDED;
             case CANCELLED, REFUNDED -> false;
         };

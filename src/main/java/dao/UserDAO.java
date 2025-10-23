@@ -92,7 +92,7 @@ public class UserDAO {
             if (user instanceof Artist artist) {
                 saveArtistDetails(artist, con);
             } else if (user instanceof Admin admin && admin.getRole() != null) {
-                updateAdminRole(admin.getUserId(), admin.getRole());
+                updateAdminRole(admin.getUserId(), admin.getRole(), con);
             }
 
             con.commit();
@@ -223,23 +223,9 @@ public class UserDAO {
     }
 
     public static void updateAdminRole(int userId, AdminRole newRole) throws SQLException {
-        if (userId <= 0) {
-            throw new IllegalArgumentException("Invalid user ID.");
-        }
-        if (newRole == null) {
-            try (Connection con = DatabaseConnection.getConnection();
-                 PreparedStatement pstmt = con.prepareStatement(UserSQLConstants.DELETE_ADMIN_ROLE)) {
-                pstmt.setInt(1, userId);
-                pstmt.executeUpdate();
-            }
-        } else {
-            try (Connection con = DatabaseConnection.getConnection();
-                 PreparedStatement pstmt = con.prepareStatement(UserSQLConstants.INSERT_ADMIN_ROLE)) {
-                pstmt.setInt(1, userId);
-                pstmt.setString(2, newRole.name());
-                pstmt.setString(3, newRole.name());
-                pstmt.executeUpdate();
-            }
+        // This method gets its own connection and is for non-transactional calls.
+        try (Connection con = DatabaseConnection.getConnection()) {
+            updateAdminRole(userId, newRole, con); // Calls the refactored method
         }
     }
 
@@ -319,6 +305,27 @@ public class UserDAO {
             if (rs.next()) {
                 artist.setStageName(rs.getString("stage_name"));
                 artist.setBio(rs.getString("bio"));
+            }
+        }
+    }
+
+    public static void updateAdminRole(int userId, AdminRole newRole, Connection con) throws SQLException {
+        if (userId <= 0) {
+            throw new IllegalArgumentException("Invalid user ID.");
+        }
+        if (newRole == null) {
+            // Use the passed connection 'con'
+            try (PreparedStatement pstmt = con.prepareStatement(UserSQLConstants.DELETE_ADMIN_ROLE)) {
+                pstmt.setInt(1, userId);
+                pstmt.executeUpdate();
+            }
+        } else {
+            // Use the passed connection 'con'
+            try (PreparedStatement pstmt = con.prepareStatement(UserSQLConstants.INSERT_ADMIN_ROLE)) {
+                pstmt.setInt(1, userId);
+                pstmt.setString(2, newRole.name());
+                pstmt.setString(3, newRole.name());
+                pstmt.executeUpdate();
             }
         }
     }

@@ -1,3 +1,5 @@
+// /main/java/controller/OrderManagement/OrderAdminServlet.java
+
 package controller.OrderManagement;
 
 import jakarta.servlet.RequestDispatcher;
@@ -18,14 +20,13 @@ import java.util.stream.Collectors;
 @WebServlet("/manage-orders")
 public class OrderAdminServlet extends HttpServlet {
 
-    private final OrderService orderService = new OrderService();  // Delegate to Service
+    private final OrderService orderService = new OrderService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            List<Order> allOrders = orderService.getOrders(); // Use List instead of LinkedList
+            List<Order> allOrders = orderService.getOrders();
             String searchQuery = req.getParameter("searchQuery");
-
             if (searchQuery != null && !searchQuery.trim().isEmpty()) {
                 String query = searchQuery.toLowerCase().trim();
                 allOrders = allOrders.stream()
@@ -46,7 +47,6 @@ public class OrderAdminServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-
         switch (action) {
             case "update_status":
                 int orderId = Integer.parseInt(request.getParameter("orderId"));
@@ -57,6 +57,10 @@ public class OrderAdminServlet extends HttpServlet {
                 int deleteOrderId = Integer.parseInt(request.getParameter("orderId"));
                 deleteOrder(deleteOrderId);
                 break;
+            case "refund":
+                int refundOrderId = Integer.parseInt(request.getParameter("orderId"));
+                refundOrder(refundOrderId);
+                break;
         }
 
         response.sendRedirect(request.getContextPath() + "/manage-orders");
@@ -64,7 +68,7 @@ public class OrderAdminServlet extends HttpServlet {
 
     private void updateOrderStatus(int orderId, OrderStatus status) {
         try {
-            orderService.updateOrderStatus(orderId, status);  // Use Service
+            orderService.updateOrderStatus(orderId, status);
         } catch (SQLException | IllegalArgumentException e) {
             System.out.println("Order Status Update Failed. Error: " + e.getMessage());
         }
@@ -72,9 +76,17 @@ public class OrderAdminServlet extends HttpServlet {
 
     private void deleteOrder(int orderId) {
         try {
-            orderService.removeOrder(orderId);  // Use Service
+            orderService.removeOrder(orderId);
         } catch (SQLException | IllegalArgumentException e) {
             System.out.println("Order Delete Failed. Error: " + e.getMessage());
+        }
+    }
+
+    private void refundOrder(int orderId) {
+        try {
+            orderService.refundOrder(orderId);
+        } catch (SQLException | IllegalArgumentException e) {
+            System.out.println("Order Refund Failed. Error: " + e.getMessage());
         }
     }
 }

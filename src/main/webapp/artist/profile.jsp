@@ -231,13 +231,13 @@
                     </div>
                     <div class="form-group">
                         <label for="add-genre">Genre</label>
-                        <select id="add-genre">
-                            <option value="rock">Rock</option>
-                            <option value="pop">Pop</option>
-                            <option value="hiphop">Hip Hop</option>
-                            <option value="electronic">Electronic</option>
-                            <option value="jazz">Jazz</option>
-                            <option value="classical">Classical</option>
+                        <select id="add-genre" name="genre" id="add-genre">
+                            <option value="Rock">Rock</option>
+                            <option value="Pop">Pop</option>
+                            <option value="Hiphop">Hip Hop</option>
+                            <option value="Electronic">Electronic</option>
+                            <option value="Jazz">Jazz</option>
+                            <option value="Classical">Classical</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -286,7 +286,14 @@
                     </div>
                     <div class="form-group">
                         <label for="edit-genre">Genre</label>
-                        <input type="text" class="form-control" id="edit-genre" name="genre" required>
+                        <select id="edit-genre" name="genre" id="edit-genre">
+                            <option value="Rock">Rock</option>
+                            <option value="Pop">Pop</option>
+                            <option value="Hiphop">Hip Hop</option>
+                            <option value="Electronic">Electronic</option>
+                            <option value="Jazz">Jazz</option>
+                            <option value="Classical">Classical</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="edit-duration">Duration (seconds)</label>

@@ -1,8 +1,9 @@
 package model;
 
 import model.enums.OrderStatus;
-
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public class Order {
@@ -118,5 +119,12 @@ public class Order {
 
     public void setPromotionCode(String promotionCode) {
         this.promotionCode = promotionCode;
+    }
+
+    public Date getOrderDateAsUtilDate() {
+        if (this.orderDate != null) {
+            return Timestamp.valueOf(this.orderDate);
+        }
+        return null;
     }
 }

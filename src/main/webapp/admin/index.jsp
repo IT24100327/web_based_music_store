@@ -155,13 +155,16 @@
                     <p class="card-description">Review and respond to user feedback submissions.</p>
                     <a href="${pageContext.request.contextPath}/admin/manage-feedback" class="card-link">Manage Feedback <i class="fas fa-arrow-right"></i></a>
                 </div>
-                <div class="dashboard-card">
-                    <div class="card-icon"><i class="fas fa-headset"></i></div>
-                    <h3 class="card-title">Support Management</h3>
-                    <p class="card-description">Address and resolve all user support requests.</p>
-                    <a href="${pageContext.request.contextPath}/admin/manage-support-tickets" class="card-link">Manage Support <i class="fas fa-arrow-right"></i></a>
-                </div>
             </c:if>
+
+                <c:if test="${sessionScope.USER.role.name() eq 'SUPPORT_MANAGER' or sessionScope.USER.role.name() eq 'SUPER_ADMIN'}">
+                    <div class="dashboard-card">
+                        <div class="card-icon"><i class="fas fa-headset"></i></div>
+                        <h3 class="card-title">Support Management</h3>
+                        <p class="card-description">Address and resolve all user support requests.</p>
+                        <a href="${pageContext.request.contextPath}/admin/manage-support-tickets" class="card-link">Manage Support <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </c:if>
 
             <div class="dashboard-card">
                 <div class="card-icon"><i class="fas fa-cog"></i></div>

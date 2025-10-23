@@ -1,36 +1,28 @@
-/* ==========================================================================
-   ENHANCED THEME VARIABLES - Spotify-Inspired Vibrant Dark Mode
-   ========================================================================== */
 :root {
-    /* Vibrant Primary Palette - Energetic Purple for Music Energy */
-    --primary: #8A2BE2; /* Spotify-inspired purple for calls-to-action and highlights */
-    --primary-hover: #A155E7; /* Lighter purple for hover states */
+    --primary: #8A2BE2;
+    --primary-hover: #A155E7;
 
-    /* Background Colors - Deep Grays for Immersive Dark Mode */
-    --dark-bg: #121212; /* Primary dark background, reduces eye strain */
-    --card-bg: #181818; /* Slightly lighter for cards and surfaces */
-    --card-hover: #282828; /* Subtle hover state for interactivity */
-    --surface: rgba(69, 21, 113, 0.08); /* Subtle purple-tinted overlay for depth */
+    --dark-bg: #121212;
+    --card-bg: #181818;
+    --card-hover: #282828;
+    --surface: rgba(69, 21, 113, 0.08);
 
-    /* Text Colors - High Contrast for Readability */
-    --text-primary: #ffffff; /* Crisp white for main text */
-    --text-secondary: #b3b3b3; /* Medium gray for secondary info */
-    --text-muted: #d1d1d1; /* Brighter gray for improved legibility */
 
-    /* Borders - Minimalist with Low Opacity */
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --text-muted: #d1d1d1;
+
     --border-light: rgba(255, 255, 255, 0.08);
     --border-medium: rgba(255, 255, 255, 0.12);
 
-    /* Shadows - Soft with Purple Glow for Modern Feel */
+
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 12px rgba(69, 21, 113, 0.15); /* Purple-tinted for cohesion */
+    --shadow-md: 0 4px 12px rgba(69, 21, 113, 0.15);
     --shadow-lg: 0 8px 32px rgba(69, 21, 113, 0.1);
 
-    /* Gradients for Dynamic Music Vibes */
     --gradient-primary: linear-gradient(135deg, var(--primary), #D0AAF3);
     --gradient-hover: linear-gradient(135deg, var(--primary-hover), #290C43);
 
-    /* Transitions - Smooth for Fluid Interactions */
     --transition-fast: 0.15s ease;
     --transition-normal: 0.25s ease;
 }
