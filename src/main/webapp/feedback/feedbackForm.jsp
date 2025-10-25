@@ -11,6 +11,12 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/index.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/feedback-support.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .btn-secondary{
+            background-color: #1ed760;
+        }
+    </style>
+
 </head>
 <body>
 
@@ -65,7 +71,6 @@
                     <textarea id="message" name="message" rows="5" placeholder="Please provide as much detail as possible..." required></textarea>
                 </div>
 
-                <%-- ================= THIS IS THE FIX ================= --%>
                 <div style="margin-top: 16px;">
                     <label>Overall Rating (Optional)</label>
                     <div class="stars">
@@ -76,7 +81,6 @@
                         <input type="radio" id="star1" name="rating" value="1"/><label for="star1"><i class="fas fa-star"></i></label>
                     </div>
                 </div>
-                <%-- ===================================================== --%>
 
                 <div style="margin-top: 24px; text-align: right;">
                     <button type="submit" class="btn primary">Submit Feedback</button>

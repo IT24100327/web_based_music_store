@@ -17,21 +17,16 @@ import java.util.List;
 
 public class UserService {
 
-    /**
-     * Updates an artist's complete profile. This is the single entry point for this operation.
-     */
+
     public void updateArtist(Artist artist, String newPassword) throws SQLException, IOException {
-        // 1. Fetch existing user data to ensure it exists and is an artist.
         User existingUser = UserDAO.findUserById(artist.getUserId());
         if (existingUser == null || existingUser.getUserType() != UserType.ARTIST) {
             throw new IllegalArgumentException("Artist not found with ID: " + artist.getUserId());
         }
 
-        // 2. Validate the complete, updated Artist object.
         UserValidator validator = UserValidator.forUser(artist);
         validator.validate(artist);
 
-        // 3. Check for business rule violations (uniqueness constraints).
         if (!existingUser.getEmail().equalsIgnoreCase(artist.getEmail()) && UserDAO.findUserByEmail(artist.getEmail()) != null) {
             throw new IllegalArgumentException("Email already exists: " + artist.getEmail());
         }
@@ -39,55 +34,42 @@ public class UserService {
             throw new IllegalArgumentException("Stage name is already taken: " + artist.getStageName());
         }
 
-        // 4. Persist the updated user and artist details in a single transaction.
         UserDAO.updateUser(artist);
 
-        // 5. Update password only if a new one was provided.
         if (newPassword != null && !newPassword.trim().isEmpty()) {
             this.updateUserPassword(artist.getUserId(), newPassword);
         }
     }
 
-    /**
-     * Updates a standard user or an admin's profile.
-     */
-    // REPLACE the existing updateUser method in /main/java/service/UserService.java with this:
-
     public void updateUser(User user, String newPassword) throws SQLException, IOException {
-        // 1. Fetch existing user data to ensure it exists.
+
         User existingUser = UserDAO.findUserById(user.getUserId());
         if (existingUser == null) {
             throw new IllegalArgumentException("User not found with ID: " + user.getUserId());
         }
 
-        // 2. Validate the incoming user object based on its type.
         UserValidator validator = UserValidator.forUser(user);
         validator.validate(user);
 
-        // 3. Check for business rule violations (uniqueness constraints).
+
         if (!existingUser.getEmail().equalsIgnoreCase(user.getEmail()) && UserDAO.findUserByEmail(user.getEmail()) != null) {
             throw new IllegalArgumentException("Email already exists: " + user.getEmail());
         }
 
-        // Check stage name uniqueness ONLY if the user is an artist.
         if (user instanceof Artist artist) {
             if (UserDAO.isStageNameTaken(artist.getStageName(), artist.getUserId())) {
                 throw new IllegalArgumentException("Stage name is already taken: " + artist.getStageName());
             }
         }
 
-        // 4. Persist the changes. The UserDAO.updateUser already handles artist details correctly.
         UserDAO.updateUser(user);
 
-        // 5. Handle Admin role update.
         if (user instanceof Admin admin) {
             UserDAO.updateAdminRole(admin.getUserId(), admin.getRole());
         } else if (existingUser.getUserType() == UserType.ADMIN && user.getUserType() != UserType.ADMIN) {
-            // If user's role was changed FROM Admin, remove their admin role entry.
             UserDAO.updateAdminRole(user.getUserId(), null);
         }
 
-        // 6. Update password if provided.
         if (newPassword != null && !newPassword.trim().isEmpty()) {
             this.updateUserPassword(user.getUserId(), newPassword);
         }
@@ -153,10 +135,10 @@ public class UserService {
         if (user == null) {
             throw new SQLException("User not found with ID: " + userId);
         }
-        // Create a temporary user of the same type just for password validation
+
         User tempUser = UserFactory.createUser(user.getUserType().name().toLowerCase(), "dummy", "dummy", "dummy@email.com", newPassword);
         UserValidator validator = UserValidator.forUser(tempUser);
-        validator.validate(tempUser); // This will check password length rules for the specific user type
+        validator.validate(tempUser);
 
         UserDAO.updateUserPassword(userId, newPassword.trim());
     }

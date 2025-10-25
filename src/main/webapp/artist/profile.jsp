@@ -231,7 +231,7 @@
                     </div>
                     <div class="form-group">
                         <label for="add-genre">Genre</label>
-                        <select id="add-genre" name="genre" id="add-genre">
+                        <select class="form-control" id="add-genre" name="genre">
                             <option value="Rock">Rock</option>
                             <option value="Pop">Pop</option>
                             <option value="Hiphop">Hip Hop</option>
